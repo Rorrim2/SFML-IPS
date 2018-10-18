@@ -14,5 +14,6 @@ enum class PacketType
 	OutOfBounds
 };
 
-void StampPacket(const PacketType& l_type, sf::Packet& l_packet);
+//Function to marking packet to recognise with type it is 
+void StampPacket(const PacketType& type, sf::Packet& packet);
 
