@@ -1,7 +1,7 @@
 #include "PacketType.h"
 
 
-void StampPacket(const PacketType & l_type, sf::Packet & l_packet)
+void StampPacket(const PacketType & type, sf::Packet & packet)
 {
-	l_packet << PacketID(l_type);
+	packet << PacketID(type);
 }
