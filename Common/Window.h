@@ -24,6 +24,7 @@ public:
    sf::Vector2u getWindowSize();
 
    void draw(sf::Drawable &drawable);
+   void draw(sf::Vertex *verticles, size_t count, sf::PrimitiveType type);
 
 
 

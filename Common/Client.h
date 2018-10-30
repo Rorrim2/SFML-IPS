@@ -3,23 +3,25 @@
 #include "Global.h"
 #include "PacketType.h"
 #include "Network.h"
-#define CONNECTION_TIMEOUT 14000 // in milisec
+#include "ClientPlayersManager.h"
+#define CONNECTION_TIMEOUT 5000 // in milisec
 
 
 class Client;
 using PacketHandler = std::function<void(const PacketID &id, sf::Packet &packet, Client *)>; /* std::function store pointer to function, more info https://stackoverflow.com/questions/9054774/difference-between-stdfunction-and-a-standard-function-pointer   */
 
 
-
+class ClientPlayersManager;
 class Client
 {
 public:
-	Client();
+	Client(ClientPlayersManager &clientPlayersManager);
+	~Client();
 
 	bool connect();
 	bool disconnect();
 	void listen();
-	bool sendPacket(sf::Packet &packet);
+	bool sendPacket(sf::Packet &packet );
 	const sf::Time getTime() const;
 	const sf::Time& getLastTimeHeartBeat() const;
 	void setTime(const sf::Time &time);
@@ -39,16 +41,21 @@ public:
 
 	void setPlayerName(std::string &playerName);
 	
-	~Client();
+   bool sendCreatePlayerPacket();
+   bool sendMovePlayerPacket(MoveDirection dir);
 
+   ClientID getClientID();
+
+
+   ClientPlayersManager &playersManager;
 private:
 
 	std::string playerName;
 
+	bool connected;
 	sf::UdpSocket udpSocket;
 	sf::IpAddress serverIP;
 	PortNumber portNumber;
-	bool connected;
 	PacketHandler packetHandler;
 
 	sf::Time serverTime;
@@ -56,5 +63,7 @@ private:
 
 	sf::Thread listenThread;
 	sf::Mutex mutex;
+   ClientID clientID;
+
 };
 

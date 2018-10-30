@@ -1,10 +1,11 @@
 #pragma once
 #include "SFML/System/Time.hpp"
-#include "Window.h"
-#include "BaseState.h"
 #include <unordered_map>
 #include <functional>
 #include <vector>
+#include "Window.h"
+#include "World.h"
+#include "BaseState.h"
 
 enum StateTypeE
 {

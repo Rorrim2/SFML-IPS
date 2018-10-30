@@ -14,7 +14,10 @@ Window::Window(const std::string &title, const sf::Vector2u &size)
 void Window::create()
 {
    auto style = this->isFullscreen() ? sf::Style::Fullscreen : sf::Style::Default;
-   this->window.create({ this->windowSize.x, this->windowSize.y, 32 }, this->windowTitle, style);
+   sf::ContextSettings settings;
+   settings.antialiasingLevel = 4;
+   this->window.create({ this->windowSize.x, this->windowSize.y, 32 }, this->windowTitle, style, settings);
+   this->window.setVerticalSyncEnabled(true);
 }
 
 void Window::destroy()
@@ -84,5 +87,10 @@ sf::Vector2u Window::getWindowSize()
 void Window::draw(sf::Drawable & drawable)
 {
    this->window.draw(drawable);
+}
+
+void Window::draw(sf::Vertex *verticles, size_t count, sf::PrimitiveType type)
+{
+   this->window.draw(verticles, count, type);
 }
 

@@ -1,6 +1,5 @@
 #include "Server.h"
 
-
 Server::Server(void(*handler)(sf::IpAddress &, const PortNumber &, const PacketID &, sf::Packet &, Server *))
 	: listenThread(&Server::listen, this)
 {
@@ -81,6 +80,11 @@ void Server::listen()
 				DEBUG_COUT("Error receiving a packet from " << ip << ":" << port);
 				continue;
 			}
+         else
+         {
+            DEBUG_COUT("Socket unbound");
+            break;
+         }
 		}
 
 		this->totalReceive += packet.getDataSize();
@@ -101,8 +105,8 @@ void Server::listen()
 
 				if (iter.second.heartbeatWaiting == false)
 				{
-					DEBUG_COUT("Wrong heartbeat packet receive!")
-						break;
+               DEBUG_COUT("Wrong heartbeat packet receive!");
+					break;
 				}
 
 				iter.second.latency = this->serverTime.asMilliseconds() - iter.second.lastHeartbeatSend.asMilliseconds();
@@ -149,6 +153,10 @@ void Server::update(const sf::Time & time)
 
 				if (this->timeoutHandler != nullptr) this->timeoutHandler(iter->first);
 
+            //erase his body
+            serverLogic.signToRemovePlayer(iter->first);
+
+
 				iter = this->clients.erase(iter);
 				continue;
 			}
@@ -187,17 +195,13 @@ ClientID Server::addClient(const sf::IpAddress & ip, const PortNumber & port)
 	sf::Lock lock(this->mutex);
 	for (auto & iter : this->clients)
 	{
-		if (iter.second.clientIP == ip && iter.second.clientPort == port) break;
+		if (iter.second.clientIP == ip && iter.second.clientPort == port) return id;
 	}
-
-	if (id == -1)
-	{
-		id = this->lastID;
-		ClientInfo info(ip, port, this->serverTime);
-		clients.insert(std::make_pair(id, info));
-		this->lastID++;
-	}
-	return id;
+	id = this->lastID;
+	ClientInfo info(ip, port, this->serverTime);
+	clients.insert(std::make_pair(id, info));
+	this->lastID++;
+   return id;
 }
 
 ClientID Server::getClientID(const sf::IpAddress & ip, const PortNumber & port)
@@ -351,4 +355,20 @@ void Server::setup()
 	this->lastID = 0;
 	this->totalReceive = 0;
 	this->totalSend = 0;
+}
+
+
+void Server::requestHandling()
+{
+   sf::Clock clock;
+   clock.restart(); 
+   while (isRunning())
+   {
+      update(clock.restart());
+      for (sf::Packet &p : serverLogic.getPlayersPos())
+      {
+         broadcast(p);
+      }
+   }
+   std::cout << "Stopping server..." << std::endl;
 }

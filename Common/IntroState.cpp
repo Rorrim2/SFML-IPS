@@ -17,7 +17,7 @@ void IntroState::onCreate()
 
    this->font.loadFromFile("Charmonman-Bold.ttf");
    this->introText.setFont(this->font);
-   this->introText.setString("Gówno gra na ips!");
+   this->introText.setString("Gra na ips!");
    this->introText.setCharacterSize(30);
    sf::Vector2u windowSize = this->stateManager->getContext()->window->getWindowSize();
    this->introText.setPosition(windowSize.x / 2, windowSize.y / 2);

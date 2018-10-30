@@ -2,8 +2,8 @@
 
 
 
-Client::Client()
-	: listenThread(&Client::listen, this)
+Client::Client(ClientPlayersManager &clientPlayersManager)
+	: listenThread(&Client::listen, this), playersManager(clientPlayersManager)
 {
 	this->connected = false;
 }
@@ -15,6 +15,8 @@ bool Client::connect()
 
 	this->udpSocket.bind(sf::Socket::AnyPort);
 	
+   std::cout << this->udpSocket.getLocalPort() << std::endl;
+
 	sf::Packet packet;
 	StampPacket(PacketType::Connect, packet);
 	packet << this->playerName;
@@ -37,13 +39,16 @@ bool Client::connect()
 	while (timer.getElapsedTime().asMilliseconds() < CONNECTION_TIMEOUT && validConnection == false)
 	{
 		sf::Socket::Status status = this->udpSocket.receive(packet, recIp, recPort);
+     // std::cout << recPort << std::endl;
+
 		//check socket status
-		if (status != sf::Socket::Status::Done) continue;
+     // std::cout << recIp << "  " << status << std::endl;
+		if (status != sf::Socket::Done) continue;
 		if (recIp != this->serverIP) continue;
 
 		//after checking socket status, check packet property
 		PacketID id;
-		if ((packet >> id) == false) continue;
+		if ((packet >> id >> this->clientID) == false) continue;
 		if (static_cast<PacketType>(id) != PacketType::Connect) continue;
 
 		//connection ok
@@ -97,10 +102,12 @@ void Client::listen()
 			if (this->connected == true)
 			{
 				DEBUG_COUT("Failed receiving a packet from " << recIP << ":" << recPort << ". Status: " << status);
+            continue;
 			}
 			else
 			{
 				DEBUG_COUT("Socket unbound");
+            break;
 			}
 		}
 
@@ -122,9 +129,9 @@ void Client::listen()
 			{
 				DEBUG_COUT("Failed sending heartbeat!");
 			}
-			uint32_t timeStamp;
+			sf::Int32 timeStamp;
 			packet >> timeStamp;
-			this->setTime(sf::milliseconds(timeStamp));
+			setTime(sf::milliseconds(timeStamp));
 			this->lastHeartBeat = this->serverTime;
 		}
 		else
@@ -193,7 +200,7 @@ void Client::update(const sf::Time &time)
 		//this statement is only for keep variable above 0 if it go signed
 		if (this->serverTime.asMilliseconds() < 0)
 		{
-			this->serverTime -= sf::milliseconds(static_cast<sf::Int32>(Network::HighestTimestamp));
+			this->serverTime -= sf::milliseconds(sf::Int32(Network::HighestTimestamp));
 			this->lastHeartBeat = this->serverTime;
 			return;
 		}
@@ -213,6 +220,42 @@ void Client::setPlayerName(std::string &playerName)
 	this->playerName = playerName;
 }
 
+bool Client::sendCreatePlayerPacket()
+{
+   bool valid = false;
+   if (this->connected == true)
+   {
+      sf::Packet p;
+      StampPacket(PacketType::PlayerCreate, p);
+      p << this->clientID << 200.0f << 40.0f;
+      //StampPacketPlayerCreate(p, this->clientID, 200, 40);
+      if (this->udpSocket.send(p, this->serverIP, this->portNumber) == sf::Socket::Status::Done)
+      {
+         valid = true;
+      }
+   }
+
+   return valid;
+}
+bool Client::sendMovePlayerPacket(MoveDirection dir)
+{
+   bool valid = false;
+   if (this->connected == true)
+   {
+      sf::Packet p;
+      //StampPacketPlayerMove(p, this->clientID, dir);
+      /*if (this->udpSocket.send(p, this->serverIP, this->portNumber) == sf::Socket::Status::Done)
+      {
+         valid = true;
+      }*/
+   }
+
+   return valid;
+}
+ClientID Client::getClientID()
+{
+   return this->clientID;
+}
 Client::~Client()
 {
 	udpSocket.unbind();

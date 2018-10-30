@@ -2,11 +2,11 @@
 
 
 
-Game::Game()
-   : window("Tytu³", sf::Vector2u(700, 500)), stateManager(&context)
+Game::Game(const std::string &title, StateTypeE startState )
+   : window(title, sf::Vector2u(900, 800)), stateManager(&context)
 {
    this->context.window = &this->window;
-   this->stateManager.switchTo(StateTypeE::INTRO);
+   this->stateManager.switchTo(startState);
 }
 
 
@@ -36,10 +36,24 @@ Window* Game::getWindow()
 void Game::lateUpdate()
 {
    this->stateManager.processRequest();
-   restartClock();
 }
 
-inline void Game::restartClock()
+
+
+void Game::run()
 {
-   this->elaspedTime += this->clock.restart();
+   sf::Time timeSinceLastUpdate = sf::Time::Zero;
+   while (this->window.isDone() == false)
+   {
+      this->elaspedTime = this->clock.restart();
+      timeSinceLastUpdate += this->elaspedTime;
+      while (timeSinceLastUpdate >= this->timePerFrame)
+      {
+         timeSinceLastUpdate -= this->timePerFrame;
+
+         update();
+      }
+      render();
+      lateUpdate();
+   }
 }

@@ -1,11 +1,13 @@
 #include "StateManager.h"
 #include "IntroState.h"
+#include "GameState.h"
 
 
 StateManager::StateManager(SharedContext *sharedContext)
    : context( sharedContext)
 {
    registerState<IntroState>(StateTypeE::INTRO);
+   registerState<GameState>(StateTypeE::GAME);
 }
 
 

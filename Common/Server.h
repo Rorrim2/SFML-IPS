@@ -6,8 +6,10 @@
 #include "Global.h"
 #include "Network.h"
 #include "PacketType.h"
+#include "ServerLogic.h"
 
-#define HEARTBEAT_INVERVAL 1000
+
+#define HEARTBEAT_INVERVAL 4000
 #define HEARTBEAT_TRIES 5
 
 struct ClientInfo
@@ -25,6 +27,7 @@ struct ClientInfo
 
 };
 
+class ServerGameState;
 
 class Server;
 using Clients = std::unordered_map<ClientID, ClientInfo>;
@@ -72,12 +75,16 @@ public:
 	bool start();
 	bool stop();
 	bool isRunning();
+   
 
 	uint32_t getClientCount();
 	std::string getClientList();
 
 	sf::Mutex &getMutex();
 
+   void requestHandling();
+
+   ServerLogic serverLogic;
 private:
 	void setup();
 
