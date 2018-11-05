@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="IntroState.h" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IntroState.cpp" />
     <ClCompile Include="Message.cpp" />
