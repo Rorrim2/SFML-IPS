@@ -6,6 +6,9 @@
 #include <vector>
 #include <functional>
 #include <utility>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 using Bindings = std::unordered_map<std::string, Binding*>; // create unorder map of bindings
 using Events = std::vector<std::pair<EventType, EventInfo>>; // create vector of information about an event type and code for the key 
@@ -41,7 +44,7 @@ struct EventInfo {
 
 //some details about event type and parameters
 struct EventDetails {
-	EventDetails(std::string & bindName) : name(bindName) { Clear(); }
+	EventDetails(const std::string & bindName) : name(bindName) { Clear(); }
 
 	std::string name;
 	sf::Vector2i size;
@@ -60,8 +63,7 @@ struct EventDetails {
 };
 
 //it binds events 
-//TODO check it it is for combination of keys
-//TODO learn more about this structure
+//it can operate combination of button (basically: one button for event)
 struct Binding {
 	Binding(const std::string& name): nameOfEvent(name), details(name), c(0) {}
 	void BindEvent(EventType type, EventInfo info = EventInfo()) {

@@ -115,3 +115,46 @@ void EventManager::Update() {
 		bind->details.Clear();
 	}
 }
+
+
+// loads events and their parameters from a file
+// Window_close 0:0
+// nameOfEvent key:value
+void EventManager::LoadBindings() {
+	std::string delimeter = ":";
+
+	std::ifstream fileBindings;
+	fileBindings.open("keys.txt"); // path of file, where it should be?
+	if (!fileBindings.is_open()) {
+		std::cout << "Failed to load file" << std::endl;
+		return;
+	}
+
+	std::string line;
+	while (std::getline(fileBindings, line)) {
+		std::stringstream keystream(line); // constructor of stringstream
+		std::string callbackName;
+		keystream >> callbackName; // takes info to the first space
+		Binding* bind = new Binding(callbackName);
+		while (!keystream.eof()) {
+			std::string keyval;
+			keystream >> keyval; // key:value
+			int start = 0;
+			int end = keyval.find(delimeter);
+			if (end == std::string::npos) { // if "end" is not in string 
+				delete bind;
+				bind = nullptr;
+				break;
+			}
+			EventType type = EventType(stoi(keyval.substr(start, end - start))); // type == key
+			int code = stoi(keyval.substr(end + delimeter.length(), keyval.find(delimeter, end + delimeter.length()))); // code == value
+			EventInfo eventInfo;
+			eventInfo.code = code;
+
+			bind->BindEvent(type, eventInfo); //bind event info
+		}
+		if (!AddBinding(bind)) { delete bind; }
+		bind = nullptr;
+	}
+	fileBindings.close();
+}
