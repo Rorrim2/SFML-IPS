@@ -10,10 +10,6 @@
 #include <iostream>
 #include <sstream>
 
-using Bindings = std::unordered_map<std::string, Binding*>; // create unorder map of bindings
-using Events = std::vector<std::pair<EventType, EventInfo>>; // create vector of information about an event type and code for the key 
-using Callbacks = std::unordered_map<std::string, std::function<void(EventDetails*)>> // callback container
-
 // types of events that could appear, if necessary -> add some stuff :)
 enum class EventType {
 	KeyDown = sf::Event::KeyPressed,
@@ -62,6 +58,9 @@ struct EventDetails {
 	}
 };
 
+using Callbacks = std::unordered_map<std::string, std::function<void(EventDetails*)>>; // callback container
+using Events = std::vector<std::pair<EventType, EventInfo>>; // create vector of information about an event type and code for the key 
+
 //it binds events 
 //it can operate combination of button (basically: one button for event)
 struct Binding {
@@ -76,8 +75,9 @@ struct Binding {
 	int c; //count of events that are active in that moment 
 };
 
-template <class T> //used in struct Callback to be universal for any class 
+using Bindings = std::unordered_map<std::string, Binding*>; // create unorder map of bindings
 
+template <class T> //used in struct Callback to be universal for any class 
 struct Callback {
 	std::string nameOfCallback;
 	T* CallBackInstance; //Pointer to instance of class 
@@ -86,7 +86,6 @@ struct Callback {
 		CallBackInstance->*callback(); // universal function which run function pointer from any class
 	}
 };
-
 
 //main class
 class EventManager
@@ -97,7 +96,7 @@ public:
 
 	bool AddBinding(Binding *binding);
 	bool RemoveBinding(std::string nameOfEvent);
-	void SetFocus(const bool &focus);
+	void SetFocus(const bool &focus) { this->hasFocus = focus; }
 
 	template<class T>
 	bool AddCallback(const std::string &name, void (T::*func)(EventDetails*), T* instance) {

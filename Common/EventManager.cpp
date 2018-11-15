@@ -32,42 +32,53 @@ bool EventManager::RemoveBinding(std::string nameOfEvent) {
 void EventManager::HandleEvent(sf::Event &TypeEvent) {
 	for (auto &bindItr : bindings) {
 		Binding* bind = bindItr.second;
-		for (auto &eventItr : bind->events) {
+		for (auto &eventItr : bind->events)
+		{
 			EventType sfmlEvent = (EventType)TypeEvent.type; //casting event type from sfml to var "EventType"
 
 			if (eventItr.first != sfmlEvent) { continue; } //if Events.EventType != sfmlEvent (type) -> continue
-			if (sfmlEvent == EventType::KeyDown || sfmlEvent == EventType::KeyUp) { 
-				if (eventItr.second.code == TypeEvent.key.code) { //if eventInfo.code == typeevent.key.code (keyboard) ->
-					if (bind->details.keyCode != -1) { // -> if eventdetails.keycode != -1
+ 			if (sfmlEvent == EventType::KeyDown || sfmlEvent == EventType::KeyUp)
+			{
+				if (eventItr.second.code == TypeEvent.key.code)  //if eventInfo.code == typeevent.key.code (keyboard) ->
+				{
+					if (bind->details.keyCode != -1)  // -> if eventdetails.keycode != -1
+					{
 						bind->details.keyCode = eventItr.second.code; // binding->eventdetailt->keycode = Events->EventInfo->code
 					}
 					++(bind->c); // increase number of active events
 					break;
 				}
-			else if (sfmlEvent == EventType::MButtonDown || sfmlEvent == EventType::MButtonUp) {
-				if (eventItr.second.code == TypeEvent.mouseButton.button) { //if eventInfo.code == typeevent.mouseButton.code (mouse)
+			}
+			else if (sfmlEvent == EventType::MButtonDown || sfmlEvent == EventType::MButtonUp)
+			{
+				if (eventItr.second.code == TypeEvent.mouseButton.button)  //if eventInfo.code == typeevent.mouseButton.code (mouse)
+				{
 					bind->details.mouse.x = TypeEvent.mouseButton.x;
 					bind->details.mouse.y = TypeEvent.mouseButton.y;
-					if (bind->details.keyCode != -1) {
+					if (bind->details.keyCode != -1)
+					{
 						bind->details.keyCode = eventItr.second.code;
 					}
 					++(bind->c);
 					break;
-					}
 				}
-			else {
-				if (sfmlEvent == EventType::MouseWheel) {
+			}
+			else
+			{
+				if (sfmlEvent == EventType::MouseWheel)
+				{
 					bind->details.mouseWheelDelta = TypeEvent.mouseWheel.delta;
-					}
-				else if (sfmlEvent == EventType::WindowResized) {
+				}
+				else if (sfmlEvent == EventType::WindowResized)
+				{
 					bind->details.size.x = TypeEvent.size.width;
 					bind->details.size.y = TypeEvent.size.height;
-					}
-				else if (sfmlEvent == EventType::TextEntered) {
-					bind->details.textEntered = TypeEvent.text.unicode;
-					}
-				++(bind->c);
 				}
+				else if (sfmlEvent == EventType::TextEntered)
+				{
+					bind->details.textEntered = TypeEvent.text.unicode;
+				}
+				++(bind->c);
 			}
 		}
 	}
@@ -88,7 +99,7 @@ void EventManager::Update() {
 						++(bind->c);
 					}
 					break;
-				case(EventType::Mouse):
+				case (EventType::Mouse):
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Button(eventItr.second.code))) {
 						if (bind->details.keyCode != -1) {
 							bind->details.keyCode = eventItr.second.code;
@@ -96,13 +107,13 @@ void EventManager::Update() {
 						++(bind->c);
 					}
 					break;
-				case(EventType::Joystick):
+				case (EventType::Joystick):
 					//Some expansion in the future
 					break;
 
 			}
 		}
-		if (bind->events.size() != bind->c) {	//	checks if the number of events in the event
+		if (bind->events.size() == bind->c) {	//	checks if the number of events in the event
 												//	container matches the number of events that are "on"
 			auto callItr = callbacks.find(bind->nameOfEvent);
 			if (callItr != callbacks.end()) {
@@ -126,7 +137,7 @@ void EventManager::LoadBindings() {
 	std::ifstream fileBindings;
 	fileBindings.open("keys.txt"); // path of file, where it should be?
 	if (!fileBindings.is_open()) {
-		std::cout << "Failed to load file" << std::endl;
+		std::cout << "Failed to load file keys.txt" << std::endl;
 		return;
 	}
 

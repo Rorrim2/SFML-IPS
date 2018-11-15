@@ -7,6 +7,7 @@ Game::Game()
 {
    this->context.window = &this->window;
    this->stateManager.switchTo(StateTypeE::INTRO);
+   this->window.getEventManager()->AddCallback("Move", &Game::moveSprite, this);
 }
 
 
@@ -42,4 +43,9 @@ void Game::lateUpdate()
 inline void Game::restartClock()
 {
    this->elaspedTime += this->clock.restart();
+}
+
+void Game::moveSprite(EventDetails* details) {
+	sf::Vector2i mousepos = this->window.getEventManager()->GetMousePos(this->window.getRenderWindow());
+	//set position of sprite
 }
