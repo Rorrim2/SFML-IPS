@@ -22,7 +22,6 @@ public:
    bool isFullscreen();
    //void toggleFullscreen();
 
-   //TODO check if window is working with EventManager
    //Event Manager
    bool getFocus() { return this->isFocused; }
    EventManager* getEventManager(); 

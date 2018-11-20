@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include "StateType.h"
 
 // types of events that could appear, if necessary -> add some stuff :)
 enum class EventType {
@@ -58,7 +59,9 @@ struct EventDetails {
 	}
 };
 
-using Callbacks = std::unordered_map<std::string, std::function<void(EventDetails*)>>; // callback container
+using CallbackContainer = std::unordered_map<std::string, std::function<void(EventDetails*)>>; // callback container
+enum StateTypeE;
+using Callbacks = std::unordered_map<StateTypeE, CallbackContainer>; //map of states and container
 using Events = std::vector<std::pair<EventType, EventInfo>>; // create vector of information about an event type and code for the key 
 
 //it binds events 
@@ -96,18 +99,27 @@ public:
 
 	bool AddBinding(Binding *binding);
 	bool RemoveBinding(std::string nameOfEvent);
+
 	void SetFocus(const bool &focus) { this->hasFocus = focus; }
+	void setCurrentState(const StateTypeE &curState) { this->currentState = curState; }
+	StateTypeE getCurrentState() { return this->currentState; }
 
 	template<class T>
-	bool AddCallback(const std::string &name, void (T::*func)(EventDetails*), T* instance) {
+	bool AddCallback(StateTypeE state, const std::string &name, void (T::*func)(EventDetails*), T* instance) {
+		auto itr = callbacks.emplace(state, CallbackContainer()).first; //make new callbackcontainer
 		auto temp = std::bind(func, instance, std::placeholders::_1);	// functor which take function pointer, instance of any 
 																		//class and first parameter of function pointer -> EventDetails
-		return callbacks.emplace(name, temp).second;	//if there is no element with the key in containter
+		return itr->second.emplace(name, temp).second;	//if there is no element with the key in containter
 														//it puts new one to it
 	}												
 		
-	void RemoveCallback(std::string &name) {
-		callbacks.erase(name);	// throw out an element by the key
+	bool RemoveCallback(StateTypeE state, std::string &name) {
+		auto itr = callbacks.find(state);
+		if (itr == callbacks.end()) { return false; }
+		auto itr2 = itr->second.find(name);
+		if (itr2 == itr->second.end()) { return false; }
+		itr->second.erase(name);	// throw out an element by the key
+		return true;
 	}
 	
 	void HandleEvent(sf::Event &TypeEvent);
@@ -119,11 +131,11 @@ public:
 	}
 
 private:
-	void LoadBindings(); //from file
-	//TODO file with bindings
+	void LoadBindings();
 
 	bool hasFocus;	// contains info about relation between Mouse and Window (focused -> true, not focused -> false)
 	Bindings bindings; 
 	Callbacks callbacks;
+	StateTypeE currentState;
 };
 

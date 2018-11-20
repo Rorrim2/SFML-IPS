@@ -6,8 +6,8 @@ Game::Game()
    : window("Tytu³", sf::Vector2u(700, 500)), stateManager(&context)
 {
    this->context.window = &this->window;
+   this->context.eventManager = window.getEventManager();
    this->stateManager.switchTo(StateTypeE::INTRO);
-   this->window.getEventManager()->AddCallback("Move", &Game::moveSprite, this);
 }
 
 
@@ -26,6 +26,7 @@ void Game::update()
 {
    window.update();
    this->stateManager.update(this->elaspedTime);
+
 }
 
 Window* Game::getWindow()
@@ -43,9 +44,4 @@ void Game::lateUpdate()
 inline void Game::restartClock()
 {
    this->elaspedTime += this->clock.restart();
-}
-
-void Game::moveSprite(EventDetails* details) {
-	sf::Vector2i mousepos = this->window.getEventManager()->GetMousePos(this->window.getRenderWindow());
-	//set position of sprite
 }

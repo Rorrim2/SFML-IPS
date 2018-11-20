@@ -14,9 +14,6 @@ public:
 
    inline void restartClock();
 
-   //Event Manager
-   void moveSprite(EventDetails* details);
-
    Window* getWindow();
 
 private:

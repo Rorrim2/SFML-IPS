@@ -93,7 +93,7 @@ SharedContext * StateManager::getContext()
 void StateManager::switchTo(const StateTypeE & type)
 {
    bool found = false;
-   //TODO implement this with event manager
+   this->context->eventManager->setCurrentState(type);
    for (auto iter = this->states.begin(); iter != this->states.end(); iter++)
    {
       if (iter->first == type)

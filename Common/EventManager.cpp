@@ -115,11 +115,28 @@ void EventManager::Update() {
 		}
 		if (bind->events.size() == bind->c) {	//	checks if the number of events in the event
 												//	container matches the number of events that are "on"
-			auto callItr = callbacks.find(bind->nameOfEvent);
-			if (callItr != callbacks.end()) {
-				callItr->second(&bind->details); // locate callback(EventDetails*) in callbacks container 
-												// its an std::function methods
+			auto stateCallbacks = callbacks.find(currentState);
+			auto otherCallbacks = callbacks.find(StateTypeE(0)); //state of callbacks for the window class, 
+																//it works even if we're in other state
+
+			if(stateCallbacks != callbacks.end())
+			{
+				auto callItr = stateCallbacks->second.find(bind->nameOfEvent);
+				if (callItr != stateCallbacks->second.end()) {
+					callItr->second(&bind->details); // locate callback(EventDetails*) in callbacks container 
+													// its an std::function method which is alive at this moment!
+				}
 			}
+
+			if (otherCallbacks != callbacks.end())
+			{
+				auto callItr = otherCallbacks->second.find(bind->nameOfEvent);
+				if (callItr != otherCallbacks->second.end())
+				{
+					callItr->second(&bind->details);
+				}
+			}
+			
 		}
 		// clear all stuff
 		bind->c = 0;
