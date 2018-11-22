@@ -113,7 +113,7 @@ public:
 														//it puts new one to it
 	}												
 		
-	bool RemoveCallback(StateTypeE state, std::string &name) {
+	bool RemoveCallback(StateTypeE state, const std::string &name) {
 		auto itr = callbacks.find(state);
 		if (itr == callbacks.end()) { return false; }
 		auto itr2 = itr->second.find(name);

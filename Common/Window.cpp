@@ -95,7 +95,7 @@ void Window::toggleFullscreen(EventDetails* details)
 
 sf::Vector2u Window::getWindowSize()
 {
-   return sf::Vector2u();
+   return sf::Vector2u(this->windowSize);
 }
 
 EventManager* Window::getEventManager() {
