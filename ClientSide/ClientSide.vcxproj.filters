@@ -48,6 +48,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseState.h">
@@ -84,6 +87,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

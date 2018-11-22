@@ -20,24 +20,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="mapserverside.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerLogic.cpp" />
     <ClCompile Include="ServerPlayer.cpp" />
     <ClCompile Include="ServerPlayerManager.cpp" />
     <ClCompile Include="ServerSide.cpp" />
+    <ClCompile Include="TinyXML\tinystr.cpp" />
+    <ClCompile Include="TinyXML\tinyxml.cpp" />
+    <ClCompile Include="TinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="TinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="mapserverside.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="ServerLogic.h" />
     <ClInclude Include="ServerPlayer.h" />
     <ClInclude Include="ServerPlayerManager.h" />
+    <ClInclude Include="TinyXML\tinystr.h" />
+    <ClInclude Include="TinyXML\tinyxml.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -116,7 +124,7 @@
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Common;..\libs\SFML-2.5.0\include;..\libs;..\libs\Box2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\libs\SFML-2.5.0\include;..\libs;..\libs\Box2D;.\TinyXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,7 +159,7 @@
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Common;..\libs\SFML-2.5.0\include;..\libs;..\libs\Box2D;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Common;..\libs\SFML-2.5.0\include;..\libs;..\libs\Box2D;.\TinyXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

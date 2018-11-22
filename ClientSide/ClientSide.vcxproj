@@ -28,6 +28,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="IntroState.cpp" />
     <ClCompile Include="PacketType.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -42,7 +43,9 @@
     <ClInclude Include="IntroState.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

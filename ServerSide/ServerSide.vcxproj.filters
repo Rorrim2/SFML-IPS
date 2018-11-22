@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\TinyXML">
+      <UniqueIdentifier>{691d33ac-8301-4548-9a8d-68d8b1da80ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TinyXML">
+      <UniqueIdentifier>{8980815c-d358-45a4-aa21-5401f7572f8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugDraw.cpp">
@@ -41,6 +47,21 @@
     </ClCompile>
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapserverside.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXML\tinyxml.cpp">
+      <Filter>Source Files\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXML\tinyxmlerror.cpp">
+      <Filter>Source Files\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXML\tinyxmlparser.cpp">
+      <Filter>Source Files\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyXML\tinystr.cpp">
+      <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapserverside.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXML\tinystr.h">
+      <Filter>Header Files\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyXML\tinyxml.h">
+      <Filter>Header Files\TinyXML</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
