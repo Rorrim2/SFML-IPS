@@ -22,17 +22,17 @@ void ServerLogic::updatePsyhicsWorld()
    this->world.updateWorld();
 }
 
-std::vector<sf::Packet> ServerLogic::getPlayersPos()
+sf::Packet ServerLogic::getPlayersSnapshot()
 {
-   std::vector<sf::Packet> packets;
+   sf::Packet p;
+   StampPacket(PacketType::PlayerUpdate, p);
+   p << this->playersManager.getAllPlayers().size();
    for (auto &itr : this->playersManager.getAllPlayers())
    {
-      sf::Packet p;
-      StampPacket(PacketType::PlayerUpdate, p);
-      p << itr.first << itr.second->getPosition().x << itr.second->getPosition().y << itr.second->getAngle();
-      packets.push_back(p);
+      PlayerState state = itr.second->getPlayerState();
+      p << itr.first << state.coords.x << state.coords.y << state.angle << state.health;
    }
-   return packets;
+   return p;
 }
 
 void ServerLogic::addPlayer(ClientID & clientID, const float & x, const float & y)

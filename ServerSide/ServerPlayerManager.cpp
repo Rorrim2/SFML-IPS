@@ -43,5 +43,5 @@ ServerPlayers& ServerPlayersManager::getAllPlayers()
 //TODO change this speed to not hardcoded
 void ServerPlayersManager::movePlayer(const ClientID & id, MoveDirection dir)
 {
-   this->players[id]->move(5.f, dir);
+   this->players[id]->move(1.f, dir);
 }

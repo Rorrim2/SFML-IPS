@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/System/Time.hpp>
-#include <ServerPlayer.h>
-#include <Window.h>
+#include "ServerPlayer.h"
+#include "Window.h"
 #include <unordered_map>
-#include <Network.h>
+#include "Network.h"
 
 using ServerPlayers = std::unordered_map<ClientID, ServerPlayer*>;
 

@@ -1,5 +1,5 @@
 #include "ClientPlayersManager.h"
-#include <Global.h>
+#include "Global.h"
 
 
 ClientPlayersManager::ClientPlayersManager()
@@ -20,7 +20,11 @@ ClientPlayersManager::~ClientPlayersManager()
 
 void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
 {
-   this->players[clientID] = new ClientPlayer(x, y);
+   ClientPlayer *player = this->players[clientID];
+   if (player == nullptr)
+   {
+      this->players[clientID] = new ClientPlayer(x, y);
+   }
 }
 void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *player)
 {
@@ -66,5 +70,6 @@ void ClientPlayersManager::updateAllPlayers(const sf::Time & time)
    for (auto &iter : this->players)
    {
       iter.second->update(time);
+      iter.second->lerpPos(time);
    }
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <Window.h>
-
+#include "Window.h"
 
 class ClientPlayer
 {
@@ -14,9 +13,13 @@ public:
    void setAngle(const float& angle);
 
    void update(const sf::Time& time);
+   void lerpPos(const sf::Time &time);
    void draw(Window &window);
 
 private:
+   sf::Time lastTime;
+   float angle;
+   sf::Vector2f lastPos;
    sf::RectangleShape* sprite;
 };
 

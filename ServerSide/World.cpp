@@ -1,6 +1,6 @@
 #include "World.h"
 #include "Global.h"
-
+#include <SFML/Window/Event.hpp>
 
 World::World()
 {
@@ -13,8 +13,16 @@ World::~World()
 void World::initWorld()
 {
    this->world = new b2World(b2Vec2(0, 5.f));
-   this->worldBox = createBody(0, 700, false);
-   createBoxFixture(this->worldBox, 1200, 32);
+
+   //this is temporary world egdes
+   this->worldBox = createBody(400, 800, false);
+   createBoxFixture(this->worldBox, 400, 50);
+   this->worldBox = createBody(400, 0, false);
+   createBoxFixture(this->worldBox, 400, 50);
+   this->worldBox = createBody(0, 400, false);
+   createBoxFixture(this->worldBox, 50, 400);
+   this->worldBox = createBody(800, 400, false);
+   createBoxFixture(this->worldBox, 50, 400);
 }
 
 b2World * World::getWorld()
@@ -52,7 +60,7 @@ void World::createBoxFixture(b2Body *body, const float & width, const float & he
    fixtureDef.shape = &shape;
    fixtureDef.density = density;
    fixtureDef.friction = friction;
-   fixtureDef.restitution = 0.9f;
+   fixtureDef.restitution = 0.5f;
    body->CreateFixture(&fixtureDef);
 }
 

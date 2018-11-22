@@ -3,7 +3,7 @@
 #include <Box2D.h>
 #include <iostream>
 #include <SFML/System.hpp>
-#include <Window.h>
+#include "Window.h"
 #include "Global.h"
 
 class DebugDraw : public b2Draw
@@ -11,6 +11,8 @@ class DebugDraw : public b2Draw
 public:
    DebugDraw(Window &window);
    virtual ~DebugDraw();
+
+   sf::Color B2COL2SF(const b2Color &color, sf::Uint8 alpha = 255);
 
    void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
    void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;

@@ -22,6 +22,7 @@ void GameState::onCreate()
    std::cin >> port;
    setServer(ip, port);
    this->client.setup(clientHandler);
+
    connect();
 }
 
@@ -35,9 +36,34 @@ void GameState::draw()
 {
    this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
 }
-
 void GameState::update(const sf::Time & time)
 {
+   sf::Packet p;
+   bool r = false;
+
+   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+   {
+      StampPacket(PacketType::PlayerMove, p);
+      p << this->client.getClientID() << MoveDirection::LEFT;
+      r = true;
+   }
+   else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+   {
+      StampPacket(PacketType::PlayerMove, p);
+      p << this->client.getClientID() << MoveDirection::RIGHT;
+      r = true;
+   }
+   else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+   {
+      StampPacket(PacketType::PlayerMove, p);
+      p << this->client.getClientID() << MoveDirection::FORWARD;
+      r = true;
+   }
+   if (r == true)
+   {
+      this->client.sendPacket(p);
+   }
+
    this->playersManager.updateAllPlayers(time);
 }
 
@@ -71,7 +97,6 @@ bool GameState::connect()
 {
    sf::Thread connection(updateConnection, &this->client);
    bool rV = this->client.connect();
-
    if (rV == true)
    {
       this->client.sendCreatePlayerPacket();
@@ -107,9 +132,15 @@ void clientHandler(const PacketID &id, sf::Packet &packet, Client *client)
    }
    else if (static_cast<PacketType>(id) == PacketType::PlayerUpdate)
    {
+      size_t count;
+      int health;
       float x, y, angle;
       ClientID idC;
-      packet >> idC >> x >> y >> angle;
-      client->playersManager.movePlayer(idC, x, y, angle);
+      packet >> count;
+      for (int i = 0; i < count; ++i)
+      {
+         packet >> idC >> x >> y >> angle >> health;
+         client->playersManager.movePlayer(idC, x, y, angle);
+      }
    }
 }

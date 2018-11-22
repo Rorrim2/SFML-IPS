@@ -4,7 +4,6 @@
 #include <functional>
 #include <vector>
 #include "Window.h"
-#include "World.h"
 #include "BaseState.h"
 
 enum StateTypeE

@@ -1,5 +1,5 @@
 #include "ServerPlayer.h"
-#include <Global.h>
+#include "Global.h"
 #include <iostream>
 #include <cmath>
 
@@ -25,27 +25,37 @@ float ServerPlayer::getAngle()
    return this->body->GetAngle() / b2_pi * 180.0f;
 }
 
+PlayerState ServerPlayer::getPlayerState()
+{
+   return PlayerState(getPosition(), getAngle(), 0);
+}
+
 void ServerPlayer::move(const float & speed, MoveDirection & direction)
 {
-   b2Vec2 speedVec;
+   
+   b2Vec2 speedVec = body->GetLinearVelocity();
    if (direction & MoveDirection::FORWARD)
    {
-      speedVec.y = speed;
+      if(speedVec.y < 5)
+         speedVec.y = 50;
    }
    else if (direction & MoveDirection::BACKWARD)
    {
-      speedVec.y = -speed;
+      if (speedVec.y > -5)
+         speedVec.y = -50;
    }
 
    if (direction & MoveDirection::LEFT)
    {
-      speedVec.x = -speed;
+      if (speedVec.x > -5)
+         speedVec.x = -50;
    }
    else if (direction & MoveDirection::RIGHT)
    {
-      speedVec.x = speed;
+      if (speedVec.x < 5)
+         speedVec.x = 50;
    }
-   this->body->SetLinearVelocity(speedVec);
+   this->body->ApplyForceToCenter(speedVec, true);
 }
 
 b2Body * ServerPlayer::getBody()

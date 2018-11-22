@@ -2,8 +2,8 @@
 #include <Box2D.h>
 #include <SFML/System/Vector2.hpp>
 #include "DebugDraw.h"
-#include <Window.h>
-#include <Global.h>
+#include "Window.h"
+#include "Global.h"
 #include <stdexcept>
 
 
