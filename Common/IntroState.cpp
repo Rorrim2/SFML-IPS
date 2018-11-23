@@ -13,16 +13,19 @@ IntroState::~IntroState()
 
 void IntroState::onCreate()
 {
-   this->timePassed = 0.f;
+   
 
    //Fonts and names
-   this->font.loadFromFile("Charmonman-Bold.ttf"); 
+   this->font.loadFromFile("Noturnal Hand.ttf"); 
    this->introText.setFont(this->font);
-   this->introText.setString("Spacebar to continue!");
-   this->introText.setCharacterSize(20);
+   this->introText.setString("Press SPACE to continue");
+   this->introText.setCharacterSize(18);
+
    sf::Vector2u windowSize = this->stateManager->getContext()->window->getWindowSize();
-   //std::cout << windowSize.x << " " << windowSize.y << std::endl;
-   this->introText.setPosition(windowSize.x / 2.0, windowSize.y / 2.0); // TODO think about it
+
+   sf::FloatRect textRect = this->introText.getLocalBounds();
+   this->introText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+   this->introText.setPosition(windowSize.x / 2.0, windowSize.y / 2.0);
 
    //TODO png with name of game
    //introTexture.loadFromFile(".png"); 
@@ -34,6 +37,7 @@ void IntroState::onCreate()
    EventManager* evMgr = this->stateManager->getContext()->eventManager; //getting instance of eventmanager from statemanager
    evMgr->AddCallback(StateTypeE::INTRO, "IntroContinue", &IntroState::Continue, this);    
  
+   this->timePassed = 0.f;
 }
 
 void IntroState::onDestroy() {
@@ -43,7 +47,7 @@ void IntroState::onDestroy() {
 
 void IntroState::draw()
 {
-	if (this->timePassed >= 10.f)
+	if (this->timePassed >= 1000.0f)
 	{
 		this->stateManager->getContext()->window->draw(this->introText);
 	}
@@ -53,7 +57,7 @@ void IntroState::draw()
 
 void IntroState::update(const sf::Time & time)
 {
-   if (this->timePassed < 10.f)
+   if (this->timePassed < 1000.0f)
    {
       this->timePassed += time.asSeconds();
 	  //TODO If we want change position of the sprite, we must do it here
@@ -67,7 +71,7 @@ void IntroState::deactivate()
 {}
 
 void IntroState::Continue(EventDetails* details) {
-	if (timePassed >= 10.0f) {
+	if (timePassed >= 1000.0f) {
 		stateManager->switchTo(StateTypeE::MENU);
 		stateManager->remove(StateTypeE::INTRO);
 	}
