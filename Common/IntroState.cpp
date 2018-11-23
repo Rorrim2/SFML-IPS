@@ -19,19 +19,19 @@ void IntroState::onCreate()
    this->font.loadFromFile("Noturnal Hand.ttf"); 
    this->introText.setFont(this->font);
    this->introText.setString("Press SPACE to continue");
-   this->introText.setCharacterSize(18);
+   this->introText.setCharacterSize(16);
 
    sf::Vector2u windowSize = this->stateManager->getContext()->window->getWindowSize();
 
    sf::FloatRect textRect = this->introText.getLocalBounds();
    this->introText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-   this->introText.setPosition(windowSize.x / 2.0, windowSize.y / 2.0);
+   this->introText.setPosition(windowSize.x / 2.0, windowSize.y / 2.0 + 20);
 
    //TODO png with name of game
-   //introTexture.loadFromFile(".png"); 
-   //introSprite.setTexture(introTexture);
-   //introSprite.setOrigin(introTexture.getSize().x / 2.0f, introTexture.getSize().y / 2.0f);
-   //introSprite.setPosition(windowSize.x / 2.0f, 0);
+   introTexture.loadFromFile("logo.png"); 
+   introSprite.setTexture(introTexture);
+   introSprite.setOrigin(introTexture.getSize().x / 2.0f, introTexture.getSize().y / 2.0f);
+   introSprite.setPosition(windowSize.x / 2.0f, windowSize.y * 0.4);
 
    //EventManager - to skip intro by spacebar
    EventManager* evMgr = this->stateManager->getContext()->eventManager; //getting instance of eventmanager from statemanager
@@ -47,6 +47,7 @@ void IntroState::onDestroy() {
 
 void IntroState::draw()
 {
+	this->stateManager->getContext()->window->draw(this->introSprite);
 	if (this->timePassed >= 1000.0f)
 	{
 		this->stateManager->getContext()->window->draw(this->introText);

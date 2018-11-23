@@ -24,8 +24,8 @@ public:
 private:
    sf::Font font;
    sf::Text introText;
-   //sf::Sprite introSprite;
-   //sf::Texture introTexture;
+   sf::Sprite introSprite;
+   sf::Texture introTexture;
    float timePassed;
 };
 
