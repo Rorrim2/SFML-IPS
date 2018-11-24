@@ -24,9 +24,11 @@
     <ClCompile Include="ClientPlayer.cpp" />
     <ClCompile Include="ClientPlayersManager.cpp" />
     <ClCompile Include="ClientSide.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="IntroState.cpp" />
+    <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -37,14 +39,17 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientPlayer.h" />
     <ClInclude Include="ClientPlayersManager.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="IntroState.h" />
+    <ClInclude Include="MenuState.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="StateType.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

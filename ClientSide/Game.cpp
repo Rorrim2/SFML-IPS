@@ -6,6 +6,7 @@ Game::Game(const std::string &title, StateTypeE startState )
    : window(title, sf::Vector2u(900, 800)), stateManager(&context)
 {
    this->context.window = &this->window;
+   this->context.eventManager = window.getEventManager();
    this->stateManager.switchTo(startState);
 }
 

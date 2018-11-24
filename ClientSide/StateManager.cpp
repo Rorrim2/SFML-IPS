@@ -1,12 +1,13 @@
 #include "StateManager.h"
 #include "IntroState.h"
 #include "GameState.h"
-
+#include "MenuState.h"
 
 StateManager::StateManager(SharedContext *sharedContext)
    : context( sharedContext)
 {
    registerState<IntroState>(StateTypeE::INTRO);
+   registerState<MenuState>(StateTypeE::MENU);
    registerState<GameState>(StateTypeE::GAME);
 }
 
@@ -95,7 +96,7 @@ SharedContext * StateManager::getContext()
 void StateManager::switchTo(const StateTypeE & type)
 {
    bool found = false;
-   //TODO implement this with event manager
+   this->context->eventManager->setCurrentState(type);
    for (auto iter = this->states.begin(); iter != this->states.end(); iter++)
    {
       if (iter->first == type)

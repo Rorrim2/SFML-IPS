@@ -1,0 +1,7 @@
+Window_close 0:0
+Fullscreen_toggle 5:89
+IntroContinue 5:57
+Mouse_Left 9:0
+Mouse_Right 9:1
+Key_Escape 5:36
+
