@@ -13,8 +13,6 @@ IntroState::~IntroState()
 
 void IntroState::onCreate()
 {
-   this->timePassed = 0.f;
-
    //Fonts and names
    this->font.loadFromFile("Noturnal Hand.ttf"); 
    this->introText.setFont(this->font);
@@ -57,7 +55,7 @@ void IntroState::draw()
 
 void IntroState::update(const sf::Time & time)
 {
-   if (this->timePassed < INTO_TIME)
+   /*if (this->timePassed >=  )
    {
       this->timePassed += time.asSeconds();
 	  if (this->transparentNum < 255) 
