@@ -19,6 +19,11 @@ public:
 	void deactivate() override;
 
 	void MouseClick(EventDetails* details);
+	void KeyUp(EventDetails* details);
+	void KeyDown(EventDetails* details);
+	void PressEnter(EventDetails* details);
+	void MouseMove(EventDetails* details);
+
 	//TODO with keys also
 private:
 	sf::Font font;
@@ -30,5 +35,5 @@ private:
 
 	sf::RectangleShape rects[3];
 	sf::Text labels[3];
+	unsigned int rectIndex;
 };
-

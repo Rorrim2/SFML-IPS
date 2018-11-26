@@ -1,6 +1,6 @@
 #include "IntroState.h"
 #include <SFML/Graphics.hpp>
-#define INTO_TIME 50.0f
+#define INTO_TIME 16.0f
 
 IntroState::IntroState(StateManager *stateManager)
    :BaseState(stateManager)
@@ -27,11 +27,12 @@ void IntroState::onCreate()
    this->introText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
    this->introText.setPosition(windowSize.x / 2.0, windowSize.y / 2.0 + 20);
 
-   //TODO png with name of game
-   introTexture.loadFromFile("logo.png"); 
-   introSprite.setTexture(introTexture);
-   introSprite.setOrigin(introTexture.getSize().x / 2.0f, introTexture.getSize().y / 2.0f);
-   introSprite.setPosition(windowSize.x / 2.0f, windowSize.y * 0.4);
+   //png with name of game
+   this->introTexture.loadFromFile("logo.png"); 
+   this->introSprite.setTexture(introTexture);
+   this->introSprite.setColor(sf::Color(255, 255, 255, transparentNum));
+   this->introSprite.setOrigin(introTexture.getSize().x / 2.0f, introTexture.getSize().y / 2.0f);
+   this->introSprite.setPosition(windowSize.x / 2.0f, windowSize.y * 0.4);
 
    //EventManager - to skip intro by spacebar
    EventManager* evMgr = this->stateManager->getContext()->eventManager; //getting instance of eventmanager from statemanager
@@ -48,12 +49,10 @@ void IntroState::onDestroy() {
 void IntroState::draw()
 {
 	this->stateManager->getContext()->window->draw(this->introSprite);
-	if (this->timePassed < INTO_TIME)
+	if (this->timePassed >= INTO_TIME)
 	{
 		this->stateManager->getContext()->window->draw(this->introText);
 	}
-      
-	//TODO after update the sprite will be draw on the new position
 }
 
 void IntroState::update(const sf::Time & time)
@@ -61,10 +60,11 @@ void IntroState::update(const sf::Time & time)
    if (this->timePassed < INTO_TIME)
    {
       this->timePassed += time.asSeconds();
-   }
-   else
-   {
-      Continue(nullptr);
+	  if (this->transparentNum < 255) 
+	  {
+		  this->transparentNum++;
+		  this->introSprite.setColor(sf::Color(255, 255, 255, transparentNum));
+	  }
    }
 }
 
@@ -75,8 +75,6 @@ void IntroState::deactivate()
 {}
 
 void IntroState::Continue(EventDetails* details) {
-   if (this->timePassed >= INTO_TIME) {
       stateManager->switchTo(StateTypeE::MENU);
       stateManager->remove(StateTypeE::INTRO);
-   }
 }

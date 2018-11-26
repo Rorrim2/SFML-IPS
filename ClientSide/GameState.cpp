@@ -23,6 +23,11 @@ void GameState::onCreate()
    setServer(ip, port);
    this->client.setup(clientHandler);
 
+   //event manager 
+   //TODO ask if this is important and how to change it
+   EventManager* evMgr = this->stateManager->getContext()->eventManager;
+   evMgr->AddCallback(StateTypeE::GAME, "KeyEscape", &GameState::mainMenu, this);
+
    connect();
 }
 
@@ -30,6 +35,8 @@ void GameState::onDestroy()
 {
    DELLISNOTNULL(this->player);
    this->client.disconnect();
+   EventManager* evMgr = this->stateManager->getContext()->eventManager;
+   evMgr->RemoveCallback(StateTypeE::GAME, "KeyEscape");
 }
 
 void GameState::draw()
@@ -107,7 +114,10 @@ bool GameState::connect()
    return rV;
 }  
 
-
+void GameState::mainMenu(EventDetails *details)
+{
+	this->stateManager->switchTo(StateTypeE::MENU);
+}
 
 
 void clientHandler(const PacketID &id, sf::Packet &packet, Client *client)

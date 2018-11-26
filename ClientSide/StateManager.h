@@ -37,6 +37,16 @@ public:
 
    void switchTo(const StateTypeE &type);
    void remove(const StateTypeE &type);
+   bool HasState(const StateTypeE &type)
+   {
+	   for (auto &itr : this->states) {
+		   if (itr.first == type)
+		   {
+			   return true;
+		   }
+	   }
+	   return false;
+   }
 
 private:
    void createState(const StateTypeE &type);
