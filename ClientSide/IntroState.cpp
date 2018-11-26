@@ -36,6 +36,7 @@ void IntroState::onCreate()
    EventManager* evMgr = this->stateManager->getContext()->eventManager; //getting instance of eventmanager from statemanager
    evMgr->AddCallback(StateTypeE::INTRO, "IntroContinue", &IntroState::Continue, this);    
  
+   this->transparentNum = 0;
    this->timePassed = 0.f;
 }
 
@@ -55,14 +56,14 @@ void IntroState::draw()
 
 void IntroState::update(const sf::Time & time)
 {
-   /*if (this->timePassed >=  )
+   if (this->timePassed < INTO_TIME)
    {
       this->timePassed += time.asSeconds();
-	  if (this->transparentNum < 255) 
-	  {
-		  this->transparentNum++;
-		  this->introSprite.setColor(sf::Color(255, 255, 255, transparentNum));
-	  }
+      if (this->transparentNum < 255)
+      {
+         this->transparentNum++;
+         this->introSprite.setColor(sf::Color(255, 255, 255, transparentNum));
+      }
    }
 }
 

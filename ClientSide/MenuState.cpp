@@ -60,7 +60,9 @@ void MenuState::onCreate()
 	evMgr->AddCallback(StateTypeE::MENU, "Mouse_Left", &MenuState::MouseClick, this);
 	evMgr->AddCallback(StateTypeE::MENU, "KeyUp", &MenuState::KeyUp, this);
 	evMgr->AddCallback(StateTypeE::MENU, "KeyDown", &MenuState::KeyDown, this);
-	evMgr->AddCallback(StateTypeE::MENU, "EnterKey", &MenuState::PressEnter, this);
+   evMgr->AddCallback(StateTypeE::MENU, "EnterKey", &MenuState::PressEnter, this);
+   evMgr->AddCallback(StateTypeE::MENU, "Mouse_Move", &MenuState::test, this);
+
 	//TODO for keys moving through menu
 }
 
@@ -71,38 +73,12 @@ void MenuState::onDestroy()
 	evMgr->RemoveCallback(StateTypeE::MENU, "KeyUp");
 	evMgr->RemoveCallback(StateTypeE::MENU, "KeyDown");
 	evMgr->RemoveCallback(StateTypeE::MENU, "EnterKey");
+   evMgr->RemoveCallback(StateTypeE::MENU, "Mouse_Move");
 }
 
 void MenuState::update(const sf::Time &time)
 {
-	sf::Event event;
-	sf::RenderWindow *win = this->stateManager->getContext()->window->getRenderWindow();
-	while (win->pollEvent(event))
-	{
-		if (event.type == sf::Event::MouseMoved)
-		{
 
-			sf::Vector2i mousePos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
-			float halfX = this->buttonSize.x / 2.0f;
-			float halfY = this->buttonSize.y / 2.0f;
-
-			for (int i = 0; i < 3; ++i)
-			{
-				if (mousePos.x >= this->rects[i].getPosition().x - halfX &&
-					mousePos.x <= this->rects[i].getPosition().x + halfX &&
-					mousePos.y >= this->rects[i].getPosition().y - halfY &&
-					mousePos.y <= this->rects[i].getPosition().y + halfY)
-				{
-					this->rects[i].setFillColor(sf::Color(120, 120, 120));
-				}
-				else
-				{
-					rects[i].setFillColor(sf::Color(130, 80, 40));
-				}
-			}
-
-		}
-	}
 }
 
 void MenuState::draw() {
@@ -163,6 +139,28 @@ void MenuState::PressEnter(EventDetails* details)
 	{
 		this->stateManager->getContext()->window->close();
 	}
+}
+
+void MenuState::test(EventDetails* details)
+{
+   sf::Vector2i mousePos = this->stateManager->getContext()->eventManager->GetMousePos(this->stateManager->getContext()->window->getRenderWindow());
+   float halfX = this->buttonSize.x / 2.0f;
+   float halfY = this->buttonSize.y / 2.0f;
+
+   for (int i = 0; i < 3; ++i)
+   {
+      if (mousePos.x >= this->rects[i].getPosition().x - halfX &&
+         mousePos.x <= this->rects[i].getPosition().x + halfX &&
+         mousePos.y >= this->rects[i].getPosition().y - halfY &&
+         mousePos.y <= this->rects[i].getPosition().y + halfY)
+      {
+         this->rects[i].setFillColor(sf::Color(120, 120, 120));
+      }
+      else
+      {
+         rects[i].setFillColor(sf::Color(130, 80, 40));
+      }
+   }
 }
 
 void MenuState::MouseClick(EventDetails* details)

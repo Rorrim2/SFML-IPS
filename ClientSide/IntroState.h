@@ -28,6 +28,6 @@ private:
    sf::Sprite introSprite;
    sf::Texture introTexture;
    float timePassed;
-   unsigned int transparentNum = 0;
+   unsigned int transparentNum;
 };
 

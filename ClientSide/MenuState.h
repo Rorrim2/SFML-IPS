@@ -23,7 +23,7 @@ public:
 	void KeyDown(EventDetails* details);
 	void PressEnter(EventDetails* details);
 	void MouseMove(EventDetails* details);
-
+   void test(EventDetails* details);
 	//TODO with keys also
 private:
 	sf::Font font;
