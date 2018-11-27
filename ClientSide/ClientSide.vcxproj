@@ -27,6 +27,7 @@
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="HowToPlayState.cpp" />
     <ClCompile Include="IntroState.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="PacketType.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="HowToPlayState.h" />
     <ClInclude Include="IntroState.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Network.h" />

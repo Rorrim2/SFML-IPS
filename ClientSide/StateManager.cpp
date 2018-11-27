@@ -2,6 +2,7 @@
 #include "IntroState.h"
 #include "GameState.h"
 #include "MenuState.h"
+#include "HowToPlayState.h"
 
 StateManager::StateManager(SharedContext *sharedContext)
    : context( sharedContext)
@@ -9,6 +10,7 @@ StateManager::StateManager(SharedContext *sharedContext)
    registerState<IntroState>(StateTypeE::INTRO);
    registerState<MenuState>(StateTypeE::MENU);
    registerState<GameState>(StateTypeE::GAME);
+   registerState<HowToPlayState>(StateTypeE::HOW_TO_PLAY);
 }
 
 

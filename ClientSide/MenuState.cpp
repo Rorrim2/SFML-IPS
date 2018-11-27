@@ -62,8 +62,6 @@ void MenuState::onCreate()
 	evMgr->AddCallback(StateTypeE::MENU, "KeyDown", &MenuState::KeyDown, this);
    evMgr->AddCallback(StateTypeE::MENU, "EnterKey", &MenuState::PressEnter, this);
    evMgr->AddCallback(StateTypeE::MENU, "Mouse_Move", &MenuState::test, this);
-
-	//TODO for keys moving through menu
 }
 
 void MenuState::onDestroy()
@@ -111,7 +109,7 @@ void MenuState::KeyUp(EventDetails* details)
 	{
 		this->rects[this->rectIndex].setFillColor(sf::Color(130, 80, 40));
 		rectIndex--;
-		this->rects[this->rectIndex].setFillColor(sf::Color(160, 100, 35));
+		this->rects[this->rectIndex].setFillColor(sf::Color(150, 100, 40));
 	}
 }
 
@@ -121,7 +119,7 @@ void MenuState::KeyDown(EventDetails* details)
 	{
 		this->rects[this->rectIndex].setFillColor(sf::Color(130, 80, 40));
 		rectIndex++;
-		this->rects[this->rectIndex].setFillColor(sf::Color(160, 100, 35));
+		this->rects[this->rectIndex].setFillColor(sf::Color(150, 100, 40));
 	}
 }
 
@@ -133,7 +131,7 @@ void MenuState::PressEnter(EventDetails* details)
 	}
 	else if (this->rectIndex == 1)
 	{
-		//sth
+		this->stateManager->switchTo(StateTypeE::HOW_TO_PLAY);
 	}
 	else if (this->rectIndex == 2)
 	{
@@ -154,7 +152,7 @@ void MenuState::test(EventDetails* details)
          mousePos.y >= this->rects[i].getPosition().y - halfY &&
          mousePos.y <= this->rects[i].getPosition().y + halfY)
       {
-         this->rects[i].setFillColor(sf::Color(120, 120, 120));
+		  this->rects[i].setFillColor(sf::Color(150, 100, 40));
       }
       else
       {
@@ -182,7 +180,7 @@ void MenuState::MouseClick(EventDetails* details)
 			}
 			else if (i == 1)
 			{
-				//sth
+				this->stateManager->switchTo(StateTypeE::HOW_TO_PLAY);
 			}
 			else if (i == 2)
 			{

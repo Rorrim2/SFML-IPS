@@ -2,5 +2,5 @@
 
 enum StateTypeE
 {
-	INTRO, MENU, GAME, GAME_OVER
+	INTRO, MENU, GAME, GAME_OVER, HOW_TO_PLAY
 };
