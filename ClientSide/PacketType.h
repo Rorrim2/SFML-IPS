@@ -2,7 +2,7 @@
 #include <SFML/Network.hpp>
 #include "Network.h"
 
-using PacketID = uint8_t;
+using PacketID = int8_t;
 enum class PacketType
 {
 	Disconnect = -1,
@@ -20,10 +20,13 @@ enum class PacketType
 
 enum MoveDirection
 {
-   FORWARD  = 1,
-   BACKWARD = 2,
-   LEFT     = 4,
-   RIGHT    = 8
+   FORWARD     = 1,
+   BACKWARD    = 2,
+   LEFT        = 4,
+   RIGHT       = 8,
+   SHOOT_LEFT  = 16,
+   SHOOT_RIGHT = 32,
+   NONE        = 64
 };
 
 //Function to marking packet to recognise with type it is 

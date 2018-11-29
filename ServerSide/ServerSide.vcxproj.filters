@@ -48,9 +48,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mapserverside.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TinyXML\tinyxml.cpp">
       <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
@@ -62,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="TinyXML\tinystr.cpp">
       <Filter>Source Files\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="MapParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,14 +95,14 @@
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mapserverside.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TinyXML\tinystr.h">
       <Filter>Header Files\TinyXML</Filter>
     </ClInclude>
     <ClInclude Include="TinyXML\tinyxml.h">
       <Filter>Header Files\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="MapParser.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

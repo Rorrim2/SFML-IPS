@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugDraw.cpp" />
-    <ClCompile Include="mapserverside.cpp" />
+    <ClCompile Include="MapParser.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerLogic.cpp" />
@@ -37,7 +37,7 @@
   <ItemGroup>
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="mapserverside.h" />
+    <ClInclude Include="MapParser.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="Server.h" />

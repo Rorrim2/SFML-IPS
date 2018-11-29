@@ -31,6 +31,7 @@ public:
    b2Body* getBody();
 private:
    //TODO add max speed
+   float maxSpeed;
    b2Body* body;
 };
 

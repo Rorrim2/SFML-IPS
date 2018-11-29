@@ -21,6 +21,7 @@ public:
    void removePlayer(const ClientID& clientID);
    void movePlayer(const ClientID& id, MoveDirection dir);
 
+   void removeAllPlayers();
 
 private: 
    World &box2DWorld;

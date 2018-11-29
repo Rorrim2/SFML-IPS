@@ -11,11 +11,10 @@ class Client;
 using PacketHandler = std::function<void(const PacketID &id, sf::Packet &packet, Client *)>; /* std::function store pointer to function, more info https://stackoverflow.com/questions/9054774/difference-between-stdfunction-and-a-standard-function-pointer   */
 
 
-class ClientPlayersManager;
 class Client
 {
 public:
-	Client(ClientPlayersManager &clientPlayersManager);
+	Client();
 	~Client();
 
 	bool connect();
@@ -37,17 +36,15 @@ public:
 	void setup(void(*l_handler)(const PacketID&, sf::Packet&, Client*));
 	void unregisterPacketHandler();
 	void update(const sf::Time& time);
-	sf::Mutex* getMutex;
+	sf::Mutex& getMutex();
 
 	void setPlayerName(std::string &playerName);
 	
    bool sendCreatePlayerPacket();
-   bool sendMovePlayerPacket(MoveDirection dir);
 
    ClientID getClientID();
 
 
-   ClientPlayersManager &playersManager;
 private:
 
 	std::string playerName;

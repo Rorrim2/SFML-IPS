@@ -7,6 +7,7 @@ ServerPlayer::ServerPlayer(World *world, const float& x, const float& y)
 {
    this->body = world->createBody(x, y);
    world->createBoxFixture(this->body, 25, 25, 1, 0.5f);
+   this->maxSpeed = 15;
 }
 
 
@@ -34,28 +35,26 @@ void ServerPlayer::move(const float & speed, MoveDirection & direction)
 {
    
    b2Vec2 speedVec = body->GetLinearVelocity();
+   float x = 0, y = 0;
    if (direction & MoveDirection::FORWARD)
    {
-      if(speedVec.y < 5)
-         speedVec.y = 50;
+      y = -this->maxSpeed;
    }
    else if (direction & MoveDirection::BACKWARD)
    {
-      if (speedVec.y > -5)
-         speedVec.y = -50;
+      y = this->maxSpeed;
    }
 
    if (direction & MoveDirection::LEFT)
    {
-      if (speedVec.x > -5)
-         speedVec.x = -50;
+      x = -this->maxSpeed;
    }
    else if (direction & MoveDirection::RIGHT)
    {
-      if (speedVec.x < 5)
-         speedVec.x = 50;
+      x = this->maxSpeed;
    }
-   this->body->ApplyForceToCenter(speedVec, true);
+   this->body->ApplyForceToCenter(b2Vec2(x - speedVec.x, y - speedVec.y), true);
+   //this->body->ApplyForceToCenter(speedVec, true);
 }
 
 b2Body * ServerPlayer::getBody()

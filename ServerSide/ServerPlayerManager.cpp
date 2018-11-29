@@ -24,9 +24,12 @@ void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x,
 
 void ServerPlayersManager::removePlayer(const ClientID & clientID)
 {
-   this->box2DWorld.removeBody(this->players[clientID]->getBody());
-   DELLISNOTNULL(this->players[clientID]);
-   this->players.erase(clientID);
+   if (this->players.find(clientID) != this->players.end())
+   {
+      this->box2DWorld.removeBody(this->players[clientID]->getBody());
+      DELLISNOTNULL(this->players[clientID]);
+      this->players.erase(clientID);
+   }
 }
 
 ServerPlayer* ServerPlayersManager::getPlayer(const ClientID & clientID)
@@ -44,4 +47,14 @@ ServerPlayers& ServerPlayersManager::getAllPlayers()
 void ServerPlayersManager::movePlayer(const ClientID & id, MoveDirection dir)
 {
    this->players[id]->move(1.f, dir);
+}
+
+void ServerPlayersManager::removeAllPlayers()
+{
+   for (int i = 0; i < this->players.size(); i++)
+   {
+      this->box2DWorld.removeBody(this->players[i]->getBody());
+      DELLISNOTNULL(this->players[i]);
+      this->players.erase(i);
+   }
 }

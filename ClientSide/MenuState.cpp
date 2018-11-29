@@ -61,7 +61,7 @@ void MenuState::onCreate()
 	evMgr->AddCallback(StateTypeE::MENU, "KeyUp", &MenuState::KeyUp, this);
 	evMgr->AddCallback(StateTypeE::MENU, "KeyDown", &MenuState::KeyDown, this);
    evMgr->AddCallback(StateTypeE::MENU, "EnterKey", &MenuState::PressEnter, this);
-   evMgr->AddCallback(StateTypeE::MENU, "Mouse_Move", &MenuState::test, this);
+   evMgr->AddCallback(StateTypeE::MENU, "Mouse_Move", &MenuState::MouseEnteredOnOption, this);
 }
 
 void MenuState::onDestroy()
@@ -139,7 +139,7 @@ void MenuState::PressEnter(EventDetails* details)
 	}
 }
 
-void MenuState::test(EventDetails* details)
+void MenuState::MouseEnteredOnOption(EventDetails* details)
 {
    sf::Vector2i mousePos = this->stateManager->getContext()->eventManager->GetMousePos(this->stateManager->getContext()->window->getRenderWindow());
    float halfX = this->buttonSize.x / 2.0f;

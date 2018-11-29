@@ -2,8 +2,8 @@
 
 
 
-Client::Client(ClientPlayersManager &clientPlayersManager)
-	: listenThread(&Client::listen, this), playersManager(clientPlayersManager)
+Client::Client()
+	: listenThread(&Client::listen, this)
 {
 	this->connected = false;
 }
@@ -117,7 +117,6 @@ void Client::listen()
 		PacketID id;
 		//propert packet?
 		if ((packet >> id) == false) continue;
-
 		PacketType packetType = static_cast<PacketType>(id);
 		if (packetType < PacketType::Disconnect || packetType > PacketType::OutOfBounds) continue;
 
@@ -215,6 +214,11 @@ void Client::update(const sf::Time &time)
 	}
 }
 
+sf::Mutex & Client::getMutex()
+{
+   return this->mutex;
+}
+
 void Client::setPlayerName(std::string &playerName)
 {
 	this->playerName = playerName;
@@ -228,7 +232,6 @@ bool Client::sendCreatePlayerPacket()
       sf::Packet p;
       StampPacket(PacketType::PlayerCreate, p);
       p << this->clientID;
-      //StampPacketPlayerCreate(p, this->clientID, 200, 40);
       if (this->udpSocket.send(p, this->serverIP, this->portNumber) == sf::Socket::Status::Done)
       {
          valid = true;
@@ -237,21 +240,7 @@ bool Client::sendCreatePlayerPacket()
 
    return valid;
 }
-bool Client::sendMovePlayerPacket(MoveDirection dir)
-{
-   bool valid = false;
-   if (this->connected == true)
-   {
-      sf::Packet p;
-      //StampPacketPlayerMove(p, this->clientID, dir);
-      /*if (this->udpSocket.send(p, this->serverIP, this->portNumber) == sf::Socket::Status::Done)
-      {
-         valid = true;
-      }*/
-   }
 
-   return valid;
-}
 ClientID Client::getClientID()
 {
    return this->clientID;

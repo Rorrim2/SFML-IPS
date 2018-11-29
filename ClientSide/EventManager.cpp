@@ -41,7 +41,7 @@ void EventManager::HandleEvent(sf::Event &TypeEvent) {
 			{
 				if (eventItr.second.code == TypeEvent.key.code)  //if eventInfo.code == typeevent.key.code (keyboard) ->
 				{
-					if (bind->details.keyCode != -1)  // -> if eventdetails.keycode != -1
+					if (bind->details.keyCode == -1)  // -> if eventdetails.keycode != -1
 					{
 						bind->details.keyCode = eventItr.second.code; // binding->eventdetailt->keycode = Events->EventInfo->code
 					}
@@ -55,7 +55,7 @@ void EventManager::HandleEvent(sf::Event &TypeEvent) {
 				{
 					bind->details.mouse.x = TypeEvent.mouseButton.x;
 					bind->details.mouse.y = TypeEvent.mouseButton.y;
-					if (bind->details.keyCode != -1)
+					if (bind->details.keyCode == -1)
 					{
 						bind->details.keyCode = eventItr.second.code;
 					}
@@ -93,7 +93,7 @@ void EventManager::Update() {
 			switch (eventItr.first) { //eventType
 				case (EventType::Keyboard):
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(eventItr.second.code))) { // checks code of the pressed key
-						if (bind->details.keyCode != -1) { 
+						if (bind->details.keyCode == -1) { 
 							bind->details.keyCode = eventItr.second.code; //eventdetails. keycode = eventinfo.code
 						}
 						++(bind->c);
@@ -101,7 +101,7 @@ void EventManager::Update() {
 					break;
 				case (EventType::Mouse):
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Button(eventItr.second.code))) {
-						if (bind->details.keyCode != -1) {
+						if (bind->details.keyCode == -1) {
 							bind->details.keyCode = eventItr.second.code;
 						}
 						++(bind->c);

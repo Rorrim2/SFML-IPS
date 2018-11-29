@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <SFML/Graphics.hpp>
 #define DEBUG 1
 
 #define DEBUG_COUT(msg) if(DEBUG == 1) std::cerr << msg << std::endl; 
@@ -10,3 +11,9 @@
 
 // 64 pixels (sfml) are more or less 1 meter (box2d)
 #define METERS_PER_PIXEL (1.0F/PIXELS_PER_METER)
+
+inline void lerp(sf::Vector2f& res, const sf::Vector2f& a, const sf::Vector2f& b, float t)
+{
+   res.x = (1 - t)*a.x + t * b.x;
+   res.y = (1 - t)*a.y + t * b.y;
+};

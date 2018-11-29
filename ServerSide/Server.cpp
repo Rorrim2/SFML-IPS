@@ -153,9 +153,6 @@ void Server::update(const sf::Time & time)
 
 				if (this->timeoutHandler != nullptr) this->timeoutHandler(iter->first);
 
-            //erase his body
-            serverLogic.signToRemovePlayer(iter->first);
-
 
 				iter = this->clients.erase(iter);
 				continue;
@@ -284,7 +281,8 @@ bool Server::removeClient(const sf::IpAddress & ip, const PortNumber & port)
 
 void Server::disconnectAll()
 {
-	if (isRunning())
+   DEBUG_COUT("Disconnect all clients!");
+	if (isRunning() == true)
 	{
 		sf::Packet packet;
 		StampPacket(PacketType::Disconnect, packet);
@@ -318,6 +316,7 @@ bool Server::start()
 
 bool Server::stop()
 {
+   DEBUG_COUT("Server stopped!");
 	bool valid = false;
 	if (isRunning() == true)
 	{

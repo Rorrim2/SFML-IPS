@@ -18,8 +18,9 @@ public:
 
    void drawAllPlayers(Window &window);
    void updateAllPlayers(const sf::Time& time);
-
+   void decreasePlayerOccurence();
 private:
    std::unordered_map<ClientID, ClientPlayer*> players;
+   std::unordered_map<ClientID, uint8_t> lastUpdates; // starting from 5 - if reach 0 it won't be drawn on screen
 };
 

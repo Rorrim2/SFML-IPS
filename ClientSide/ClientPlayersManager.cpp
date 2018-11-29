@@ -24,6 +24,7 @@ void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x,
    if (player == nullptr)
    {
       this->players[clientID] = new ClientPlayer(x, y);
+      this->lastUpdates[clientID] = 5;
    }
 }
 void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *player)
@@ -41,6 +42,7 @@ void ClientPlayersManager::movePlayer(const ClientID & clientID, const float & x
    {
       player->setPosition(sf::Vector2f(x, y));
       player->setAngle(angle);
+      this->lastUpdates[clientID] = 5;
    }
 }
 
@@ -67,9 +69,28 @@ void ClientPlayersManager::drawAllPlayers(Window & window)
 
 void ClientPlayersManager::updateAllPlayers(const sf::Time & time)
 {
+   //find and erase players sprites that they not updated from snapshots
+   for (auto iter = this->lastUpdates.cbegin(), next_it = iter; iter != this->lastUpdates.cend(); iter = next_it)
+   {
+      ++next_it;
+      if(iter->second <= 0)
+      {
+         removePlayer(iter->first);
+         this->lastUpdates.erase(iter->first);
+      }
+   }
+
    for (auto &iter : this->players)
    {
       iter.second->update(time);
       iter.second->lerpPos(time);
+   }
+}
+
+void ClientPlayersManager::decreasePlayerOccurence()
+{
+   for (auto &iter : this->lastUpdates)
+   {
+      iter.second--;
    }
 }

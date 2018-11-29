@@ -6,10 +6,8 @@
 #include "Global.h"
 #include "Network.h"
 #include "PacketType.h"
-#include "ServerLogic.h"
 
-
-#define HEARTBEAT_INVERVAL 4000
+#define HEARTBEAT_INVERVAL 2000
 #define HEARTBEAT_TRIES 5
 
 struct ClientInfo
@@ -40,7 +38,7 @@ class Server
 public:
 	template<class T >
 	Server(void(T::*handler)(sf::IpAddress &, const PortNumber &, const PacketID &, sf::Packet &, Server *), T *instance)
-		: listenThread(listen, this)
+		: listenThread(&Server::listen, this)
 	{
 		this->packetHandler = std::bind(handler, instance, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5);
 	}
@@ -83,8 +81,6 @@ public:
 	sf::Mutex &getMutex();
 
    void requestHandling();
-
-   ServerLogic serverLogic;
 private:
 	void setup();
 

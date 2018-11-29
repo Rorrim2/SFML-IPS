@@ -12,7 +12,7 @@ World::~World()
 
 void World::initWorld()
 {
-   this->world = new b2World(b2Vec2(0, 5.f));
+   this->world = new b2World(b2Vec2(0, 0));
 
    //this is temporary world egdes
    this->worldBox = createBody(400, 800, false);

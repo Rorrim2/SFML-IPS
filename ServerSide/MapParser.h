@@ -1,9 +1,7 @@
-#ifndef MAPSERVERSIDE_H
-#define MAPSERVERSIDE_H
+#pragma once
 
-
-#include <SFML-2.5.0/include/SFML/System.hpp>
-#include <SFML-2.5.0/include/SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 #include <tinyxml.h>
 #include <iostream>
 #include <vector>
@@ -65,4 +63,3 @@ public:
     Rectangle getPlayerRect(int id, int* err_code);
 };
 
-#endif // MAPSERVERSIDE_H
