@@ -12,11 +12,14 @@ using namespace std;
 //#include <SFML/System.hpp>
 //#include <SFML/Graphics.hpp>
 
+struct VectorOfTilesId { //jeśli zdążymy zrobić generator dodaj to do paczki
+	vector<vector<vector<unsigned long int>>> dataVector;
+	int tileWidth;
+	int tileHeight;
+};
+
 struct Package {
-    vector<vector<vector<int>>> dataVector; //id of tiles
-    int tileWidth;
-    int tileHeight;
-    std::string source;
+    std::string name;
 };
 
 enum OBJECTTYPE { //Is this even necessary
@@ -58,9 +61,10 @@ class MapServerSide
     OBJECTTYPE enum_object; //w sumie nie musi być tutaj, to tylko zmienna tymczasowa
     std::vector<Rectangle> Rectangles; //vector prostokątóW
     std::vector<Polygon> Polygons; //vector polygonów
+	VectorOfTilesId inCaseItWouldBecomeMoreComplicated;
 public:
 	MapServerSide() {};
-    bool loadFromFile(std::string name); //this func does almost everything
+    bool loadFromFile(std::string name, std::string tilesetImagePath); //this func does almost everything
     Package getPackage(void);
     Rectangle getPlayerRect(int id, int* err_code);
 };

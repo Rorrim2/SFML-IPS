@@ -27,6 +27,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="IntroState.cpp" />
+    <ClCompile Include="MapClientSide.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="IntroState.h" />
+    <ClInclude Include="MapClientSide.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="ResourceManager.h" />

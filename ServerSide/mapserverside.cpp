@@ -6,7 +6,7 @@
 
 using namespace std;
 
-bool MapServerSide::loadFromFile(std::string filename) {
+bool MapServerSide::loadFromFile(std::string filename, std::string tilesetImagePath) {
     //ładowanie mapy
     TiXmlDocument MapFile(filename.c_str());
     if (!MapFile.LoadFile())
@@ -23,16 +23,15 @@ bool MapServerSide::loadFromFile(std::string filename) {
     tileWidth = atoi(map->Attribute("tilewidth"));
     tileHeight = atoi(map->Attribute("tileheight"));
 
-    pack.tileHeight = tileHeight;
-    pack.tileWidth = tileWidth;
+    inCaseItWouldBecomeMoreComplicated.tileHeight = tileHeight;
+    inCaseItWouldBecomeMoreComplicated.tileWidth = tileWidth;
 
     TiXmlElement *tilesetElement;
     tilesetElement = map->FirstChildElement("tileset");
 
     //ścieżka do tilesetu - to też chyba trzeba wysłać
 
-    string imagepath = tilesetElement->Attribute("source"); //this is different than in the class i download, so it is possible it is wrong
-    pack.source = imagepath; //wpisanie do paczki
+    pack.name = tilesetImagePath; //wpisanie do paczki
 
     TiXmlElement *layerElement;
     layerElement = map->FirstChildElement("layer");
@@ -53,12 +52,12 @@ bool MapServerSide::loadFromFile(std::string filename) {
         std::string dataString = layerDataElement->GetText(); //przerobienie danych na string
         std::stringstream datastream(dataString);
 
-        int i;
-        vector<vector<int>> tempVectorRow;
+        unsigned long int i;
+        vector<vector<unsigned long int>> tempVectorRow;
         //przerzucenie danych do tablicy dwuwymiarowej (+ rzutowanie na int)
         for(int y = 0; y < height; ++y)
         {
-            vector<int> tempVector;
+            vector<unsigned long int> tempVector;
             for(int x = 0; x < width; ++x)
             {
                 datastream >> i;
@@ -70,7 +69,7 @@ bool MapServerSide::loadFromFile(std::string filename) {
             tempVectorRow.push_back(tempVector);
 
         }
-        pack.dataVector.push_back(tempVectorRow); //wrzucenie do vectora wyjściowego
+        inCaseItWouldBecomeMoreComplicated.dataVector.push_back(tempVectorRow); //wrzucenie do vectora wyjściowego
         numberOfLayer++; //nadal nie wiem po co to
         layerElement = layerElement->NextSiblingElement("layer"); //przejście do następnej warstwy
     }
