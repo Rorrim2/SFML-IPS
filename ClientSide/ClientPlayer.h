@@ -1,22 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Window.h"
+#include <Box2D.h>
+#include "PacketType.h"
 
 class ClientPlayer
 {
 public:
-   ClientPlayer(const float& x, const float& y);
+   ClientPlayer(b2Body *body);
    ~ClientPlayer();
 
-
-   void setPosition(const sf::Vector2f &pos);
-   void setAngle(const float& angle);
-
    void update(const sf::Time& time);
-   void lerpPos(const sf::Time &time);
    void draw(Window &window);
+   void move(MoveDirection direction);
 
 private:
+   b2Body *body;
+   float maxSpeed;
+
    sf::Time lastTime;
    float angle;
    sf::Vector2f lastPos;

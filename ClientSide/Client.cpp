@@ -156,7 +156,7 @@ bool Client::sendPacket(sf::Packet & packet)
 
 const sf::Time Client::getTime() const
 {
-	return sf::Time();
+   return this->serverTime;
 }
 
 const sf::Time & Client::getLastTimeHeartBeat() const

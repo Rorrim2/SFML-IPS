@@ -24,6 +24,7 @@
     <ClCompile Include="ClientPlayer.cpp" />
     <ClCompile Include="ClientPlayersManager.cpp" />
     <ClCompile Include="ClientSide.cpp" />
+    <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -34,12 +35,14 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ClientPlayer.h" />
     <ClInclude Include="ClientPlayersManager.h" />
+    <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
@@ -54,6 +57,7 @@
     <ClInclude Include="StateType.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

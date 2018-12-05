@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "ClientPlayersManager.h"
 #include <queue>
+#include "World.h"
 
 
 class GameState : public BaseState
@@ -34,9 +35,11 @@ private:
 
    float sendEventToServerTimer;
 
+   World world;
    std::queue<MoveDirection> lastDirections;
    ClientPlayersManager playersManager;
    ClientPlayer* player;
    Client client;
+   sf::Thread connection;
 };
 

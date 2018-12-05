@@ -91,7 +91,12 @@ void Server::listen()
 
 		PacketID id;
 		//propert packet?
+#ifndef UNIX
+      packet >> id;
+#else
 		if ((packet >> id) == false) continue;
+#endif // UNIX
+
 
 		PacketType packetType = static_cast<PacketType>(id);
 		if (packetType < PacketType::Disconnect || packetType > PacketType::OutOfBounds) continue;
@@ -346,6 +351,11 @@ std::string Server::getClientList()
 sf::Mutex & Server::getMutex()
 {
 	return this->mutex;
+}
+
+const sf::Time Server::getTime()
+{
+   return this->serverTime;
 }
 
 void Server::setup()

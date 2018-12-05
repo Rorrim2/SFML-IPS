@@ -21,20 +21,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DebugDraw.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TinyXML\tinyxml.cpp">
+      <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="PacketType.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TinyXML\tinyxmlerror.cpp">
+      <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TinyXML\tinyxmlparser.cpp">
+      <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="ServerLogic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerPlayer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="TinyXML\tinystr.cpp">
+      <Filter>Source Files\TinyXML</Filter>
     </ClCompile>
     <ClCompile Include="ServerPlayerManager.cpp">
       <Filter>Source Files</Filter>
@@ -48,19 +45,22 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TinyXML\tinyxml.cpp">
-      <Filter>Source Files\TinyXML</Filter>
-    </ClCompile>
-    <ClCompile Include="TinyXML\tinyxmlerror.cpp">
-      <Filter>Source Files\TinyXML</Filter>
-    </ClCompile>
-    <ClCompile Include="TinyXML\tinyxmlparser.cpp">
-      <Filter>Source Files\TinyXML</Filter>
-    </ClCompile>
-    <ClCompile Include="TinyXML\tinystr.cpp">
-      <Filter>Source Files\TinyXML</Filter>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MapParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

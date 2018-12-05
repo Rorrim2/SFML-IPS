@@ -3,8 +3,10 @@
 void clientHandler(const PacketID &id, sf::Packet &packet, Client *client);
 
 GameState::GameState(StateManager *stateManager)
-   :BaseState(stateManager)
+   :BaseState(stateManager), playersManager(world), connection(std::bind(&GameState::updateConnection, this, &this->client))
 {
+   this->world.initWorld();
+   this->world.initDebugDrawing(*this->stateManager->getContext()->window);
 }
 
 
@@ -59,14 +61,17 @@ void GameState::onDestroy()
 
 void GameState::draw()
 {
+   this->world.drawDebugData();
    this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
 }
 
 void GameState::update(const sf::Time & time)
 {
+   this->world.updateWorld();
    this->playersManager.updateAllPlayers(time);
    movePlayer(nullptr);
    this->sendEventToServerTimer += time.asMilliseconds();
+   std::cout << this->client.getTime().asSeconds() << "     " << time.asSeconds() << "  " << this->client.getLastTimeHeartBeat().asSeconds() << std::endl;
    if (this->sendEventToServerTimer >= 10)
    {
       if (this->lastDirections.size() > 0)
@@ -111,26 +116,23 @@ void GameState::setServer(const sf::IpAddress & ip, const PortNumber & portNumbe
 
 void GameState::updateConnection(Client *client)
 {
-   if (client->connect())
+   sf::Clock clock;
+   clock.restart();
+   while (client->isConnected())
    {
-      sf::Clock clock;
-      clock.restart();
-      while (client->isConnected())
-      {
-         client->update(clock.restart());
-      }
+      client->update(clock.restart());
    }
+   moveToMainMenu(nullptr);
 }
 
 bool GameState::connect()
 {
-   sf::Thread connection(std::bind(&GameState::updateConnection, this, &this->client));
    bool rV = this->client.connect();
    if (rV == true)
    {
       this->client.sendCreatePlayerPacket();
-      /*  this->player = new ClientPlayer(100, 40);
-        this->playersManager.addPlayer(this->client.getClientID(), this->player);*/
+      this->player = new ClientPlayer(this->playersManager.createShip(400, 400));
+      this->playersManager.addPlayer(this->client.getClientID(), this->player);
       connection.launch();
    }
    return rV;
@@ -162,27 +164,30 @@ void GameState::shoot(EventDetails * details)
 
 void GameState::movePlayer(EventDetails *details)
 {
- //  MoveDirection dir = MoveDirection::NONE;
+   MoveDirection dir = MoveDirection::NONE;
    if (this->stateManager->getContext()->window->getFocus() == true)
    {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
       {
          this->lastDirections.push(MoveDirection::LEFT);
+         this->player->move(MoveDirection::LEFT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
       {
          this->lastDirections.push(MoveDirection::RIGHT);
+         this->player->move(MoveDirection::RIGHT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
       {
          this->lastDirections.push(MoveDirection::FORWARD);
+         this->player->move(MoveDirection::FORWARD);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
       {
          this->lastDirections.push(MoveDirection::BACKWARD);
+         this->player->move(MoveDirection::BACKWARD);
       }
    }
-
    //switch (details->keyCode)
    //{
    //case sf::Keyboard::Key::A:
