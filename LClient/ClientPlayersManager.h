@@ -22,7 +22,7 @@ public:
    void decreasePlayerOccurence();
 
 
-   b2Body* createShip(float x, float y);
+   b2Body* createShipBody(float x, float y);
 private:
 
    World &world;

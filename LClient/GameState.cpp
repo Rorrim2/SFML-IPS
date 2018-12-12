@@ -3,10 +3,10 @@
 void clientHandler(const PacketID &id, sf::Packet &packet, Client *client);
 
 GameState::GameState(StateManager *stateManager)
-   :BaseState(stateManager), playersManager(world)
+   :BaseState(stateManager), playersManager(world), connection(std::bind(&GameState::updateConnection, this, &this->client))
 {
    this->world.initWorld();
-   this->world.initDebugDrawing(*this->stateManager->getContext()->window);
+   //this->world.initDebugDrawing(*this->stateManager->getContext()->window);
 }
 
 
@@ -43,6 +43,8 @@ void GameState::onCreate()
    {
       moveToMainMenu(nullptr);
    }
+   sf::sleep(sf::seconds(1));
+   this->timer = this->client.getTime();
 }
 
 void GameState::onDestroy()
@@ -61,17 +63,45 @@ void GameState::onDestroy()
 
 void GameState::draw()
 {
-   this->world.drawDebugData();
+   //this->world.drawDebugData();
    this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
 }
-
+bool r = false;
 void GameState::update(const sf::Time & time)
 {
+   if (this->client.isSynced() == false || this->client.getTime() < sf::seconds(60)) return;
+
+   movePlayer(nullptr);
+
+   //client.update(time);
+
    this->world.updateWorld();
    this->playersManager.updateAllPlayers(time);
-   movePlayer(nullptr);
+
+   sf::Time cl = this->client.getTime();
+   if (cl - this->timer >= sf::seconds(1))
+   {
+      //this->timer = sf::seconds(std::floor(this->client.getTime().asSeconds()));
+      this->timer = cl;
+      if (r)
+      {
+         this->player->sprite->setFillColor(sf::Color::Green);
+      }
+      else
+      {
+         this->player->sprite->setFillColor(sf::Color::Red);
+      }
+      r = !r;
+
+      std::cout << "    " << cl.asMicroseconds() << "    " << cl.asSeconds() << "    " << client.getServerTime().asSeconds() << std::endl;
+   }
+
+
+
+
+  // std::cout<< this->gameTimer  << "  " << this->client.getTime().asSeconds() << "     " << time.asSeconds() << "  " << this->client.getLastTimeHeartBeat().asSeconds() << std::endl;
    this->sendEventToServerTimer += time.asMilliseconds();
-   std::cout << this->client.getTime().asSeconds() << "     " << time.asSeconds() << std::endl;
+   //std::cout << this->client.getTime().asSeconds() << "     " << time.asSeconds() << std::endl;
    if (this->sendEventToServerTimer >= 10)
    {
       if (this->lastDirections.size() > 0)
@@ -116,25 +146,23 @@ void GameState::setServer(const sf::IpAddress & ip, const PortNumber & portNumbe
 
 void GameState::updateConnection(Client *client)
 {
-   if (client->connect())
+   sf::Clock clock;
+   clock.restart();
+   while (client->isConnected())
    {
-      sf::Clock clock;
-      clock.restart();
-      while (client->isConnected())
-      {
-         client->update(clock.restart());
-      }
+      client->update(clock.restart());
    }
+   moveToMainMenu(nullptr);
 }
 
 bool GameState::connect()
 {
-   sf::Thread connection(std::bind(&GameState::updateConnection, this, &this->client));
+   //sf::Thread connection(std::bind(&GameState::updateConnection, this, &this->client));
    bool rV = this->client.connect();
    if (rV == true)
    {
       this->client.sendCreatePlayerPacket();
-      this->player = new ClientPlayer(this->playersManager.createShip(400, 400));
+      this->player = new ClientPlayer(this->playersManager.createShipBody(400, 400));
       this->playersManager.addPlayer(this->client.getClientID(), this->player);
       connection.launch();
    }
@@ -145,6 +173,8 @@ void GameState::moveToMainMenu(EventDetails *details)
 {
    this->stateManager->switchTo(StateTypeE::MENU);
 }
+
+
 
 void GameState::shoot(EventDetails * details)
 {

@@ -14,13 +14,14 @@ public:
    void draw(Window &window);
    void move(MoveDirection direction);
 
+   b2Body* getBody();
 private:
    b2Body *body;
    float maxSpeed;
 
+   sf::RectangleShape* sprite;
    sf::Time lastTime;
    float angle;
    sf::Vector2f lastPos;
-   sf::RectangleShape* sprite;
 };
 

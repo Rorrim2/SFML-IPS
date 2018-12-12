@@ -51,7 +51,6 @@ void Game::run()
       while (timeSinceLastUpdate >= this->timePerFrame)
       {
          timeSinceLastUpdate -= this->timePerFrame;
-
          update();
       }
       render();

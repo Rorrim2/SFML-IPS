@@ -21,11 +21,13 @@ ClientPlayersManager::~ClientPlayersManager()
 
 void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
 {
-   ClientPlayer *player = this->players[clientID];
-   if (player == nullptr)
+   if (this->players.count(clientID) <= 0)
    {
-      this->players[clientID] = new ClientPlayer(createShip(x, y));
-      this->lastUpdates[clientID] = 5;
+      auto iter = std::find_if(this->playersToCreate.begin(), this->playersToCreate.end(), [clientID](auto tuple)->bool {return clientID == std::get<0>(tuple); });
+      if(iter == this->playersToCreate.end())
+      {
+         this->playersToCreate.push_back(std::make_tuple(clientID, x, y));
+      }
    }
 }
 void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *player)
@@ -34,8 +36,7 @@ void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *pl
 }
 void ClientPlayersManager::movePlayer(const ClientID & clientID, const float & x, const float & y, const float & angle)
 {
-   ClientPlayer *player = this->players[clientID];
-   if (player == nullptr)
+   if (this->players.count(clientID) <= 0)
    {
       addPlayer(clientID, x, y);
    }
@@ -49,8 +50,10 @@ void ClientPlayersManager::movePlayer(const ClientID & clientID, const float & x
 
 void ClientPlayersManager::removePlayer(const ClientID & clientID)
 {
-   if (this->players.size() > 0)
+   if (this->players.count(clientID) > 0)
    {
+      this->world.removeBody(this->players[clientID]->getBody());
+      DELLISNOTNULL(this->players[clientID]);
       this->players.erase(clientID);
    }
 }
@@ -70,21 +73,21 @@ void ClientPlayersManager::drawAllPlayers(Window & window)
 
 void ClientPlayersManager::updateAllPlayers(const sf::Time & time)
 {
-   //find and erase players sprites that they not updated from snapshots
-   for (auto iter = this->lastUpdates.cbegin(), next_it = iter; iter != this->lastUpdates.cend(); iter = next_it)
-   {
-      ++next_it;
-      if(iter->second <= 0)
-      {
-         removePlayer(iter->first);
-         this->lastUpdates.erase(iter->first);
-      }
-   }
-
    for (auto &iter : this->players)
    {
       iter.second->update(time);
    }
+   //find and erase players sprites that they not updated from snapshots
+   //for (auto iter = this->lastUpdates.cbegin(), next_it = iter; iter != this->lastUpdates.cend(); iter = next_it)
+   //{
+   //   ++next_it;
+   //   if(iter->second <= 0)
+   //   {
+   //      removePlayer(iter->first);
+   //      this->lastUpdates.erase(iter->first);
+   //   }
+   //}
+
 }
 
 void ClientPlayersManager::decreasePlayerOccurence()
@@ -95,7 +98,17 @@ void ClientPlayersManager::decreasePlayerOccurence()
    }
 }
 
-b2Body * ClientPlayersManager::createShip(float x, float y)
+void ClientPlayersManager::createShips()
+{
+   for (auto iter : this->playersToCreate)
+   {
+      this->players[std::get<0>(iter)] = new ClientPlayer(createShipBody(std::get<1>(iter), std::get<2>(iter)));
+      this->lastUpdates[std::get<0>(iter)] = 5;
+   }
+   this->playersToCreate.clear();
+}
+
+b2Body * ClientPlayersManager::createShipBody(float x, float y)
 {
    b2Body *body = this->world.createBody(x, y);
    this->world.createBoxFixture(body, 25, 25, 1, 0.5f);

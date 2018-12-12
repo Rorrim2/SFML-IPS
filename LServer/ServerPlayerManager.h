@@ -24,7 +24,7 @@ public:
    void removeAllPlayers();
 
 private: 
-   World &box2DWorld;
+   World &world;
    ServerPlayers players;
 };
 

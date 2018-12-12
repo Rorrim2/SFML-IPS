@@ -20,11 +20,14 @@ public:
 
    void removePlayer(const ClientID& clientID);
    void movePlayer(const ClientID& id, MoveDirection dir);
+   void createShips();
+   b2Body *createShipBody(float x, float y);
 
    void removeAllPlayers();
 
 private: 
-   World &box2DWorld;
+   World &world;
    ServerPlayers players;
+   std::vector<std::tuple<ClientID, float, float>> playersToCreate;
 };
 

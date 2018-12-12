@@ -3,10 +3,9 @@
 #include <iostream>
 #include <cmath>
 
-ServerPlayer::ServerPlayer(World *world, const float& x, const float& y)
+ServerPlayer::ServerPlayer(b2Body *body)
 {
-   this->body = world->createBody(x, y);
-   world->createBoxFixture(this->body, 25, 25, 1, 0.5f);
+   this->body = body;
    this->maxSpeed = 15;
 }
 

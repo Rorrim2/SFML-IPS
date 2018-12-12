@@ -14,6 +14,7 @@ enum class PacketType
 	Snapshot,
    Message,
 	Hurt,
+   SyncTime,
 	OutOfBounds
 };
 

@@ -24,7 +24,7 @@ void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x,
    ClientPlayer *player = this->players[clientID];
    if (player == nullptr)
    {
-      this->players[clientID] = new ClientPlayer(createShip(x, y));
+      this->players[clientID] = new ClientPlayer(createShipBody(x, y));
       this->lastUpdates[clientID] = 5;
    }
 }
@@ -95,9 +95,9 @@ void ClientPlayersManager::decreasePlayerOccurence()
    }
 }
 
-b2Body * ClientPlayersManager::createShip(float x, float y)
+b2Body * ClientPlayersManager::createShipBody(float x, float y)
 {
    b2Body *body = this->world.createBody(x, y);
-   this->world.createBoxFixture(body, 25, 25, 1, 0.5f);
+   //this->world.createBoxFixture(body, 25, 25, 1, 0.5f);
    return body;
 }

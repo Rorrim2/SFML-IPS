@@ -122,6 +122,15 @@ void Server::listen()
 				break;
 			}
 		}
+      else if (packetType == PacketType::SyncTime)
+      {
+         sf::Int32 clientTime;
+         packet >> clientTime;
+         sf::Packet p;
+         StampPacket(PacketType::SyncTime, p);
+         p << clientTime << this->serverTime.asMilliseconds();
+         send(ip, port, p);
+      }
 		else if(packetHandler)
 		{
 			this->packetHandler(ip, port, id, packet, this);
@@ -369,11 +378,19 @@ void Server::setup()
 
 void Server::requestHandling()
 {
+   const sf::Time timePerSnapshot = sf::seconds(1.f / 30.f);
+   sf::Time time = sf::Time::Zero;
+
    sf::Clock clock;
    clock.restart(); 
-   while (isRunning())
+   while (isRunning() == true)
    {
-      update(clock.restart());
+      time += clock.restart();
+      while (time > timePerSnapshot)
+      {
+         update(timePerSnapshot);
+         time -= timePerSnapshot;
+      }
    }
    std::cout << "Stopping server..." << std::endl;
 }

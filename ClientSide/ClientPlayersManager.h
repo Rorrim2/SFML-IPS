@@ -20,11 +20,11 @@ public:
    void drawAllPlayers(Window &window);
    void updateAllPlayers(const sf::Time& time);
    void decreasePlayerOccurence();
+   void createShips();
 
-
-   b2Body* createShip(float x, float y);
+   b2Body* createShipBody(float x, float y);
 private:
-
+   std::vector<std::tuple<ClientID, float, float>> playersToCreate;
    World &world;
    std::unordered_map<ClientID, ClientPlayer*> players;
    std::unordered_map<ClientID, uint8_t> lastUpdates; // starting from 5 - if reach 0 it won't be drawn on screen

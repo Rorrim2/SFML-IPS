@@ -3,7 +3,7 @@
 
 
 Client::Client()
-	: listenThread(&Client::listen, this)
+	: listenThread(&Client::listen, this), syncTimeCount(0), connected(false), isSyncCompleted(false)
 {
 	this->connected = false;
 }
@@ -69,6 +69,7 @@ bool Client::connect()
 		DEBUG_COUT("Connection failed!");
 	}
 
+   sendSyncTimeServer();
 	return validConnection;
 }
 
@@ -135,11 +136,47 @@ void Client::listen()
 			setTime(sf::milliseconds(timeStamp));
 			this->lastHeartBeat = this->serverTime;
 		}
+      else if (packetType == PacketType::SyncTime)
+      {
+
+         sf::Time sT;
+         sf::Int64 timeStamp;
+         packet >> timeStamp;
+         sT = sf::microseconds(timeStamp);
+         timeSyncPair.push_back(std::make_pair(sT, this->localTime));
+         std::cout << "SyncTime  " << sT.asSeconds() << "   " << this->localTime.asMilliseconds() << std::endl;
+
+         if (this->syncTimeCount >= SYNCTIME_COUNT)
+         {
+            std::vector<sf::Int64> tempPair;
+            for (int i = 1; i < timeSyncPair.size(); ++i)
+            {
+               tempPair.push_back((timeSyncPair[i].second.asMicroseconds() - timeSyncPair[i - 1].second.asMicroseconds()) / 2);
+            }
+            std::sort(tempPair.begin(), tempPair.end());
+            this->isSyncCompleted = true;
+            std::cout << "Latency " << tempPair[tempPair.size()/2] << std::endl;
+            this->localTime = sT + sf::microseconds(tempPair[tempPair.size()/2]);
+         }
+         else
+         {
+            syncTimeCount++;
+            sendSyncTimeServer();
+         }
+      }
 		else
 		{
 			this->packetHandler(id, packet, this);
 		}
 	}
+}
+
+void Client::sendSyncTimeServer()
+{
+   sf::Packet p;
+   StampPacket(PacketType::SyncTime, p);
+   p << this->localTime.asMilliseconds();
+   sendPacket(p);
 }
 
 bool Client::sendPacket(sf::Packet & packet)
@@ -157,6 +194,11 @@ bool Client::sendPacket(sf::Packet & packet)
 }
 
 const sf::Time Client::getTime() const
+{
+   return this->localTime;
+}
+
+const sf::Time Client::getServerTime() const
 {
    return this->serverTime;
 }
@@ -182,6 +224,11 @@ bool Client::isConnected() const
 	return this->connected;
 }
 
+bool Client::isSynced()
+{
+   return this->isSyncCompleted;
+}
+
 
 void Client::setup(void(*l_handler)(const PacketID &, sf::Packet &, Client *))
 {
@@ -198,6 +245,7 @@ void Client::update(const sf::Time &time)
 	if (this->connected == true)
 	{
 		this->serverTime += time;
+		this->localTime += time;
 		//this statement is only for keep variable above 0 if it go signed
 		if (this->serverTime.asMilliseconds() < 0)
 		{
@@ -206,7 +254,8 @@ void Client::update(const sf::Time &time)
 			return;
 		}
 
-		if (this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds() >= static_cast<sf::Int32>(Network::ClientTimeout))
+		int diff = this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
+		if (diff >= static_cast<int>(Network::ClientTimeout))
 		{
 			//timeout
 			DEBUG_COUT("Server connection time out!");

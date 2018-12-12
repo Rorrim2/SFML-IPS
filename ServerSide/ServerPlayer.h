@@ -17,8 +17,7 @@ struct PlayerState
 class ServerPlayer
 {
 public:
-   ServerPlayer(World *world, const sf::Vector2f &p);
-	ServerPlayer(World *world, const float& x, const float& y);
+	ServerPlayer(b2Body *body);
    ~ServerPlayer();
 
    sf::Vector2f getPosition();

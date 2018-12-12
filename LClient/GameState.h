@@ -33,6 +33,7 @@ private:
    void movePlayer(EventDetails *details);
    void updateConnection(Client *client);
 
+   sf::Time timer;
    float sendEventToServerTimer;
 
    World world;
@@ -40,5 +41,6 @@ private:
    ClientPlayersManager playersManager;
    ClientPlayer* player;
    Client client;
+   sf::Thread connection;
 };
 

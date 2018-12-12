@@ -2,7 +2,7 @@
 #include "Global.h"
 
 ServerPlayersManager::ServerPlayersManager(World &world)
-   : box2DWorld(world)
+   : world(world)
 {
 }
 
@@ -19,14 +19,14 @@ ServerPlayersManager::~ServerPlayersManager()
 
 void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
 {
-   this->players.emplace(clientID, new ServerPlayer(&this->box2DWorld, x, y));
+   this->players.emplace(clientID, new ServerPlayer(&this->world, x, y));
 }
 
 void ServerPlayersManager::removePlayer(const ClientID & clientID)
 {
    if (this->players.find(clientID) != this->players.end())
    {
-      this->box2DWorld.removeBody(this->players[clientID]->getBody());
+      this->world.removeBody(this->players[clientID]->getBody());
       DELLISNOTNULL(this->players[clientID]);
       this->players.erase(clientID);
    }
@@ -53,7 +53,7 @@ void ServerPlayersManager::removeAllPlayers()
 {
    for (int i = 0; i < this->players.size(); i++)
    {
-      this->box2DWorld.removeBody(this->players[i]->getBody());
+      this->world.removeBody(this->players[i]->getBody());
       DELLISNOTNULL(this->players[i]);
       this->players.erase(i);
    }

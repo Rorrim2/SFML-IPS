@@ -14,6 +14,7 @@ public:
    void draw(Window &window);
    void move(MoveDirection direction);
 
+   sf::RectangleShape* sprite;
 private:
    b2Body *body;
    float maxSpeed;
@@ -21,6 +22,5 @@ private:
    sf::Time lastTime;
    float angle;
    sf::Vector2f lastPos;
-   sf::RectangleShape* sprite;
 };
 

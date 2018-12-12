@@ -5,7 +5,7 @@
 #include "Network.h"
 #include "ClientPlayersManager.h"
 #define CONNECTION_TIMEOUT 5000 // in milisec
-
+#define SYNCTIME_COUNT 5
 
 class Client;
 using PacketHandler = std::function<void(const PacketID &id, sf::Packet &packet, Client *)>; /* std::function store pointer to function, more info https://stackoverflow.com/questions/9054774/difference-between-stdfunction-and-a-standard-function-pointer   */
@@ -20,12 +20,15 @@ public:
 	bool connect();
 	bool disconnect();
 	void listen();
+   void sendSyncTimeServer();
 	bool sendPacket(sf::Packet &packet );
-	const sf::Time getTime() const;
+   const sf::Time getTime() const;
+   const sf::Time getServerTime() const;
 	const sf::Time& getLastTimeHeartBeat() const;
 	void setTime(const sf::Time &time);
 	void setServer(const sf::IpAddress &ip, const PortNumber &portNumber);
 	bool isConnected() const;
+   bool isSynced();
 
 	template<class T>
 	void setup(void(T::*handler)
@@ -55,6 +58,7 @@ private:
 	PortNumber portNumber;
 	PacketHandler packetHandler;
 
+   sf::Time localTime;
 	sf::Time serverTime;
 	sf::Time lastHeartBeat;
 
@@ -62,5 +66,8 @@ private:
 	sf::Mutex mutex;
    ClientID clientID;
 
+   std::vector<std::pair<sf::Time, sf::Time>> timeSyncPair;
+   int syncTimeCount;
+   bool isSyncCompleted;
 };
 

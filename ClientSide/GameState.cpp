@@ -5,8 +5,7 @@ void clientHandler(const PacketID &id, sf::Packet &packet, Client *client);
 GameState::GameState(StateManager *stateManager)
    :BaseState(stateManager), playersManager(world), connection(std::bind(&GameState::updateConnection, this, &this->client))
 {
-   this->world.initWorld();
-   this->world.initDebugDrawing(*this->stateManager->getContext()->window);
+   this->physicStarted = false;
 }
 
 
@@ -39,16 +38,21 @@ void GameState::onCreate()
    evMgr->AddCallback(StateTypeE::GAME, "Shoot_Right", &GameState::shoot, this);
    
    connect();
-   if (this->client.isConnected() == false)
+   //wait for synchronize time with server
+   //while (this->client.isSynced() == false)
    {
-      moveToMainMenu(nullptr);
+      if (this->client.isConnected() == false)
+      {
+         moveToMainMenu(nullptr);
+     //    break;
+      }
    }
+   
 }
 
 void GameState::onDestroy()
 {
    DELLISNOTNULL(this->player);
-   this->client.disconnect();
    EventManager* evMgr = this->stateManager->getContext()->eventManager;
    evMgr->RemoveCallback(StateTypeE::GAME, "KeyEscape");
    //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Up");
@@ -57,22 +61,48 @@ void GameState::onDestroy()
    //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Right");
    evMgr->RemoveCallback(StateTypeE::GAME, "Shoot_Left");
    evMgr->RemoveCallback(StateTypeE::GAME, "Shoot_Right");
+
+   //TODO add destroying world
 }
 
 void GameState::draw()
 {
-   this->world.drawDebugData();
-   this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
+   if (this->physicStarted == true)
+   {
+      this->world.drawDebugData();
+      this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
+   }
 }
 
 void GameState::update(const sf::Time & time)
 {
+   //before sync timer
+
+   //if (this->client.getTime() < sf::seconds(30)) return;
+   if (this->client.isSynced() == false) return;
+
+   if (this->physicStarted == false)
+   {
+      this->world.initWorld();
+      this->world.initDebugDrawing(*this->stateManager->getContext()->window);
+
+      this->client.sendCreatePlayerPacket();
+      this->player = new ClientPlayer(this->playersManager.createShipBody(400, 400));
+      this->playersManager.addPlayer(this->client.getClientID(), this->player);
+      this->physicStarted = true;
+   }
+
+
+   this->playersManager.createShips();
    this->world.updateWorld();
    this->playersManager.updateAllPlayers(time);
    movePlayer(nullptr);
-   this->sendEventToServerTimer += time.asMilliseconds();
-   std::cout << this->client.getTime().asSeconds() << "     " << time.asSeconds() << "  " << this->client.getLastTimeHeartBeat().asSeconds() << std::endl;
-   if (this->sendEventToServerTimer >= 10)
+
+   this->world.eraseDeathBodies();
+
+  // std::cout<< this->gameTimer  << "  " << this->client.getTime().asSeconds() << "     " << time.asSeconds() << "  " << this->client.getLastTimeHeartBeat().asSeconds() << std::endl;
+  //   this->sendEventToServerTimer += time.asMilliseconds();
+  // if (this->sendEventToServerTimer >= 10)
    {
       if (this->lastDirections.size() > 0)
       {
@@ -106,7 +136,7 @@ void GameState::activate()
 
 void GameState::deactivate()
 {
-   //this->client.disconnect();
+   this->client.disconnect();
 }
 
 void GameState::setServer(const sf::IpAddress & ip, const PortNumber & portNumber)
@@ -116,25 +146,31 @@ void GameState::setServer(const sf::IpAddress & ip, const PortNumber & portNumbe
 
 void GameState::updateConnection(Client *client)
 {
+   const sf::Time timePerSnapshot = sf::seconds(1.f / 30.f);
+   sf::Time time = sf::Time::Zero;
+
    sf::Clock clock;
    clock.restart();
-   while (client->isConnected())
+   while (this->client.isConnected() == true)
    {
-      client->update(clock.restart());
+      time += clock.restart();
+      while (time > timePerSnapshot)
+      {
+         client->update(clock.restart());
+         //update(timePerSnapshot);
+         time -= timePerSnapshot;
+      }
    }
+   /*while (client->isConnected())
+   {
+   }*/
    moveToMainMenu(nullptr);
 }
 
 bool GameState::connect()
 {
    bool rV = this->client.connect();
-   if (rV == true)
-   {
-      this->client.sendCreatePlayerPacket();
-      this->player = new ClientPlayer(this->playersManager.createShip(400, 400));
-      this->playersManager.addPlayer(this->client.getClientID(), this->player);
-      connection.launch();
-   }
+   connection.launch();
    return rV;
 }
 
@@ -142,6 +178,8 @@ void GameState::moveToMainMenu(EventDetails *details)
 {
    this->stateManager->switchTo(StateTypeE::MENU);
 }
+
+
 
 void GameState::shoot(EventDetails * details)
 {

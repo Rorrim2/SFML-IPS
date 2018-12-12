@@ -16,7 +16,7 @@ void Window::create()
 {
    auto style = this->isFullscreen() ? sf::Style::Fullscreen : sf::Style::Default;
    sf::ContextSettings settings;
-   //settings.antialiasingLevel = 4;
+   settings.antialiasingLevel = 2;
    this->window.create({ this->windowSize.x, this->windowSize.y, 32 }, this->windowTitle, style, settings);
    this->window.setVerticalSyncEnabled(true);
 }

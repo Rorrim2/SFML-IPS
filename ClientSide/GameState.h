@@ -28,13 +28,14 @@ public:
    void moveToMainMenu(EventDetails* details);
    void clientHandler(const PacketID &id, sf::Packet &packet, Client *client);
 private:
-
+  
    void shoot(EventDetails *details);
    void movePlayer(EventDetails *details);
    void updateConnection(Client *client);
 
+   bool physicStarted;
+   sf::Time timer;
    float sendEventToServerTimer;
-
    World world;
    std::queue<MoveDirection> lastDirections;
    ClientPlayersManager playersManager;

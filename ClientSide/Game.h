@@ -17,8 +17,8 @@ public:
    Window* getWindow();
 
 private:
-   const sf::Time timePerFrame = sf::seconds(1.f / 60.f);
-   const float timestamp = 1.0f / 60.0f;
+   const sf::Time timePerFrame = sf::seconds(1.f / 30.f);
+   const float timestamp = 1.0f / 30.0f;
 
 
    sf::Time elaspedTime;

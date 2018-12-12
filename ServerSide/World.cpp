@@ -33,7 +33,7 @@ b2World * World::getWorld()
 void World::updateWorld()
 {
    if (this->world == nullptr) throw std::runtime_error("Box2D world is uninitialize!");
-   this->world->Step(1 / 60.f, 8, 3);
+   this->world->Step(1 / 30.f, 8, 3);
 }
 
 b2Body* World::createBody(const float &x, const float &y, bool isDynamic)

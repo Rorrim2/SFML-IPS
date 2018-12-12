@@ -122,6 +122,13 @@ void Server::listen()
 				break;
 			}
 		}
+      else if (packetType == PacketType::SyncTime)
+      {
+         sf::Packet p;
+         StampPacket(PacketType::SyncTime, p);
+         p << this->serverTime.asMilliseconds();
+         send(ip, port, p);
+      }
 		else if(packetHandler)
 		{
 			this->packetHandler(ip, port, id, packet, this);
