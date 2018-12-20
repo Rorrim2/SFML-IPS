@@ -3,7 +3,7 @@
 
 
 ServerLogic::ServerLogic(bool _windowEnable)
-   :windowEnable(_windowEnable), playersManager(this->world), 
+   :windowEnable(_windowEnable), playersManager(world, this->server.getMutex()),
    server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server))
 {
    this->server.bindTimeoutHandler(&ServerLogic::clientLeft, this);
@@ -200,7 +200,6 @@ void ServerLogic::runServer()
                this->window->update();
             }
 
-            this->playersManager.createShips();
             updatePsyhicsWorld();
             this->world.eraseDeathBodies();
          }

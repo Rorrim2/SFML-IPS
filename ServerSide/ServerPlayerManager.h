@@ -10,7 +10,7 @@ using ServerPlayers = std::unordered_map<ClientID, ServerPlayer*>;
 class ServerPlayersManager
 {
 public:
-   ServerPlayersManager(World &world);
+   ServerPlayersManager(World &world, sf::Mutex &mutex);
    ~ServerPlayersManager();
 
    ServerPlayer* getPlayer(const ClientID& clientID);
@@ -20,14 +20,13 @@ public:
 
    void removePlayer(const ClientID& clientID);
    void movePlayer(const ClientID& id, MoveDirection dir);
-   void createShips();
    b2Body *createShipBody(float x, float y);
 
    void removeAllPlayers();
 
 private: 
+   sf::Mutex &mutex;
    World &world;
    ServerPlayers players;
-   std::vector<std::tuple<ClientID, float, float>> playersToCreate;
 };
 
