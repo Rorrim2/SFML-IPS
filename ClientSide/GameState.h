@@ -31,7 +31,6 @@ private:
   
    void shoot(EventDetails *details);
    void movePlayer(EventDetails *details);
-   void updateConnection(Client *client);
 
    bool physicStarted;
    sf::Time timer;
@@ -41,6 +40,5 @@ private:
    ClientPlayersManager playersManager;
    ClientPlayer* player;
    Client client;
-   sf::Thread connection;
 };
 

@@ -6,7 +6,7 @@
 ServerPlayer::ServerPlayer(b2Body *body)
 {
    this->body = body;
-   this->maxSpeed = 15;
+   this->maxSpeed = 5;
 }
 
 
@@ -51,7 +51,10 @@ void ServerPlayer::move(MoveDirection & direction)
    {
       x = this->maxSpeed;
    }
-   this->body->ApplyForceToCenter(b2Vec2(x - speedVec.x, y - speedVec.y), true);
+   b2Vec2 impulse = b2Vec2(x, y) - speedVec;
+   impulse *= this->body->GetMass();
+
+   this->body->ApplyLinearImpulseToCenter(impulse, true);
    //this->body->ApplyForceToCenter(speedVec, true);
 }
 

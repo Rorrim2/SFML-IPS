@@ -77,12 +77,10 @@ public:
 
 	size_t getClientCount();
 	std::string getClientList();
-
 	sf::Mutex &getMutex();
 
    const sf::Time getTime();
 
-   void requestHandling();
 private:
 	void setup();
 

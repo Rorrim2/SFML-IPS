@@ -4,7 +4,7 @@
 
 ServerLogic::ServerLogic(bool _windowEnable)
    :windowEnable(_windowEnable), playersManager(this->world), 
-   server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server)), updatingBodiesThread(std::bind(&ServerLogic::updateBodies, this))
+   server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server))
 {
    this->server.bindTimeoutHandler(&ServerLogic::clientLeft, this);
    if (this->windowEnable == true)
@@ -37,7 +37,7 @@ sf::Packet ServerLogic::getPlayersSnapshot()
    for (auto &itr : this->playersManager.getAllPlayers())
    {
       PlayerState state = itr.second->getPlayerState();
-      p << itr.first << state.coords.x << state.coords.y << state.angle << state.health;
+      p << itr.first << state.coords.x << state.coords.y << state.angle << state.health << itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y;
    }
    return p;
 }
@@ -153,46 +153,20 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
 
 }
 
-void ServerLogic::updateBodies()
-{
-   const sf::Time timePerSnapshot = sf::seconds(1.f / 10.f);
-   sf::Time timeSinceLastUpdateSnapshot = sf::Time::Zero;
-   
-   sf::Packet p;
-
-   sf::Clock clock;
-   while (this->server.isRunning() == true)
-   {
-
-      timeSinceLastUpdateSnapshot += clock.restart();
-      while (timeSinceLastUpdateSnapshot > timePerSnapshot)
-      {
-         {
-            sf::Lock lock(server.getMutex());
-            p = getPlayersSnapshot();
-         }
-         server.broadcast(p);
-         p.clear();
-         timeSinceLastUpdateSnapshot -= timePerSnapshot;
-     }
-   }
-}
-
 void ServerLogic::runServer()
 {
    if (server.start() == true)
    {
-      std::function<void(void)> reqHandler = std::bind(&Server::requestHandling, &server);
-      sf::Thread reqHandlerThread(reqHandler);
-      reqHandlerThread.launch();
       this->commandThread.launch();
-      this->updatingBodiesThread.launch();
       initPsyhicsWorld();
 
       if (this->windowEnable == true)
       {
          initDebugDraw(this->window);
       }
+
+      const sf::Time timePerSnapshot = sf::seconds(1.f / 20.f);
+      sf::Time timeSinceLastUpdateSnapshot = sf::Time::Zero;
 
       sf::Time elapsedTime;
       sf::Time color = sf::Time::Zero;
@@ -206,6 +180,7 @@ void ServerLogic::runServer()
       {
          elapsedTime = clock.restart();
          timeSinceLastUpdate += elapsedTime;
+         timeSinceLastUpdateSnapshot += elapsedTime;
          color += elapsedTime;
          
          //std::cout << server.getTime().asSeconds() << std::endl;
@@ -218,6 +193,7 @@ void ServerLogic::runServer()
          clearBodies();
          while (timeSinceLastUpdate > timePerFrame)
          {
+            this->server.update(timePerFrame);
             timeSinceLastUpdate -= timePerFrame;
             if (this->windowEnable == true)
             {
@@ -236,6 +212,17 @@ void ServerLogic::runServer()
             this->window->endDraw();
          }
 
+
+         while (timeSinceLastUpdateSnapshot > timePerSnapshot)
+         {
+            {
+               sf::Lock lock(server.getMutex());
+               p = getPlayersSnapshot();
+            }
+            server.broadcast(p);
+            p.clear();
+            timeSinceLastUpdateSnapshot -= timePerSnapshot;
+         }
       }
    }
 }

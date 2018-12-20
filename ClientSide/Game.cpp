@@ -25,7 +25,7 @@ void Game::render()
 void Game::update()
 {
    window.update();
-   this->stateManager.update(this->elaspedTime);
+   this->stateManager.update(this->timePerFrame);
 }
 
 Window* Game::getWindow()

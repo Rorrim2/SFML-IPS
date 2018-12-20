@@ -7,7 +7,7 @@
 
 ClientPlayer::ClientPlayer(b2Body *body)
 {
-   this->maxSpeed = 15;
+   this->maxSpeed = 5;
    this->body = body;
    this->sprite = new sf::RectangleShape(sf::Vector2f(52, 52));
    this->sprite->setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
@@ -58,7 +58,12 @@ void ClientPlayer::move(MoveDirection direction)
    {
       x = this->maxSpeed;
    }
-   this->body->ApplyForceToCenter(b2Vec2(x - speedVec.x, y - speedVec.y), true);
+
+   b2Vec2 impulse = b2Vec2(x, y) - speedVec;
+   impulse *= this->body->GetMass();
+
+   this->body->ApplyLinearImpulseToCenter(impulse, true);
+   //this->body->ApplyForceToCenter(b2Vec2(x - speedVec.x, y - speedVec.y), true);
    //this->body->ApplyForceToCenter(speedVec, true);
 }
 

@@ -1,9 +1,7 @@
 #include "GameState.h"
 
-void clientHandler(const PacketID &id, sf::Packet &packet, Client *client);
-
 GameState::GameState(StateManager *stateManager)
-   :BaseState(stateManager), playersManager(world), connection(std::bind(&GameState::updateConnection, this, &this->client))
+   :BaseState(stateManager), playersManager(world, this->client.getMutex())
 {
    this->physicStarted = false;
 }
@@ -17,37 +15,25 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   //std::cout << "Enter Server IP: ";
-   //std::cin >> ip;
-   //std::cout << "Enter Server Port: ";
-   //std::cin >> port;
+   std::cout << "Enter Server IP: ";
+   std::cin >> ip;
+   std::cout << "Enter Server Port: ";
+   std::cin >> port;
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
 
    //event manager 
-   //TODO ask if this is important and how to change it
    EventManager* evMgr = this->stateManager->getContext()->eventManager;
 
    evMgr->AddCallback(StateTypeE::GAME, "KeyEscape", &GameState::moveToMainMenu, this);
-   //evMgr->AddCallback(StateTypeE::GAME, "Ship_Move_Up", &GameState::movePlayer, this);
-   //evMgr->AddCallback(StateTypeE::GAME, "Ship_Move_Down", &GameState::movePlayer, this);
-   //evMgr->AddCallback(StateTypeE::GAME, "Ship_Move_Left", &GameState::movePlayer, this);
-   //evMgr->AddCallback(StateTypeE::GAME, "Ship_Move_Right", &GameState::movePlayer, this);
-
    evMgr->AddCallback(StateTypeE::GAME, "Shoot_Left", &GameState::shoot, this);
    evMgr->AddCallback(StateTypeE::GAME, "Shoot_Right", &GameState::shoot, this);
    
-   connect();
    //wait for synchronize time with server
-   //while (this->client.isSynced() == false)
+   if (this->client.connect() == false)
    {
-      if (this->client.isConnected() == false)
-      {
-         moveToMainMenu(nullptr);
-     //    break;
-      }
+      moveToMainMenu(nullptr);
    }
-   
 }
 
 void GameState::onDestroy()
@@ -55,10 +41,6 @@ void GameState::onDestroy()
    DELLISNOTNULL(this->player);
    EventManager* evMgr = this->stateManager->getContext()->eventManager;
    evMgr->RemoveCallback(StateTypeE::GAME, "KeyEscape");
-   //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Up");
-   //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Down");
-   //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Left");
-   //evMgr->RemoveCallback(StateTypeE::GAME, "Ship_Move_Right");
    evMgr->RemoveCallback(StateTypeE::GAME, "Shoot_Left");
    evMgr->RemoveCallback(StateTypeE::GAME, "Shoot_Right");
 
@@ -77,8 +59,8 @@ void GameState::draw()
 void GameState::update(const sf::Time & time)
 {
    //before sync timer
+   client.update(time);
 
-   //if (this->client.getTime() < sf::seconds(30)) return;
    if (this->client.isSynced() == false) return;
 
    if (this->physicStarted == false)
@@ -92,16 +74,21 @@ void GameState::update(const sf::Time & time)
       this->physicStarted = true;
    }
 
+   sf::Time t = this->client.getTime();
+   if (t - this->timer >= sf::seconds(1))
+   {
+      std::cout << t.asSeconds() << std::endl;
+      this->timer = t;
+   }
+   {
+      sf::Lock lock(this->client.getMutex());
+      this->world.updateWorld();
+      this->playersManager.updateAllPlayers(time);
+      movePlayer(nullptr);
 
-   this->playersManager.createShips();
-   this->world.updateWorld();
-   this->playersManager.updateAllPlayers(time);
-   movePlayer(nullptr);
+      this->world.eraseDeathBodies();
+   }
 
-   this->world.eraseDeathBodies();
-
-  // std::cout<< this->gameTimer  << "  " << this->client.getTime().asSeconds() << "     " << time.asSeconds() << "  " << this->client.getLastTimeHeartBeat().asSeconds() << std::endl;
-  //   this->sendEventToServerTimer += time.asMilliseconds();
   // if (this->sendEventToServerTimer >= 10)
    {
       if (this->lastDirections.size() > 0)
@@ -119,6 +106,10 @@ void GameState::update(const sf::Time & time)
       this->sendEventToServerTimer = 0;
    }
 
+   if (this->client.isConnected() == false)
+   {
+      moveToMainMenu(nullptr);
+   }
 }
 
 void GameState::activate()
@@ -144,34 +135,9 @@ void GameState::setServer(const sf::IpAddress & ip, const PortNumber & portNumbe
    this->client.setServer(ip, portNumber);
 }
 
-void GameState::updateConnection(Client *client)
-{
-   const sf::Time timePerSnapshot = sf::seconds(1.f / 30.f);
-   sf::Time time = sf::Time::Zero;
-
-   sf::Clock clock;
-   clock.restart();
-   while (this->client.isConnected() == true)
-   {
-      time += clock.restart();
-      while (time > timePerSnapshot)
-      {
-         client->update(clock.restart());
-         //update(timePerSnapshot);
-         time -= timePerSnapshot;
-      }
-   }
-   /*while (client->isConnected())
-   {
-   }*/
-   moveToMainMenu(nullptr);
-}
-
 bool GameState::connect()
 {
-   bool rV = this->client.connect();
-   connection.launch();
-   return rV;
+   return this->client.connect();
 }
 
 void GameState::moveToMainMenu(EventDetails *details)
@@ -226,30 +192,6 @@ void GameState::movePlayer(EventDetails *details)
          this->player->move(MoveDirection::BACKWARD);
       }
    }
-   //switch (details->keyCode)
-   //{
-   //case sf::Keyboard::Key::A:
-   //{
-   //   dir = MoveDirection::LEFT;
-   //   break;
-   //}
-   //case sf::Keyboard::Key::D:
-   //{
-   //   dir = MoveDirection::RIGHT;
-   //   break;
-   //}
-   //case sf::Keyboard::Key::W:
-   //{
-   //   dir = MoveDirection::FORWARD;
-   //   break;
-   //}
-   //case sf::Keyboard::Key::S:
-   //{
-   //   dir = MoveDirection::BACKWARD;
-   //   break;
-   //}
-   //}
-//   this->lastDirections.push(dir);
 }
 
 
@@ -275,11 +217,13 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
       int health;
       float x, y, angle;
       ClientID idC;
+      b2Vec2 linearVelocity;
       packet >> count;
+
       for (int i = 0; i < count; ++i)
       {
-         packet >> idC >> x >> y >> angle >> health;
-         playersManager.movePlayer(idC, x, y, angle);
+         packet >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y;
+         playersManager.movePlayer(idC, x, y, angle, linearVelocity);
       }
    }
    else if (static_cast<PacketType>(id) == PacketType::Disconnect)

@@ -26,12 +26,10 @@ public:
    
    void commandHandler(Server *server);
    void handler(sf::IpAddress &ip, const PortNumber &port, const PacketID &packetID, sf::Packet &packet, Server *server);
-   void updateBodies();
 
    void runServer();
 private: 
    sf::Thread commandThread;
-   sf::Thread updatingBodiesThread;
 
    const bool windowEnable;
    Window *window;

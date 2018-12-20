@@ -141,7 +141,6 @@ void Server::listen()
 void Server::update(const sf::Time & time)
 {
 	this->serverTime += time;
-
 	//this statement is only for keep variable above 0 if it go signed
 	if (this->serverTime.asMilliseconds() < 0)
 	{
@@ -167,7 +166,6 @@ void Server::update(const sf::Time & time)
 
 				if (this->timeoutHandler != nullptr) this->timeoutHandler(iter->first);
 
-
 				iter = this->clients.erase(iter);
 				continue;
 			}
@@ -177,7 +175,6 @@ void Server::update(const sf::Time & time)
 		if (iter->second.heartbeatWaiting == false || (elapsed >= HEARTBEAT_INVERVAL * (iter->second.heartbeatTry + 1)))
 		{
 			//hearbeat
-
 			//its show for only two last heartbeats
 			if (iter->second.heartbeatTry >= 3)
 			{
@@ -375,22 +372,3 @@ void Server::setup()
 	this->totalSend = 0;
 }
 
-
-void Server::requestHandling()
-{
-   const sf::Time timePerSnapshot = sf::seconds(1.f / 30.f);
-   sf::Time time = sf::Time::Zero;
-
-   sf::Clock clock;
-   clock.restart(); 
-   while (isRunning() == true)
-   {
-      time += clock.restart();
-      while (time > timePerSnapshot)
-      {
-         update(timePerSnapshot);
-         time -= timePerSnapshot;
-      }
-   }
-   std::cout << "Stopping server..." << std::endl;
-}

@@ -232,7 +232,7 @@ void Client::unregisterPacketHandler()
 {
 	this->packetHandler = nullptr;
 }
-
+///TODO correct
 void Client::update(const sf::Time &time)
 {
 	if (this->connected == true)
@@ -248,7 +248,7 @@ void Client::update(const sf::Time &time)
 			return;
 		}
 
-		int diff = this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
+		int diff = this->localTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
 		if (diff >= static_cast<int>(Network::ClientTimeout))
 		{
 			//timeout
