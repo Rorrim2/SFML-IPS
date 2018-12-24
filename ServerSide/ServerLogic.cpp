@@ -137,8 +137,10 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          StampPacket(PacketType::PlayerCreate, newPacket);
          newPacket << clientID << x << y;
          DEBUG_COUT("Creating ship");
-
-         addPlayer(clientID, x, y);
+         {
+            sf::Lock lock(this->server.getMutex());
+            addPlayer(clientID, x, y);
+         }
          server->broadcast(newPacket, id);
       }
    }

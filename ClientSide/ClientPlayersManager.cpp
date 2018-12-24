@@ -21,10 +21,13 @@ ClientPlayersManager::~ClientPlayersManager()
 
 void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
 {
-   if (this->players.count(clientID) <= 0)
+   if (!this->world.getWorld()->IsLocked())
    {
       sf::Lock lock(this->mutex);
-      this->players[clientID] = new ClientPlayer(createShipBody(x, y));
+      if (this->players.count(clientID) <= 0)
+      {
+         this->players[clientID] = new ClientPlayer(createShipBody(x, y));
+      }
    }
 }
 void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *player)

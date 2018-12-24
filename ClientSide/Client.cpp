@@ -39,10 +39,10 @@ bool Client::connect()
 	while (timer.getElapsedTime().asMilliseconds() < CONNECTION_TIMEOUT && validConnection == false)
 	{
 		sf::Socket::Status status = this->udpSocket.receive(packet, recIp, recPort);
-     // std::cout << recPort << std::endl;
+      //std::cout << recPort << std::endl;
 
 		//check socket status
-     // std::cout << recIp << "  " << status << std::endl;
+      //std::cout << recIp << "  " << status << std::endl;
 		if (status != sf::Socket::Done) continue;
 		if (recIp != this->serverIP) continue;
 
@@ -67,7 +67,6 @@ bool Client::connect()
 
 		DEBUG_COUT("Connection failed!");
 	}
-
    sendSyncTimeServer();
 	return validConnection;
 }
@@ -119,6 +118,7 @@ void Client::listen()
 		//propert packet?
 		if ((packet >> id) == false) continue;
 		PacketType packetType = static_cast<PacketType>(id);
+      
 		if (packetType < PacketType::Disconnect || packetType > PacketType::OutOfBounds) continue;
 
 		if (packetType == PacketType::Heartbeat)
@@ -149,6 +149,7 @@ void Client::listen()
             std::sort(syncPair.begin(), syncPair.end());
             this->localTime = sT + sf::microseconds(syncPair[syncPair.size() / 2]);
             this->isSyncCompleted = true;
+            this->syncTimeCount = 0;
             std::cout << "Latency " << syncPair[syncPair.size() / 2]  << " Server time " << this->localTime.asSeconds() << std::endl;
          }
          else

@@ -15,10 +15,10 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   std::cout << "Enter Server IP: ";
-   std::cin >> ip;
-   std::cout << "Enter Server Port: ";
-   std::cin >> port;
+   //std::cout << "Enter Server IP: ";
+   //std::cin >> ip;
+   //std::cout << "Enter Server Port: ";
+   //std::cin >> port;
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
 
@@ -80,6 +80,7 @@ void GameState::update(const sf::Time & time)
       std::cout << t.asSeconds() << std::endl;
       this->timer = t;
    }
+
    {
       sf::Lock lock(this->client.getMutex());
       this->world.updateWorld();
@@ -127,6 +128,8 @@ void GameState::activate()
 
 void GameState::deactivate()
 {
+   DEBUG_COUT("Deactive");
+
    this->client.disconnect();
 }
 
@@ -197,39 +200,42 @@ void GameState::movePlayer(EventDetails *details)
 
 void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *client)
 {
-   if (static_cast<PacketType>(id) == PacketType::Message)
+   if (this->client.isSynced() == true)
    {
-      std::string message;
-      packet >> message;
-      std::cout << message << std::endl;
-   }
-   else if (static_cast<PacketType>(id) == PacketType::PlayerCreate)
-   {
-      float x, y;
-      ClientID idC;
-      packet >> idC >> x >> y;
-      playersManager.addPlayer(idC, x, y);
-   }
-   else if (static_cast<PacketType>(id) == PacketType::PlayerUpdate)
-   {
-      playersManager.decreasePlayerOccurence();
-      size_t count;
-      int health;
-      float x, y, angle;
-      ClientID idC;
-      b2Vec2 linearVelocity;
-      packet >> count;
-
-      for (int i = 0; i < count; ++i)
+      if (static_cast<PacketType>(id) == PacketType::Message)
       {
-         packet >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y;
-         playersManager.movePlayer(idC, x, y, angle, linearVelocity);
+         std::string message;
+         packet >> message;
+         std::cout << message << std::endl;
       }
-   }
-   else if (static_cast<PacketType>(id) == PacketType::Disconnect)
-   {
-      client->disconnect();
-      DEBUG_COUT("Disconnected!");
-      moveToMainMenu(nullptr);
+      else if (static_cast<PacketType>(id) == PacketType::PlayerCreate)
+      {
+         float x, y;
+         ClientID idC;
+         packet >> idC >> x >> y;
+         playersManager.addPlayer(idC, x, y);
+      }
+      else if (static_cast<PacketType>(id) == PacketType::PlayerUpdate)
+      {
+         playersManager.decreasePlayerOccurence();
+         size_t count;
+         int health;
+         float x, y, angle;
+         ClientID idC;
+         b2Vec2 linearVelocity;
+         packet >> count;
+
+         for (int i = 0; i < count; ++i)
+         {
+            packet >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y;
+            playersManager.movePlayer(idC, x, y, angle, linearVelocity);
+         }
+      }
+      else if (static_cast<PacketType>(id) == PacketType::Disconnect)
+      {
+         client->disconnect();
+         DEBUG_COUT("Disconnected!");
+         moveToMainMenu(nullptr);
+      }
    }
 }
