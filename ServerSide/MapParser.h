@@ -61,5 +61,7 @@ public:
     bool loadFromFile(std::string name); //this func does almost everything
     Package getPackage(void);
     Rectangle getPlayerRect(int id, int* err_code);
+	std::vector<Rectangle> getRectVector();
+	std::vector<Polygon> getPolyVector();
 };
 

@@ -19,6 +19,36 @@ ServerLogic::~ServerLogic()
    DELLISNOTNULL(this->window);
 }
 
+void ServerLogic::addObjects()
+{
+	world.initMap();
+	world.addRectangles();
+	world.addPolygons();
+	/*b2BodyDef bodyDef;
+	bodyDef.type = b2_staticBody;
+
+	b2World* temp_world = world.getWorld();
+
+	b2Body* body = temp_world->CreateBody(&bodyDef);
+
+	b2Vec2 vs[4];
+	vs[0].Set(0.0f, 0.0f);
+	vs[1].Set(10.0f, 0.0f);
+	vs[2].Set(10.0f, 10.0f);
+	vs[3].Set(0.0f, 10.0f);
+
+	b2ChainShape chain;
+	chain.CreateLoop(vs, 4);
+
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &chain;
+	fixtureDef.density = 1;
+	fixtureDef.friction = 1;
+	fixtureDef.restitution = 0.5f;
+	body->CreateFixture(&fixtureDef);*/
+
+}
+
 void ServerLogic::initPsyhicsWorld()
 {
    this->world.initWorld();
@@ -175,6 +205,11 @@ void ServerLogic::runServer()
       sf::Packet p;
 
 
+	  addObjects();
+	  //b2Body* cokolwiek = this->world.createBody(100, 100);
+	  //this->world.createBoxFixture(cokolwiek, 20, 10);
+	  world.debugBodie();
+
       sf::Clock clock;
       while (this->server.isRunning() == true && (this->windowEnable == true ? this->window->isDone() == false : true))
       {
@@ -193,13 +228,13 @@ void ServerLogic::runServer()
          clearBodies();
          while (timeSinceLastUpdate > timePerFrame)
          {
+			sf::Lock lock(this->server.getMutex());
             this->server.update(timePerFrame);
             timeSinceLastUpdate -= timePerFrame;
             if (this->windowEnable == true)
             {
                this->window->update();
             }
-
             updatePsyhicsWorld();
             this->world.eraseDeathBodies();
          }

@@ -221,3 +221,13 @@ Rectangle MapServerSide::getPlayerRect(int id, int* err_code) {
     *err_code = 0;
     return Rectangles[0];
 }
+
+std::vector<Rectangle> MapServerSide::getRectVector()
+{
+	return Rectangles;
+}
+
+std::vector<Polygon> MapServerSide::getPolyVector()
+{
+	return Polygons;
+}

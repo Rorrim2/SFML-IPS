@@ -4,6 +4,7 @@
 #include "DebugDraw.h"
 #include "Window.h"
 #include "Global.h"
+#include "MapParser.h"
 #include <stdexcept>
 
 
@@ -16,8 +17,10 @@ public:
    World();
    ~World();
    
-   
    void initWorld();
+   void initMap();
+   void addRectangles();
+   void addPolygons();
    b2World* getWorld();
 
    void updateWorld();
@@ -31,11 +34,20 @@ public:
 
    void removeBody(b2Body *body);
    void eraseDeathBodies();
+   void debugBodie() {
+	   cout << "Rect Bodies: " << rectBodies.size() << endl;
+	   cout << "Poly Bodies: " << polyBodies.size() << endl;
+   }
 
 private:
-   std::vector<b2Body*> bodiesToDelete;
-   DebugDraw *debugDraw;
-   b2World *world;
-   b2Body *worldBox;
+	MapServerSide map;
+	float x_ratio = 900.f / 1120.f;
+	float y_ratio = 800.f / 1120.f;
+	std::vector<b2Body*> polyBodies;
+	std::vector<b2Body*> rectBodies;
+	std::vector<b2Body*> bodiesToDelete;
+	DebugDraw *debugDraw;
+	b2World *world;
+	b2Body *worldBox;
 };
 
