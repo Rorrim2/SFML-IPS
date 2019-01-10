@@ -3,6 +3,7 @@
 #include "ServerPlayerManager.h"
 #include "Server.h"
 #include "Window.h"
+#include "World.h"
 #include <SFML/Graphics.hpp>
 
 
@@ -11,6 +12,8 @@ class ServerLogic
 public:
    ServerLogic(bool windowEnable);
    ~ServerLogic();
+
+   void addObjects();
 
    void initPsyhicsWorld();
    void initDebugDraw(Window *window);

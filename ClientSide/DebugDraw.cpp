@@ -90,9 +90,13 @@ void DebugDraw::DrawPoint(const b2Vec2 & p, float32 size, const b2Color & color)
 {
    sf::RectangleShape rec;
    rec.setPosition(p.x * PIXELS_PER_METER, p.y * PIXELS_PER_METER);
-   rec.setSize(sf::Vector2f(size * PIXELS_PER_METER, size * PIXELS_PER_METER));
-   rec.setFillColor(sf::Color::Transparent);
-   rec.setOutlineColor(B2COL2SF(color));
+   //rec.setSize(sf::Vector2f(size * PIXELS_PER_METER, size * PIXELS_PER_METER));
+   sf::Color color2(28, 38, 234);
+   rec.setSize(sf::Vector2f(3,3));
+   rec.setFillColor(color2);
+   //rec.setFillColor(sf::Color::Transparent);
+   rec.setOutlineColor(color2);
+   //rec.setOutlineColor(B2COL2SF(color));
    rec.setOutlineThickness(1.0f);
    this->window->draw(rec);
 }
