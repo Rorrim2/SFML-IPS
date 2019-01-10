@@ -19,7 +19,7 @@ public:
 
    sf::Packet getPlayersSnapshot();
    void addPlayer(ClientID& clientID, const float &x, const float &y);
-   void movePlayer(ClientID& clientID, MoveDirection dir);
+   void movePlayer(ClientID& clientID, MoveDirection dir, const sf::Int32 & time);
    void signToRemovePlayer(const ClientID& clientID);
    void clearBodies();
    void clientLeft(const ClientID& clientID);

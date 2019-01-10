@@ -4,6 +4,8 @@ GameState::GameState(StateManager *stateManager)
    :BaseState(stateManager), playersManager(world, this->client.getMutex())
 {
    this->physicStarted = false;
+   map.setMapName("map.png");
+   map.loadFromFile();
 }
 
 
@@ -15,10 +17,10 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   //std::cout << "Enter Server IP: ";
-   //std::cin >> ip;
-   //std::cout << "Enter Server Port: ";
-   //std::cin >> port;
+   std::cout << "Enter Server IP: ";
+   std::cin >> ip;
+   std::cout << "Enter Server Port: ";
+   std::cin >> port;
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
 
@@ -49,10 +51,11 @@ void GameState::onDestroy()
 
 void GameState::draw()
 {
+   this->stateManager->getContext()->window->draw(this->map.getMapSprite());
    if (this->physicStarted == true)
    {
-      this->world.drawDebugData();
       this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
+      this->world.drawDebugData();
    }
 }
 
@@ -69,7 +72,8 @@ void GameState::update(const sf::Time & time)
       this->world.initDebugDrawing(*this->stateManager->getContext()->window);
 
       this->client.sendCreatePlayerPacket();
-      this->player = new ClientPlayer(this->playersManager.createShipBody(400, 400));
+      this->player = this->playersManager.createPlayer(400, 400, "Ship_red");
+         //new ClientPlayer(this->playersManager.createShipBody(400, 400), *this->stateManager->getContext()->textureManager->GetResource("Ship_red"));
       this->playersManager.addPlayer(this->client.getClientID(), this->player);
       this->physicStarted = true;
    }
@@ -99,7 +103,7 @@ void GameState::update(const sf::Time & time)
          p << this->lastDirections.size();
          for (int i = 0; i < this->lastDirections.size(); ++i)
          {
-            p << this->lastDirections.front();
+            p << this->lastDirections.front().second << this->lastDirections.front().first;
             this->lastDirections.pop();
          }
          this->client.sendPacket(p);
@@ -166,7 +170,7 @@ void GameState::shoot(EventDetails * details)
       break;
    }
    }
-   this->lastDirections.push(dir);
+   //this->lastDirections.push(dir);
 }
 
 void GameState::movePlayer(EventDetails *details)
@@ -176,23 +180,23 @@ void GameState::movePlayer(EventDetails *details)
    {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
       {
-         this->lastDirections.push(MoveDirection::LEFT);
+         this->lastDirections.push({ MoveDirection::LEFT, this->client.getTime().asMilliseconds() });
          this->player->move(MoveDirection::LEFT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
       {
-         this->lastDirections.push(MoveDirection::RIGHT);
+         this->lastDirections.push({ MoveDirection::RIGHT, this->client.getTime().asMilliseconds() });
          this->player->move(MoveDirection::RIGHT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
       {
-         this->lastDirections.push(MoveDirection::FORWARD);
-         this->player->move(MoveDirection::FORWARD);
+         this->lastDirections.push({ MoveDirection::FORWARD, this->client.getTime().asMilliseconds() });
+         //this->player->move(MoveDirection::FORWARD);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
       {
-         this->lastDirections.push(MoveDirection::BACKWARD);
-         this->player->move(MoveDirection::BACKWARD);
+         this->lastDirections.push({ MoveDirection::BACKWARD, this->client.getTime().asMilliseconds() });
+         //this->player->move(MoveDirection::BACKWARD);
       }
    }
 }
@@ -200,7 +204,7 @@ void GameState::movePlayer(EventDetails *details)
 
 void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *client)
 {
-   if (this->client.isSynced() == true)
+   if (this->physicStarted == true)
    {
       if (static_cast<PacketType>(id) == PacketType::Message)
       {
@@ -220,15 +224,16 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          playersManager.decreasePlayerOccurence();
          size_t count;
          int health;
-         float x, y, angle;
+         int time;
+         float x, y, angle, angularVel;
          ClientID idC;
          b2Vec2 linearVelocity;
          packet >> count;
 
          for (int i = 0; i < count; ++i)
          {
-            packet >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y;
-            playersManager.movePlayer(idC, x, y, angle, linearVelocity);
+            packet >> time >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y >> angularVel;
+            playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity });
          }
       }
       else if (static_cast<PacketType>(id) == PacketType::Disconnect)

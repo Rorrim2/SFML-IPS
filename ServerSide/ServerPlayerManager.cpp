@@ -26,6 +26,14 @@ void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x,
    }
 }
 
+void ServerPlayersManager::update()
+{
+   for (auto player : this->players)
+   {
+      player.second->update();
+   }
+}
+
 void ServerPlayersManager::removePlayer(const ClientID & clientID)
 {
    if (this->players.find(clientID) != this->players.end())
@@ -48,9 +56,9 @@ ServerPlayers& ServerPlayersManager::getAllPlayers()
 
 
 //TODO change this speed to not hardcoded
-void ServerPlayersManager::movePlayer(const ClientID & id, MoveDirection dir)
+void ServerPlayersManager::movePlayer(const ClientID & id, MoveDirection dir, const sf::Int32 & time)
 {
-   this->players[id]->move(dir);
+   this->players[id]->move(dir, time);
 }
 
 void ServerPlayersManager::removeAllPlayers()
@@ -66,6 +74,6 @@ void ServerPlayersManager::removeAllPlayers()
 b2Body *ServerPlayersManager::createShipBody(float x, float y)
 {
    b2Body *body = this->world.createBody(x, y);
-   this->world.createBoxFixture(body, 25, 25, 1, 0.5f);
+   this->world.createBoxFixture(body, 33, 17, 1, 0.5f);
    return body;
 }

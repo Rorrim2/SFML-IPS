@@ -5,15 +5,20 @@
 #include "Global.h"
 
 
-ClientPlayer::ClientPlayer(b2Body *body)
+ClientPlayer::ClientPlayer(b2Body *body, const sf::Texture & texture)
+   : sprite(texture)
 {
-   this->maxSpeed = 5;
+   this->maxSpeed = 2;
+   this->maxAngularSpeed = 0.5;
+   this->verticalSpeed = 0;
+   this->angularSpeed = 0;
    this->body = body;
-   this->sprite = new sf::RectangleShape(sf::Vector2f(52, 52));
-   this->sprite->setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
+   this->sprite.setScale(.7, .7);
+   //this->sprite = new sf::RectangleShape(sf::Vector2f(52, 52));
+   //this->sprite->setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 
-   this->sprite->setOrigin(this->sprite->getSize().x / 2, this->sprite->getSize().y / 2);
-   this->sprite->setPosition(this->body->GetPosition().x * PIXELS_PER_METER, this->body->GetPosition().y * PIXELS_PER_METER);
+   this->sprite.setOrigin(56, 33);
+   this->sprite.setPosition(this->body->GetPosition().x * PIXELS_PER_METER, this->body->GetPosition().y * PIXELS_PER_METER);
 
    this->lastTime = sf::Time::Zero;
 }
@@ -21,50 +26,63 @@ ClientPlayer::ClientPlayer(b2Body *body)
 
 ClientPlayer::~ClientPlayer()
 {
-   DELLISNOTNULL(this->sprite);
 }
 
 
 void ClientPlayer::update(const sf::Time& time)
 {
    b2Vec2 pos = this->body->GetPosition();
-   this->sprite->setPosition(sf::Vector2f(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER));
-   this->sprite->setRotation(this->body->GetAngle() / b2_pi * 180.0f);
+   this->sprite.setPosition(sf::Vector2f(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER));
+   this->sprite.setRotation(this->body->GetAngle() / b2_pi * 180.0f);
+   this->verticalSpeed *= .78;
+   this->angularSpeed *= .50;
+   this->body->SetAngularVelocity(this->angularSpeed);
+
 }
 
 void ClientPlayer::draw(Window & window)
 {
-   window.draw(*this->sprite);
+   window.draw(this->sprite);
 }
 
 void ClientPlayer::move(MoveDirection direction)
 {
-   b2Vec2 speedVec = body->GetLinearVelocity();
-   float x = 0, y = 0;
-   if (direction & MoveDirection::FORWARD)
-   {
-      y = -this->maxSpeed;
-   }
-   else if (direction & MoveDirection::BACKWARD)
-   {
-      y = this->maxSpeed;
-   }
+   //b2Vec2 speedVec = this->body->GetLinearVelocity();
+   //float angular = this->body->GetAngularVelocity();
+   //b2Vec2 angularVec = this->body->GetLinearVelocity();
+   //float x = std::cos(this->body->GetAngle());
+   //float y = std::sin(this->body->GetAngle());
+   //std::cout << "ruch" << std::endl;
+   //if (direction & MoveDirection::FORWARD)
+   //{
+   //   if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
+   //   {
+   //      this->verticalSpeed += 0.2f;
+   //      this->body->SetLinearVelocity(b2Vec2(x * verticalSpeed, this->verticalSpeed * y));
+   //   }
+   //}
+   //else if (direction & MoveDirection::BACKWARD)
+   //{
+   //   if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
+   //   {
+   //      //this->verticalSpeed -= 0.2f;
+   //   }
+   //}
 
    if (direction & MoveDirection::LEFT)
    {
-      x = -this->maxSpeed;
+      if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
+      {
+         this->angularSpeed += 0.4f;
+      }
    }
    else if (direction & MoveDirection::RIGHT)
    {
-      x = this->maxSpeed;
+      if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
+      {
+         this->angularSpeed -= 0.4f;
+      }
    }
-
-   b2Vec2 impulse = b2Vec2(x, y) - speedVec;
-   impulse *= this->body->GetMass();
-
-   this->body->ApplyLinearImpulseToCenter(impulse, true);
-   //this->body->ApplyForceToCenter(b2Vec2(x - speedVec.x, y - speedVec.y), true);
-   //this->body->ApplyForceToCenter(speedVec, true);
 }
 
 b2Body * ClientPlayer::getBody()

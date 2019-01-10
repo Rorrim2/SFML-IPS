@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "ClientPlayersManager.h"
 #include <queue>
+#include "MapClientSide.h"
 #include "World.h"
 
 
@@ -36,9 +37,11 @@ private:
    sf::Time timer;
    float sendEventToServerTimer;
    World world;
-   std::queue<MoveDirection> lastDirections;
+   std::queue<std::pair<MoveDirection, sf::Int32>> lastDirections;
    ClientPlayersManager playersManager;
    ClientPlayer* player;
    Client client;
+
+   MapClientSide map;
 };
 

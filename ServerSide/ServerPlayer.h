@@ -24,13 +24,17 @@ public:
    float getAngle();
 
    PlayerState getPlayerState();
-
-   void move(MoveDirection &direction);
+   void update();
+   void move(MoveDirection &direction, const sf::Int32 & time);
 
    b2Body* getBody();
 private:
    //TODO add max speed
    float maxSpeed;
+   float maxAngularSpeed;
+   float verticalSpeed;
+   float angularSpeed;
+
    b2Body* body;
 };
 

@@ -37,7 +37,8 @@ sf::Packet ServerLogic::getPlayersSnapshot()
    for (auto &itr : this->playersManager.getAllPlayers())
    {
       PlayerState state = itr.second->getPlayerState();
-      p << itr.first << state.coords.x << state.coords.y << state.angle << state.health << itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y;
+      p << this->server.getTime().asMilliseconds() << itr.first << state.coords.x << state.coords.y << state.angle << state.health <<
+         itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y << itr.second->getBody()->GetAngularVelocity();
    }
    return p;
 }
@@ -47,9 +48,9 @@ void ServerLogic::addPlayer(ClientID & clientID, const float & x, const float & 
    this->playersManager.addPlayer(clientID, x, y);
 }
 
-void ServerLogic::movePlayer(ClientID & clientID, MoveDirection dir)
+void ServerLogic::movePlayer(ClientID & clientID, MoveDirection dir, const sf::Int32 & time)
 {
-   this->playersManager.movePlayer(clientID, dir);
+   this->playersManager.movePlayer(clientID, dir, time);
 }
 
 void ServerLogic::signToRemovePlayer(const ClientID & clientID)
@@ -109,11 +110,12 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          size_t count;
          int dir;
          packet >> count;
+         sf::Int32 time;
          //std::cout << id << "   " << count << std::endl;
          sf::Lock lock(server->getMutex());
          for (int i = 0; i < count; ++i)
          {
-            packet >> dir;
+            packet >> time >> dir;
 
             //TODO ³adnie to gdzieœ wywalic
             if (dir == MoveDirection::SHOOT_LEFT)
@@ -124,7 +126,8 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
             {
                DEBUG_COUT("ship " << id << " is shooting RIGHT");
             }
-            movePlayer(id, static_cast<MoveDirection>(dir));
+           // DEBUG_COUT((int)dir << "server: " << this->server.getTime().asMilliseconds() << " time: " << time << " diff time"  << this->server.getTime().asMilliseconds() - time);
+            movePlayer(id, static_cast<MoveDirection>(dir), this->server.getTime().asMilliseconds() - time);
          }
       }
       else if (static_cast<PacketType>(packetID) == PacketType::PlayerCreate)
@@ -202,6 +205,7 @@ void ServerLogic::runServer()
                this->window->update();
             }
 
+            this->playersManager.update();
             updatePsyhicsWorld();
             this->world.eraseDeathBodies();
          }

@@ -8,7 +8,8 @@
 #include "PacketType.h"
 
 #define HEARTBEAT_INVERVAL 2000
-#define HEARTBEAT_TRIES 5
+//#define HEARTBEAT_TRIES 5
+#define HEARTBEAT_TRIES 50
 
 struct ClientInfo
 {

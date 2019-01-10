@@ -248,8 +248,14 @@ void Client::update(const sf::Time &time)
 			this->lastHeartBeat = this->serverTime;
 			return;
 		}
-
-		int diff = this->localTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
+      //this statement is only for keep variable above 0 if it go signed
+      if (this->localTime.asMilliseconds() < 0)
+      {
+         this->localTime -= sf::milliseconds(sf::Int32(Network::HighestTimestamp));
+         this->lastHeartBeat = this->localTime;
+         return;
+      }
+		int diff = this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
 		if (diff >= static_cast<int>(Network::ClientTimeout))
 		{
 			//timeout
@@ -263,7 +269,7 @@ sf::Mutex & Client::getMutex()
 {
    return this->mutex;
 }
-
+ 
 void Client::setPlayerName(std::string &playerName)
 {
 	this->playerName = playerName;

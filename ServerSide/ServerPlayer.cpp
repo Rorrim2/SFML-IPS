@@ -6,7 +6,10 @@
 ServerPlayer::ServerPlayer(b2Body *body)
 {
    this->body = body;
-   this->maxSpeed = 5;
+   this->maxSpeed = 2;
+   this->maxAngularSpeed = 0.5;
+   this->verticalSpeed = 0;
+   this->angularSpeed = 0;
 }
 
 
@@ -17,12 +20,12 @@ ServerPlayer::~ServerPlayer()
 sf::Vector2f ServerPlayer::getPosition()
 {
    b2Vec2 pos = this->body->GetPosition();
-   return sf::Vector2f(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER);
+   return sf::Vector2f(pos.x, pos.y);
 }
 
 float ServerPlayer::getAngle()
 {
-   return this->body->GetAngle() / b2_pi * 180.0f;
+   return this->body->GetAngle();
 }
 
 PlayerState ServerPlayer::getPlayerState()
@@ -30,32 +33,52 @@ PlayerState ServerPlayer::getPlayerState()
    return PlayerState(getPosition(), getAngle(), 0);
 }
 
-void ServerPlayer::move(MoveDirection & direction)
+void ServerPlayer::update()
 {
-   b2Vec2 speedVec = body->GetLinearVelocity();
-   float x = 0, y = 0;
+   this->verticalSpeed *= .78;
+   this->angularSpeed *= .50;
+   this->body->SetAngularVelocity(this->angularSpeed);
+}
+
+void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
+{
+   b2Vec2 speedVec = this->body->GetLinearVelocity();
+   float angular = this->body->GetAngularVelocity();
+   b2Vec2 angularVec = this->body->GetLinearVelocity();
+   float x = std::cos(this->body->GetAngle());
+   float y = std::sin(this->body->GetAngle());
+
    if (direction & MoveDirection::FORWARD)
    {
-      y = -this->maxSpeed;
+      if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
+      {
+         this->verticalSpeed += 0.2f;
+         this->body->SetLinearVelocity(b2Vec2(x * verticalSpeed, this->verticalSpeed * y));
+      }
    }
    else if (direction & MoveDirection::BACKWARD)
    {
-      y = this->maxSpeed;
+      if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
+      {
+         //this->verticalSpeed -= 0.2f;
+      }
    }
 
    if (direction & MoveDirection::LEFT)
    {
-      x = -this->maxSpeed;
+      if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
+      {
+         this->angularSpeed += 0.4f;
+      }
    }
    else if (direction & MoveDirection::RIGHT)
    {
-      x = this->maxSpeed;
+      if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
+      {
+         this->angularSpeed -= 0.4f;
+      }
    }
-   b2Vec2 impulse = b2Vec2(x, y) - speedVec;
-   impulse *= this->body->GetMass();
 
-   this->body->ApplyLinearImpulseToCenter(impulse, true);
-   //this->body->ApplyForceToCenter(speedVec, true);
 }
 
 b2Body * ServerPlayer::getBody()
