@@ -1,0 +1,22 @@
+Window_close 0:0
+
+Fullscreen_toggle 5:89
+
+IntroContinue 5:57
+
+Mouse_Left 9:0
+
+Mouse_Right 9:1
+
+KeyEscape 5:36
+
+KeyUp 5:73
+KeyDown 5:74
+EnterKey 5:58
+Mouse_Move 5:11
+Ship_Move_Up 5:22
+Ship_Move_Down 5:18
+Ship_Move_Left 5:0
+Ship_Move_Right 5:3
+Shoot_Left 5:4
+Shoot_Right 5:5
