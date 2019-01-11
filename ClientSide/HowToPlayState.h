@@ -28,5 +28,8 @@ private:
 
 	sf::Vector2f buttonSize;
 	sf::Vector2f buttonPos;
+
+	sf::Sprite htpSprite;
+	sf::Texture htpTexture;
 };
 

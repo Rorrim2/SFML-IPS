@@ -32,6 +32,7 @@
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SetDataState.cpp" />
     <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -50,6 +51,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="SetDataState.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="Utilities.h" />

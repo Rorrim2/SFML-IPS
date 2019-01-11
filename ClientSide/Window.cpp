@@ -3,6 +3,7 @@
 Window::Window()
 {
    Window("Window", sf::Vector2u(640, 480));
+   this->isSetDataState = false;
 }
 
 Window::Window(const std::string &title, const sf::Vector2u &size)
@@ -47,6 +48,7 @@ void Window::setup(const std::string title, const sf::Vector2u& size) {
 	this->eventManager.AddCallback(StateTypeE(0),"Fullscreen_toggle", &Window::toggleFullscreen, this);
 	this->eventManager.AddCallback(StateTypeE(0), "Window_close", &Window::close, this);
 	this->create();
+	this->counter = 0;
 }
 
 void Window::beginDraw()
@@ -73,7 +75,16 @@ void Window::update()
 		  this->isFocused = true;
 		  this->eventManager.SetFocus(true);
 	  }
-	  if(event.key.code == sf::Keyboard::F5 || event.key.code == sf::Keyboard::Escape) std::cout << event.type << std::endl;
+	  else if (event.type == sf::Event::TextEntered) {
+		  if (this->isSetDataState) {
+				if (event.text.unicode < 127 && event.text.unicode >= 32)
+					{
+						this->Inputs[this->counter].push_back((char)event.text.unicode);
+					}
+			}
+			  
+	  }
+	 // if(event.key.code == sf::Keyboard::F5 || event.key.code == sf::Keyboard::Escape) std::cout << event.type << std::endl;
 	  this->eventManager.HandleEvent(event);
    }
    this->eventManager.Update();
@@ -95,6 +106,38 @@ void Window::toggleFullscreen(EventDetails* details)
    destroy();
    create();
 }
+//setdatastate
+void Window::SetIsDataStateFlag()
+{
+	this->isSetDataState = !this->isSetDataState;
+}
+
+bool Window::GetIsDataStateFlag() 
+{
+	return this->isSetDataState;
+}
+
+unsigned int Window::getCounter()
+{
+	return this->counter;
+}
+
+std::string Window::getInput()
+{
+	return this->Inputs[this->counter];
+}
+
+void Window::incrementCounter()
+{
+	this->counter++;
+}
+
+void Window::deleteChar()
+{
+	this->Inputs[this->counter].pop_back();
+}
+//end things with setdatastate
+
 
 sf::Vector2u Window::getWindowSize()
 {

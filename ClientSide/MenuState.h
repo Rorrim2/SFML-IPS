@@ -23,7 +23,6 @@ public:
 	void KeyDown(EventDetails* details);
 	void PressEnter(EventDetails* details);
 	void test(EventDetails* details);
-	//TODO with keys also
 private:
 	sf::Font font;
 	sf::Text menuText;

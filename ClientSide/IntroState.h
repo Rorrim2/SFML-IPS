@@ -27,6 +27,9 @@ private:
    sf::Text introText;
    sf::Sprite introSprite;
    sf::Texture introTexture;
+
+   sf::Clock clock;
+   sf::Time time;
    float timePassed;
    unsigned int transparentNum;
 };

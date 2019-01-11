@@ -14,3 +14,4 @@ KeyUp 5:73
 KeyDown 5:74
 EnterKey 5:58
 Mouse_Move 11:0
+BackSpace 5:59

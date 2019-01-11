@@ -22,8 +22,6 @@ public:
 
    void setServer(const sf::IpAddress & ip, const PortNumber & portNumber);
    bool connect();
-   
-   void mainMenu(EventDetails* details);
 
 private:
    ClientPlayersManager playersManager;

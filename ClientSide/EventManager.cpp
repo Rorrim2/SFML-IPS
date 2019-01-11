@@ -17,7 +17,7 @@ bool EventManager::AddBinding(Binding *binding) {
 
 //if there is binding with the same name in "Binding map", free memory by deleting the second element
 // and then throw out from "Binding map"
-bool EventManager::RemoveBinding(std::string nameOfEvent) {
+bool EventManager::RemoveBinding(const std::string nameOfEvent) {
 	auto itr = bindings.find(nameOfEvent);
 	if (itr == bindings.end()) return false;
 	
@@ -41,7 +41,7 @@ void EventManager::HandleEvent(sf::Event &TypeEvent) {
 			{
 				if (eventItr.second.code == TypeEvent.key.code)  //if eventInfo.code == typeevent.key.code (keyboard) ->
 				{
-					if (bind->details.keyCode != -1)  // -> if eventdetails.keycode != -1
+					if (bind->details.keyCode == -1) 
 					{
 						bind->details.keyCode = eventItr.second.code; // binding->eventdetailt->keycode = Events->EventInfo->code
 					}
@@ -55,7 +55,7 @@ void EventManager::HandleEvent(sf::Event &TypeEvent) {
 				{
 					bind->details.mouse.x = TypeEvent.mouseButton.x;
 					bind->details.mouse.y = TypeEvent.mouseButton.y;
-					if (bind->details.keyCode != -1)
+					if (bind->details.keyCode == -1)
 					{
 						bind->details.keyCode = eventItr.second.code;
 					}
