@@ -1,6 +1,6 @@
 #include "IntroState.h"
 #include <SFML/Graphics.hpp>
-#define INTO_TIME 16.0f
+#define INTO_TIME 4.0f
 
 IntroState::IntroState(StateManager *stateManager)
    :BaseState(stateManager)
@@ -37,7 +37,7 @@ void IntroState::onCreate()
    evMgr->AddCallback(StateTypeE::INTRO, "IntroContinue", &IntroState::Continue, this);    
  
    this->transparentNum = 0;
-   this->timePassed = 0.f;
+   //this->timePassed = 0.f;
 }
 
 void IntroState::onDestroy() {
@@ -48,7 +48,7 @@ void IntroState::onDestroy() {
 void IntroState::draw()
 {
 	this->stateManager->getContext()->window->draw(this->introSprite);
-	if (this->timePassed >= INTO_TIME)
+	if (this->time.asSeconds() >= INTO_TIME)
 	{
 		this->stateManager->getContext()->window->draw(this->introText);
 	}
@@ -56,9 +56,9 @@ void IntroState::draw()
 
 void IntroState::update(const sf::Time & time)
 {
-   if (this->timePassed < INTO_TIME)
+	this->time = this->clock.getElapsedTime();
+   if (this->time.asSeconds() < INTO_TIME)
    {
-      this->timePassed += time.asSeconds();
       if (this->transparentNum < 255)
       {
          this->transparentNum++;

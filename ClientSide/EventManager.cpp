@@ -41,7 +41,7 @@ void EventManager::HandleEvent(sf::Event &TypeEvent) {
 			{
 				if (eventItr.second.code == TypeEvent.key.code)  //if eventInfo.code == typeevent.key.code (keyboard) ->
 				{
-					if (bind->details.keyCode == -1)  // -> if eventdetails.keycode != -1
+					if (bind->details.keyCode == -1) 
 					{
 						bind->details.keyCode = eventItr.second.code; // binding->eventdetailt->keycode = Events->EventInfo->code
 					}

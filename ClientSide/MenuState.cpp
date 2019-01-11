@@ -91,7 +91,7 @@ void MenuState::draw() {
 
 void MenuState::activate()
 {
-	if (this->stateManager->HasState(StateTypeE::GAME) && this->labels[0].getString() == "PLAY") {
+	if (this->stateManager->HasState(StateTypeE::SERVER_DATA) && this->labels[0].getString() == "PLAY") {
 		this->labels[0].setString(sf::String("RESUME"));
 		sf::FloatRect rect = this->labels[0].getLocalBounds();
 		this->labels[0].setOrigin(rect.left + rect.width / 2.0f, rect.top + rect.height / 2.0f); 
@@ -127,7 +127,7 @@ void MenuState::PressEnter(EventDetails* details)
 {
 	if (this->rectIndex == 0)
 	{
-		this->stateManager->switchTo(StateTypeE::GAME);
+		this->stateManager->switchTo(StateTypeE::SERVER_DATA);
 	}
 	else if (this->rectIndex == 1)
 	{
@@ -176,7 +176,7 @@ void MenuState::MouseClick(EventDetails* details)
 			
 			if (i == 0)
 			{
-				this->stateManager->switchTo(StateTypeE::GAME);
+				this->stateManager->switchTo(StateTypeE::SERVER_DATA);
 			}
 			else if (i == 1)
 			{

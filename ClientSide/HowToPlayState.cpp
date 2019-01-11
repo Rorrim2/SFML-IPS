@@ -69,6 +69,14 @@ void HowToPlayState::onCreate()
 	exitText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	exitText.setPosition(windowSize.x * 0.1, windowSize.y * 0.8);
 
+	//png
+	this->htpTexture.loadFromFile("map.png");
+	this->htpSprite.setTexture(this->htpTexture);
+	this->htpSprite.scale(0.6, 0.6);
+	this->htpSprite.setOrigin(htpTexture.getSize().x / 2.0f, htpTexture.getSize().y / 2.0f);
+	this->htpSprite.setPosition(windowSize.x / 2.0f, windowSize.y * 0.4);
+
+
 	EventManager* evMgr = stateManager->getContext()->eventManager;
 	evMgr->AddCallback(StateTypeE::HOW_TO_PLAY, "KeyEscape", &HowToPlayState::backToMenu, this);
 	evMgr->AddCallback(StateTypeE::HOW_TO_PLAY, "Mouse_Left", &HowToPlayState::MouseClick, this);
@@ -88,6 +96,7 @@ void HowToPlayState::draw()
 	sf::RenderWindow* window = stateManager->getContext()->window->getRenderWindow();
 	window->draw(this->rect);
 	window->draw(this->exitText);
+	window->draw(this->htpSprite);
 }
 
 void HowToPlayState::update(const sf::Time &time)

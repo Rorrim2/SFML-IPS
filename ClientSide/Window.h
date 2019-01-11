@@ -27,8 +27,16 @@ public:
    void toggleFullscreen(EventDetails* details);
    void close(EventDetails* details = nullptr);
    void setup(const std::string title, const sf::Vector2u& size);
-   sf::RenderWindow* getRenderWindow();
 
+   // setdata state
+   void SetIsDataStateFlag();
+   bool GetIsDataStateFlag();
+   std::string getInput();
+   unsigned int getCounter();
+   void incrementCounter();
+   void deleteChar();
+
+   sf::RenderWindow* getRenderWindow();
    sf::Vector2u getWindowSize();
 
    void draw(sf::Drawable &drawable);
@@ -49,6 +57,11 @@ private:
    //EventManager
    EventManager eventManager;
    bool isFocused;
+
+   //state: setdatastate
+   std::map <unsigned int, std::string> Inputs;
+   unsigned int counter;
+   bool isSetDataState;
 
 };
 
