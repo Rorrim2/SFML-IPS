@@ -17,10 +17,10 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   std::cout << "Enter Server IP: ";
-   std::cin >> ip;
-   std::cout << "Enter Server Port: ";
-   std::cin >> port;
+   //std::cout << "Enter Server IP: ";
+   //std::cin >> ip;
+   //std::cout << "Enter Server Port: ";
+   //std::cin >> port;
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
 
@@ -36,6 +36,7 @@ void GameState::onCreate()
    {
       moveToMainMenu(nullptr);
    }
+   this->world.loadMap("map.xml");
 }
 
 void GameState::onDestroy()
@@ -69,10 +70,11 @@ void GameState::update(const sf::Time & time)
    if (this->physicStarted == false)
    {
       this->world.initWorld();
+      this->world.addPolygons();
       this->world.initDebugDrawing(*this->stateManager->getContext()->window);
 
       this->client.sendCreatePlayerPacket();
-      this->player = this->playersManager.createPlayer(400, 400, "Ship_red");
+      this->player = this->playersManager.createPlayer(80, 400, "Ship_red");
          //new ClientPlayer(this->playersManager.createShipBody(400, 400), *this->stateManager->getContext()->textureManager->GetResource("Ship_red"));
       this->playersManager.addPlayer(this->client.getClientID(), this->player);
       this->physicStarted = true;

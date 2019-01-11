@@ -13,7 +13,7 @@ World::~World()
 
 void World::initWorld()
 {
-   this->world = new b2World(b2Vec2(0, 4));
+   this->world = new b2World(b2Vec2(0, 0));
    //800x900
    //this is temporary world egdes
    //this->worldBox = createBody(450, 790, false);
@@ -29,84 +29,85 @@ void World::initWorld()
    //createBoxFixture(this->worldBox, 10, 400);
 }
 
-void World::initMap()
+void World::loadMap(const std::string &path)
 {
-	bool didItWorked = map.loadFromFile("C:\\Users\\aliss\\Desktop\\testing_map2.xml");
-	if (didItWorked == false) {
-		cout << "Failed to load map" << endl;
-	}
+   bool didItWorked = map.loadFromFile(path);
+   if (didItWorked == false) 
+   {
+      cout << "Failed to load map" << endl;
+   }
 }
 
 void World::addRectangles()
 {
-	std::vector<Rectangle> Rects = map.getRectVector();
-	cout << "Rects size: " << Rects.size() << endl;
-	for (int i = 0; i < Rects.size(); ++i) 
-	{
-		if (Rects[i].type == DYNAMIC) {
-			b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
-				Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, true);
-			createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
-			rectBodies.push_back(temp);
-		}
-		else if (Rects[i].type == STATIC) {
-			b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
-				Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, false);
-			createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
-			rectBodies.push_back(temp);
-		}
-		else {
-			cout << "Something went wrong in addRectangles" << endl;
-			return;
-		}
-	}
-	
+   std::vector<Rectangle> Rects = map.getRectVector();
+   //cout << "Rects size: " << Rects.size() << endl;
+   for (int i = 0; i < Rects.size(); ++i)
+   {
+      if (Rects[i].type == DYNAMIC) {
+         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
+            Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, true);
+         createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
+         rectBodies.push_back(temp);
+      }
+      else if (Rects[i].type == STATIC) {
+         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
+            Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, false);
+         createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
+         rectBodies.push_back(temp);
+      }
+      else {
+         cout << "Something went wrong in addRectangles" << endl;
+         return;
+      }
+   }
+
 }
 
-void World::addPolygons() 
+void World::addPolygons()
 {
-	std::vector<Polygon> Poly = map.getPolyVector();
-	b2BodyDef bodyDef;
-	cout << "Poly size: " << Poly.size() << endl;
-	for (int i = 0; i < Poly.size(); ++i)
-	{
-		if (Poly[i].type == DYNAMIC)
-		{
-			bodyDef.type = b2_dynamicBody;
-		}
-		else if(Poly[i].type == STATIC)
-		{
-			bodyDef.type = b2_staticBody;
-		}
-		else 
-		{
-			cout << "Something went wrong in addPolygons" << endl;
-			return;
-		}
-		size_t num_of_points = Poly[i].points.size();
-		b2Body* body = this->world->CreateBody(&bodyDef);
-		b2Vec2* vertices = new b2Vec2[num_of_points];
-		b2Vec2 temp_point0;
-		temp_point0.x = Poly[i].x;
-		temp_point0.y = Poly[i].y;
-		b2Vec2 temp_point;
-		for (int j = 0; j < num_of_points; ++j)
-		{
-			temp_point.x = (Poly[i].points[j].y + temp_point0.x) * METERS_PER_PIXEL * x_ratio;
-			temp_point.y = (Poly[i].points[j].x + temp_point0.y) * METERS_PER_PIXEL * y_ratio;
-			vertices[j] = temp_point;
-		}
-		b2ChainShape chain;
-		chain.CreateLoop(vertices, num_of_points);
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &chain;
-		fixtureDef.density = 1;
-		fixtureDef.friction = 1;
-		fixtureDef.restitution = 0.5f;
-		body->CreateFixture(&fixtureDef);
-		polyBodies.push_back(body);
-		//delete[] vertices;
-	}
+   std::vector<Polygon> Poly = map.getPolyVector();
+   b2BodyDef bodyDef;
+   //cout << "Poly size: " << Poly.size() << endl;
+   for (int i = 0; i < Poly.size(); ++i)
+   {
+      if (Poly[i].type == DYNAMIC)
+      {
+         bodyDef.type = b2_dynamicBody;
+      }
+      else if (Poly[i].type == STATIC)
+      {
+         bodyDef.type = b2_staticBody;
+      }
+      else
+      {
+         cout << "Something went wrong in addPolygons" << endl;
+         return;
+      }
+      size_t num_of_points = Poly[i].points.size();
+      b2Body* body = this->world->CreateBody(&bodyDef);
+      b2Vec2* vertices = new b2Vec2[num_of_points];
+      b2Vec2 temp_point0;
+      temp_point0.x = Poly[i].x;
+      temp_point0.y = Poly[i].y;
+      b2Vec2 temp_point;
+      for (int j = 0; j < num_of_points; ++j)
+      {
+         temp_point.x = (Poly[i].points[j].y + temp_point0.x) * METERS_PER_PIXEL * x_ratio;
+         temp_point.y = (Poly[i].points[j].x + temp_point0.y) * METERS_PER_PIXEL * y_ratio;
+         vertices[j] = temp_point;
+      }
+      b2ChainShape chain;
+      chain.CreateLoop(vertices, num_of_points);
+      b2FixtureDef fixtureDef;
+      fixtureDef.shape = &chain;
+      fixtureDef.density = 1;
+      fixtureDef.friction = 1;
+      fixtureDef.restitution = 0.5f;
+      body->CreateFixture(&fixtureDef);
+      polyBodies.push_back(body);
+      //delete[] vertices;
+   }
 }
 
 b2World * World::getWorld()

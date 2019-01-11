@@ -1,9 +1,10 @@
 #pragma once
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 #include <SFML/System/Vector2.hpp>
 #include "DebugDraw.h"
 #include "Window.h"
 #include "Global.h"
+#include "MapParser.h"
 #include <stdexcept>
 
 
@@ -16,8 +17,10 @@ public:
    World();
    ~World();
    
-   
    void initWorld();
+   void loadMap(const std::string &path);
+   void addRectangles();
+   void addPolygons();
    b2World* getWorld();
 
    void updateWorld();
@@ -33,9 +36,13 @@ public:
    void eraseDeathBodies();
 
 private:
-   std::vector<b2Body*> bodiesToDelete;
-   DebugDraw *debugDraw;
-   b2World *world;
-   b2Body *worldBox;
+	MapServerSide map;
+
+	std::vector<b2Body*> polyBodies;
+	std::vector<b2Body*> rectBodies;
+	std::vector<b2Body*> bodiesToDelete;
+	DebugDraw *debugDraw;
+	b2World *world;
+	b2Body *worldBox;
 };
 

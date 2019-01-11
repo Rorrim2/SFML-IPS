@@ -31,6 +31,7 @@
     <ClCompile Include="HowToPlayState.cpp" />
     <ClCompile Include="IntroState.cpp" />
     <ClCompile Include="MapClientSide.cpp" />
+    <ClCompile Include="MapParser.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="PacketType.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="HowToPlayState.h" />
     <ClInclude Include="IntroState.h" />
     <ClInclude Include="MapClientSide.h" />
+    <ClInclude Include="MapParser.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="PacketType.h" />

@@ -3,8 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "MapClientSide.h"
-
-using namespace std;
+#include "Global.h"
 
 void MapClientSide::loadFromFile()
 {
@@ -13,6 +12,8 @@ void MapClientSide::loadFromFile()
 		std::cout << "Failed to load tile sheet." << std::endl;
 	}
 	this->mapSprite.setTexture(this->map);
+
+   this->mapSprite.setScale(x_ratio, y_ratio);
 }
 
 void MapClientSide::setMapName(string name)

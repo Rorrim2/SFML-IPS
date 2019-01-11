@@ -133,7 +133,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
       else if (static_cast<PacketType>(packetID) == PacketType::PlayerCreate)
       {
          //TODO this x and y should get from map
-         float x = 400, y = 400;
+         float x = 80, y = 400;
          ClientID clientID;
          packet >> clientID;
          sf::Packet newPacket;
@@ -164,7 +164,8 @@ void ServerLogic::runServer()
    {
       this->commandThread.launch();
       initPsyhicsWorld();
-
+      this->world.loadMap("map.xml");
+      this->world.addPolygons();
       if (this->windowEnable == true)
       {
          initDebugDraw(this->window);

@@ -17,3 +17,5 @@ inline void lerp(sf::Vector2f& res, const sf::Vector2f& a, const sf::Vector2f& b
    res.x = (1 - t)*a.x + t * b.x;
    res.y = (1 - t)*a.y + t * b.y;
 };
+const static float x_ratio = 900.f / 1120.f;
+const static float y_ratio = 800.f / 1120.f;

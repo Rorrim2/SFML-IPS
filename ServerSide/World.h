@@ -18,7 +18,7 @@ public:
    ~World();
    
    void initWorld();
-   void initMap();
+   void loadMap(const std::string &path);
    void addRectangles();
    void addPolygons();
    b2World* getWorld();
@@ -34,10 +34,6 @@ public:
 
    void removeBody(b2Body *body);
    void eraseDeathBodies();
-   void debugBodie() {
-	   cout << "Rect Bodies: " << rectBodies.size() << endl;
-	   cout << "Poly Bodies: " << polyBodies.size() << endl;
-   }
 
 private:
 	MapServerSide map;
