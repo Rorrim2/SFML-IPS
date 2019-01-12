@@ -241,6 +241,8 @@ void Client::update(const sf::Time &time)
 	   this->localTime += time;
 
 		this->serverTime += time;
+      
+
 		//this statement is only for keep variable above 0 if it go signed
 		if (this->serverTime.asMilliseconds() < 0)
 		{
@@ -255,13 +257,16 @@ void Client::update(const sf::Time &time)
          this->lastHeartBeat = this->localTime;
          return;
       }
-		int diff = this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
-		if (diff >= static_cast<int>(Network::ClientTimeout))
-		{
-			//timeout
-			DEBUG_COUT("Server connection time out!");
-			disconnect();
-		}
+      if (this->isSynced() == true)
+      {
+		   int diff = this->serverTime.asMilliseconds() - this->lastHeartBeat.asMilliseconds();
+         if (diff >= static_cast<int>(Network::ClientTimeout))
+		   {
+			   //timeout
+			   DEBUG_COUT("Server connection time out!");
+			   disconnect();
+		   }
+      }
 	}
 }
 

@@ -6,6 +6,7 @@ GameState::GameState(StateManager *stateManager)
    this->physicStarted = false;
    map.setMapName("map.png");
    map.loadFromFile();
+   this->world.loadMap("map.xml");
 }
 
 
@@ -17,10 +18,11 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   //std::cout << "Enter Server IP: ";
-   //std::cin >> ip;
-   //std::cout << "Enter Server Port: ";
-   //std::cin >> port;
+   std::cout << "Enter Server IP: ";
+   std::cin >> ip;
+   std::cout << "Enter Server Port: ";
+   std::cin >> port;
+   //sf::sleep(sf::seconds(10));
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
 
@@ -36,7 +38,6 @@ void GameState::onCreate()
    {
       moveToMainMenu(nullptr);
    }
-   this->world.loadMap("map.xml");
 }
 
 void GameState::onDestroy()

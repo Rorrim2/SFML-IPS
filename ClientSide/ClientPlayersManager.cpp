@@ -65,7 +65,7 @@ void ClientPlayersManager::movePlayer(const PlayerState &state)
          b2Vec2 posExtrapolation((state.x + state.x * time * time * 0.5), (state.y + state.y * time * time * 0.5));
          bool posUpdate = false;
          //std::cout << state.time << std::endl;
-         body->SetAngularVelocity(angularVelExtrapolation * (state.angularVel > 0 ? 1 : -1));
+         body->SetAngularVelocity(angularVelExtrapolation);
          body->SetLinearVelocity(velExtrapolation);
          float posDiff = b2DistanceSquared(posExtrapolation, pos);
          if (posDiff > 0.2)// || (velExtrapolation.x <= 0.3 || velExtrapolation.y <= 0.3) && posDiff > 0.05f)
