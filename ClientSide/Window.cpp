@@ -49,6 +49,11 @@ void Window::setup(const std::string title, const sf::Vector2u& size) {
 	this->eventManager.AddCallback(StateTypeE(0), "Window_close", &Window::close, this);
 	this->create();
 	this->counter = 0;
+	
+	this->shipNames[ShipType::BLUE] = "blue";
+	this->shipNames[ShipType::RED] = "red";
+	this->shipNames[ShipType::GREEN] = "green";
+	this->shipNames[ShipType::YELLOW] = "yellow";
 }
 
 void Window::beginDraw()
@@ -77,12 +82,14 @@ void Window::update()
 	  }
 	  else if (event.type == sf::Event::TextEntered) {
 		  if (this->isSetDataState) {
-				if (event.text.unicode < 127 && event.text.unicode >= 32)
-					{
-						this->Inputs[this->counter].push_back((char)event.text.unicode);
-					}
-			}
-			  
+			  if(this->counter != 3)
+			  {
+				  if (event.text.unicode < 127 && event.text.unicode >= 32)
+				  {
+					  this->Inputs[this->counter].push_back((char)event.text.unicode);
+				  }
+			  }
+		  }	  
 	  }
 	 // if(event.key.code == sf::Keyboard::F5 || event.key.code == sf::Keyboard::Escape) std::cout << event.type << std::endl;
 	  this->eventManager.HandleEvent(event);
@@ -135,6 +142,10 @@ void Window::incrementCounter()
 void Window::deleteChar()
 {
 	this->Inputs[this->counter].pop_back();
+}
+
+void Window::SetShip(ShipType shipType) {
+	this->Inputs[this->counter] = this->shipNames[this->whichShip];
 }
 //end things with setdatastate
 

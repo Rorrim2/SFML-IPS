@@ -72,10 +72,14 @@ void HowToPlayState::onCreate()
 	//png
 	this->htpTexture.loadFromFile("map.png");
 	this->htpSprite.setTexture(this->htpTexture);
-	this->htpSprite.scale(0.6, 0.6);
+	this->htpSprite.scale(0.7, 0.7);
 	this->htpSprite.setOrigin(htpTexture.getSize().x / 2.0f, htpTexture.getSize().y / 2.0f);
 	this->htpSprite.setPosition(windowSize.x / 2.0f, windowSize.y * 0.4);
 
+	//background
+	this->background.loadFromFile("water.png");
+	this->bgSprite.setTexture(this->background);
+	this->bgSprite.setPosition(windowSize.x + 5, windowSize.y + 5);
 
 	EventManager* evMgr = stateManager->getContext()->eventManager;
 	evMgr->AddCallback(StateTypeE::HOW_TO_PLAY, "KeyEscape", &HowToPlayState::backToMenu, this);
@@ -97,6 +101,7 @@ void HowToPlayState::draw()
 	window->draw(this->rect);
 	window->draw(this->exitText);
 	window->draw(this->htpSprite);
+	window->draw(this->bgSprite);
 }
 
 void HowToPlayState::update(const sf::Time &time)

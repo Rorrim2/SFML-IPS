@@ -52,6 +52,7 @@
     <ClInclude Include="PacketType.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SetDataState.h" />
+    <ClInclude Include="ShipType.h" />
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="StateType.h" />
     <ClInclude Include="Utilities.h" />

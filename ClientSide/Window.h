@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include "EventManager.h"
+#include "ShipType.h"
 
 class Window
 {
@@ -35,6 +36,7 @@ public:
    unsigned int getCounter();
    void incrementCounter();
    void deleteChar();
+   void SetShip(ShipType shipType);
 
    sf::RenderWindow* getRenderWindow();
    sf::Vector2u getWindowSize();
@@ -62,6 +64,7 @@ private:
    std::map <unsigned int, std::string> Inputs;
    unsigned int counter;
    bool isSetDataState;
-
+   ShipType whichShip;
+   std::map <ShipType, std::string> shipNames;
 };
 

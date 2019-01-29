@@ -31,5 +31,7 @@ private:
 
 	sf::Sprite htpSprite;
 	sf::Texture htpTexture;
+	sf::Texture background;
+	sf::Sprite bgSprite;
 };
 
