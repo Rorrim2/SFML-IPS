@@ -176,6 +176,9 @@
     <ClInclude Include="SetDataState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<ClInclude Include="ShipType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ClientCannonball.h">
       <Filter>Header Files</Filter>
     </ClInclude>

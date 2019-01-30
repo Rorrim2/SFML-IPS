@@ -22,11 +22,19 @@ public:
 	void PressEnter(EventDetails* details);
 	void PressBackSpace(EventDetails* details);
 
+	void MouseClick(EventDetails* details);
+	void HighlightShip(EventDetails* details);
+
 private: 
 	std::map<unsigned int, sf::Text> Outputs;
 	std::map<unsigned int, sf::Text> infoText;
 	std::vector<sf::String> text;
 	sf::Text enterText;
 	sf::Font font;
+
+	sf::FloatRect ShipSize;
+	std::map<unsigned int, sf::Vector2f> boundingBox;
+	std::map<ShipType, sf::Sprite> shipSprites;
+	std::map<ShipType, sf::Texture> shipTextures;
 };
 
