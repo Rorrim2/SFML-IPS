@@ -28,6 +28,25 @@ float ServerPlayer::getAngle()
    return this->body->GetAngle();
 }
 
+short ServerPlayer::getHealt()
+{
+	return this->health;
+}
+
+void ServerPlayer::setHealth(short new_heath)
+{
+	this->health = new_heath;
+}
+
+bool ServerPlayer::isDead() 
+{
+	if (!this->health)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 PlayerState ServerPlayer::getPlayerState()
 {
    return PlayerState(getPosition(), getAngle(), 0);

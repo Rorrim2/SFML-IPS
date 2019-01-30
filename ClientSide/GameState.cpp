@@ -18,10 +18,10 @@ void GameState::onCreate()
 {
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
-   std::cout << "Enter Server IP: ";
-   std::cin >> ip;
-   std::cout << "Enter Server Port: ";
-   std::cin >> port;
+   //std::cout << "Enter Server IP: ";
+   //std::cin >> ip;
+   //std::cout << "Enter Server Port: ";
+   //std::cin >> port;
    //sf::sleep(sf::seconds(10));
    setServer(ip, port);
    this->client.setup(&GameState::clientHandler, this);
@@ -173,7 +173,7 @@ void GameState::shoot(EventDetails * details)
       break;
    }
    }
-   //this->lastDirections.push(dir);
+   this->lastDirections.push({ dir, this->client.getTime().asMilliseconds() });
 }
 
 void GameState::movePlayer(EventDetails *details)
@@ -226,7 +226,7 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
       {
          playersManager.decreasePlayerOccurence();
          size_t count;
-         int health;
+         short health;
          int time;
          float x, y, angle, angularVel;
          ClientID idC;

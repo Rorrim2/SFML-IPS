@@ -27,7 +27,7 @@ public:
 
    b2Body* createBody(const float &x, const float &y, bool isDynamic = true);
    void createBoxFixture(b2Body *body, const float &width, const float &height, const float &friction = 1, const float &density = 1);
-
+   void createCicleFixture(b2Body *body, const float & radius, const float & friction, const float & density);
 
    void initDebugDrawing(Window &window);
    void drawDebugData();

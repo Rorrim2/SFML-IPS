@@ -44,12 +44,14 @@ void World::addRectangles()
    for (int i = 0; i < Rects.size(); ++i)
    {
       if (Rects[i].type == DYNAMIC) {
-         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio, Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, true);
+         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
+			 Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, true);
          createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
          rectBodies.push_back(temp);
       }
       else if (Rects[i].type == STATIC) {
-         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio, Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, false);
+         b2Body* temp = createBody(Rects[i].x * x_ratio + Rects[i].width / 2 * x_ratio,
+			 Rects[i].y * y_ratio + Rects[i].height / 2 * y_ratio, false);
          createBoxFixture(temp, Rects[i].width / 2 * x_ratio, Rects[i].height / 2 * y_ratio);
          rectBodies.push_back(temp);
       }
@@ -143,6 +145,18 @@ void World::createBoxFixture(b2Body *body, const float & width, const float & he
    fixtureDef.friction = friction;
    fixtureDef.restitution = 0.5f;
    body->CreateFixture(&fixtureDef);
+}
+
+void World::createCicleFixture(b2Body *body, const float & radius, const float & friction, const float & density)
+{
+	b2CircleShape circle;
+	circle.m_radius = radius * METERS_PER_PIXEL;
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &circle;
+	fixtureDef.density = density;
+	fixtureDef.friction = friction;
+	fixtureDef.restitution = 0.5f;
+	body->CreateFixture(&fixtureDef);
 }
 
 void World::initDebugDrawing(Window &window)

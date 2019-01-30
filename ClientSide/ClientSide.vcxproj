@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="ClientCannonball.cpp" />
+    <ClCompile Include="ClientCannonballManager.cpp" />
     <ClCompile Include="ClientPlayer.cpp" />
     <ClCompile Include="ClientPlayersManager.cpp" />
     <ClCompile Include="ClientSide.cpp" />
@@ -47,6 +49,8 @@
   <ItemGroup>
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="ClientCannonball.h" />
+    <ClInclude Include="ClientCannonballManager.h" />
     <ClInclude Include="ClientPlayer.h" />
     <ClInclude Include="ClientPlayersManager.h" />
     <ClInclude Include="DebugDraw.h" />

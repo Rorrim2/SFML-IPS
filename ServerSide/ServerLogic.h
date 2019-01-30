@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "World.h"
 #include <SFML/Graphics.hpp>
+#include "ServerCannonballManager.h"
 
 
 class ServerLogic
@@ -38,6 +39,7 @@ private:
    Window *window;
    Server server;
    ServerPlayersManager playersManager;
+   ServerCannonballManager cannonballMg;
    World world;
 };
 

@@ -148,6 +148,18 @@ void World::createBoxFixture(b2Body *body, const float & width, const float & he
    body->CreateFixture(&fixtureDef);
 }
 
+void World::createCicleFixture(b2Body *body, const float & radius, const float & friction, const float & density)
+{
+	b2CircleShape circle;
+	circle.m_radius = radius * METERS_PER_PIXEL;
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &circle;
+	fixtureDef.density = density;
+	fixtureDef.friction = friction;
+	fixtureDef.restitution = 0.5f;
+	body->CreateFixture(&fixtureDef);
+}
+
 void World::initDebugDrawing(Window &window)
 {
    this->debugDraw = new DebugDraw(window);

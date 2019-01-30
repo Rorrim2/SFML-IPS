@@ -63,6 +63,12 @@
     <ClCompile Include="ServerPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ServerCannonball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerCannonballManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DebugDraw.h">
@@ -102,6 +108,12 @@
       <Filter>Header Files\TinyXML</Filter>
     </ClInclude>
     <ClInclude Include="MapParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerCannonball.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerCannonballManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

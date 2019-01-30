@@ -1,10 +1,10 @@
 #include "ServerLogic.h"
 
 
-
 ServerLogic::ServerLogic(bool _windowEnable)
    :windowEnable(_windowEnable), playersManager(world, this->server.getMutex()),
-   server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server))
+   server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server)),
+	cannonballMg(world, this->server.getMutex())
 {
    this->server.bindTimeoutHandler(&ServerLogic::clientLeft, this);
    if (this->windowEnable == true)
@@ -65,10 +65,12 @@ void ServerLogic::initDebugDraw(Window *window)
       this->world.initDebugDrawing(*window);
    }
 }
+
 void ServerLogic::debugDraw()
 {
    this->world.drawDebugData();
 }
+
 void ServerLogic::clearBodies()
 {
    this->world.eraseDeathBodies();
@@ -120,6 +122,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
             //TODO ³adnie to gdzieœ wywalic
             if (dir == MoveDirection::SHOOT_LEFT)
             {
+				this->cannonballMg.addCannonball(1, 300, 400);
                DEBUG_COUT("ship " << id << " is shooting left");
             }
             if (dir == MoveDirection::SHOOT_RIGHT)

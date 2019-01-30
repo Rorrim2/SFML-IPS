@@ -7,11 +7,11 @@
 
 struct PlayerState
 {
-   PlayerState(const sf::Vector2f &playerCoords, float playerAngle, int playerHealth)
+   PlayerState(const sf::Vector2f &playerCoords, float playerAngle, short playerHealth)
       : coords(playerCoords), angle(playerAngle), health(playerHealth) {}
    sf::Vector2f coords;
    float angle;
-   int health;
+   short health;
 };
 
 class ServerPlayer
@@ -22,6 +22,10 @@ public:
 
    sf::Vector2f getPosition();
    float getAngle();
+   short getHealt();
+   void setHealth(short new_heath);
+
+   bool isDead();
 
    PlayerState getPlayerState();
    void update();
@@ -30,6 +34,7 @@ public:
    b2Body* getBody();
 private:
    //TODO add max speed
+	short health;
    float maxSpeed;
    float maxAngularSpeed;
    float verticalSpeed;
