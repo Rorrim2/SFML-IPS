@@ -70,18 +70,17 @@ void ClientPlayersManager::movePlayer(const PlayerState &state)
          float posDiff = b2DistanceSquared(posExtrapolation, pos);
          if (posDiff > 0.2)// || (velExtrapolation.x <= 0.3 || velExtrapolation.y <= 0.3) && posDiff > 0.05f)
          {
-            bool awake = body->IsAwake();
-            body->SetAwake(!awake);
-            body->SetAwake(awake);
-            body->SetTransform(posExtrapolation, angleExtrapolation);
-            //body->SetLinearVelocity(b2Vec2(0, 0));
             posUpdate = true;
-            std::cout << "x: " << posExtrapolation.x << "  | " << pos.x << "  | " << state.x << std::endl;
+            //std::cout << "x: " << posExtrapolation.x << "  | " << pos.x << "  | " << state.x << std::endl;
          }
-            body->SetTransform(posUpdate ? posExtrapolation : pos,/* (state.angle > 0 ? 1 : -1) **/ angleExtrapolation);
          if (std::fabs(angleExtrapolation - angleOr) >= .005)
          {
-            std::cout << "angle" << std::endl;
+            body->SetTransform(posUpdate ? posExtrapolation : pos, angleExtrapolation);
+            //std::cout << "or: " << angleOr << " ex: " << angleExtrapolation <<  std::endl;
+         }
+         else
+         {
+            body->SetTransform(posUpdate ? posExtrapolation : pos, angleOr);
          }
          //if (std::fabs(angularVelExtrapolation - angularOrVel) >= .01)
          //{

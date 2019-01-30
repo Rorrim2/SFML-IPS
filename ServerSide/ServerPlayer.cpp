@@ -66,7 +66,7 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
    b2Vec2 angularVec = this->body->GetLinearVelocity();
    float x = std::cos(this->body->GetAngle());
    float y = std::sin(this->body->GetAngle());
-
+   float time = _time / 1000.f;
    if (direction & MoveDirection::FORWARD)
    {
       if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
@@ -87,16 +87,18 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
    {
       if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
       {
-         this->angularSpeed += 0.4f;
+         this->angularSpeed += 0.4f + 0.4f * (time * time * 0.5f);
       }
    }
    else if (direction & MoveDirection::RIGHT)
    {
       if (std::fabs(this->angularSpeed) <= this->maxAngularSpeed)
       {
-         this->angularSpeed -= 0.4f;
+         this->angularSpeed -= 0.4f + 0.4f * (time * time * 0.5f);
       }
    }
+
+   std:cout << "add " << 0.4f * _time * _time * 0.5f << " time :" << _time << std::endl;
 
 }
 

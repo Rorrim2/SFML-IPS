@@ -173,7 +173,7 @@ void GameState::shoot(EventDetails * details)
       break;
    }
    }
-   this->lastDirections.push({ dir, this->client.getTime().asMilliseconds() });
+   this->lastDirections.push({dir, this->client.getTime().asMilliseconds() });
 }
 
 void GameState::movePlayer(EventDetails *details)
@@ -184,12 +184,12 @@ void GameState::movePlayer(EventDetails *details)
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
       {
          this->lastDirections.push({ MoveDirection::LEFT, this->client.getTime().asMilliseconds() });
-         this->player->move(MoveDirection::LEFT);
+         this->player->move(MoveDirection::RIGHT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
       {
          this->lastDirections.push({ MoveDirection::RIGHT, this->client.getTime().asMilliseconds() });
-         this->player->move(MoveDirection::RIGHT);
+         this->player->move(MoveDirection::LEFT);
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
       {
@@ -236,7 +236,10 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          for (int i = 0; i < count; ++i)
          {
             packet >> time >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y >> angularVel;
-            playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity });
+            if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
+            {
+               playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity });
+            }
          }
       }
       else if (static_cast<PacketType>(id) == PacketType::Disconnect)
