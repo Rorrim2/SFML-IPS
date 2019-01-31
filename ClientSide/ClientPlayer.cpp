@@ -36,7 +36,7 @@ void ClientPlayer::update(const sf::Time& time)
    this->sprite.setRotation(this->body->GetAngle() / b2_pi * 180.0f);
    this->verticalSpeed *= .78;
    this->angularSpeed *= .50;
-   this->body->SetAngularVelocity(this->angularSpeed);
+   //this->body->SetAngularVelocity(this->angularSpeed);
 
 }
 

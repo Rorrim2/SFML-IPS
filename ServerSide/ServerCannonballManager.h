@@ -18,13 +18,15 @@ public:
 	ServerCannonball * getCannonBall(const CannID& cannID);
 	ServerCann& getAllCannoballs();
 
-	void addCannonball(const CannID cannID, const float &x, const float &y);
+   ServerCannonball* addCannonball(const float &x, const float &y);
 	void removeCannonball(const CannID cannID);
 	b2Body* createCannonballBody(float x, float y);
 
 	void removeAllCannonballs();
+   void update(const sf::Time &time);
 
 private:
+   int lastIndex;
 	sf::Mutex &mutex;
 	World &world;
 	ServerCann cannBalls;

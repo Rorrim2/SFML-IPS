@@ -8,6 +8,7 @@ enum class PacketType
 	Disconnect = -1,
 	Connect = 1,
    PlayerUpdate,
+   CannoBallUpdate,
    PlayerCreate,
    PlayerMove,
 	Heartbeat,

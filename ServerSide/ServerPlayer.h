@@ -28,12 +28,15 @@ public:
    bool isDead();
 
    PlayerState getPlayerState();
-   void update();
+   void update(const sf::Time &time);
    void move(MoveDirection &direction, const sf::Int32 & time);
+
+   void shoot();
+   bool canShoot();
 
    b2Body* getBody();
 private:
-   //TODO add max speed
+   float shootTimeout;
 	short health;
    float maxSpeed;
    float maxAngularSpeed;

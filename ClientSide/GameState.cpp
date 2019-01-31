@@ -1,7 +1,7 @@
 #include "GameState.h"
 
 GameState::GameState(StateManager *stateManager)
-   :BaseState(stateManager), playersManager(world, this->client.getMutex())
+   :BaseState(stateManager), playersManager(world, this->client.getMutex()), cannonBallManager(world, this->client.getMutex())
 {
    this->physicStarted = false;
    map.setMapName("map.png");
@@ -57,6 +57,7 @@ void GameState::draw()
    if (this->physicStarted == true)
    {
       this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
+      this->cannonBallManager.drawAllCannonbalss(*this->stateManager->getContext()->window);
       this->world.drawDebugData();
    }
 }
@@ -92,6 +93,7 @@ void GameState::update(const sf::Time & time)
       sf::Lock lock(this->client.getMutex());
       this->world.updateWorld();
       this->playersManager.updateAllPlayers(time);
+      this->cannonBallManager.updateAllCannonballs(time);
       movePlayer(nullptr);
 
       this->world.eraseDeathBodies();
@@ -236,9 +238,29 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          for (int i = 0; i < count; ++i)
          {
             packet >> time >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y >> angularVel;
-            if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
+            //if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
             {
                playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity });
+            }
+         }
+      }
+      else if (static_cast<PacketType>(id) == PacketType::CannoBallUpdate)
+      {
+         cannonBallManager.decreaseCannonballOccurence();
+         size_t count;
+         int time;
+         float x, y, angle;
+         CannID idC;
+         b2Vec2 linearVelocity;
+         packet >> count;
+
+         for (int i = 0; i < count; ++i)
+         {
+            packet >> time >> idC >> x >> y >> angle >> linearVelocity.x >> linearVelocity.y;
+            //if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
+            {
+               std::cout << idC << std::endl;
+               cannonBallManager.moveCannonball({ this->client.getTime().asMilliseconds() - time, idC, x, y, linearVelocity });
             }
          }
       }

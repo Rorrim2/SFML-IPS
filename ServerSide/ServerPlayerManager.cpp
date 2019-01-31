@@ -26,11 +26,11 @@ void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x,
    }
 }
 
-void ServerPlayersManager::update()
+void ServerPlayersManager::update(const sf::Time &time)
 {
    for (auto player : this->players)
    {
-      player.second->update();
+      player.second->update(time);
    }
 }
 

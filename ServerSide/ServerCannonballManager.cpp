@@ -5,6 +5,7 @@
 ServerCannonballManager::ServerCannonballManager(World &world, sf::Mutex &_mutex)
 	: world(world), mutex(_mutex)
 {
+   this->lastIndex = 0;
 }
 
 
@@ -27,16 +28,24 @@ ServerCann & ServerCannonballManager::getAllCannoballs()
 	return this->cannBalls;
 }
 
-void ServerCannonballManager::addCannonball(const CannID cannID, const float & x, const float & y)
+ServerCannonball* ServerCannonballManager::addCannonball(const float & x, const float & y)
 {
 	//TODO: one cannB if if is active, think about it
 	//if (this->cannBalls.count(cannID) <= 0)
-	{
-		sf::Lock lock(this->mutex);
-		this->cannBalls[cannID] = new ServerCannonball(createCannonballBody(x, y));
+   {
+      sf::Lock lock(this->mutex);
+      this->cannBalls[this->lastIndex] = new ServerCannonball(createCannonballBody(x, y));
 	}
+   return this->cannBalls[this->lastIndex++];
 }
 
+void ServerCannonballManager::update(const sf::Time &time)
+{
+   for (auto cann : this->cannBalls)
+   {
+      cann.second->update(time);
+   }
+}
 void ServerCannonballManager::removeCannonball(const CannID cannID)
 {
 	if (this->cannBalls.find(cannID) != this->cannBalls.end())

@@ -21,7 +21,7 @@ public:
 
 	sf::Vector2f getPosition();
 	short getDamage();
-
+   void update(const sf::Time &time);
 	void setDamage(short new_damage);
 
 	CannonballState getCannState();

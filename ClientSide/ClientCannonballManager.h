@@ -12,8 +12,6 @@ struct CannonballState
 	CannID cannID;
 	float x;
 	float y;
-	float angle;
-	float angularVel;
 	b2Vec2 linearVelocity;
 };
 

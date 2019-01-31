@@ -4,7 +4,7 @@
 ServerLogic::ServerLogic(bool _windowEnable)
    :windowEnable(_windowEnable), playersManager(world, this->server.getMutex()),
    server(&ServerLogic::handler, this), commandThread(std::bind(&ServerLogic::commandHandler, this, &this->server)),
-	cannonballMg(world, this->server.getMutex())
+   cannonballMg(world, this->server.getMutex())
 {
    this->server.bindTimeoutHandler(&ServerLogic::clientLeft, this);
    if (this->windowEnable == true)
@@ -42,7 +42,17 @@ sf::Packet ServerLogic::getPlayersSnapshot()
    }
    return p;
 }
-
+sf::Packet ServerLogic::getCannonBallsSnapshot()
+{
+   sf::Packet p;
+   StampPacket(PacketType::CannoBallUpdate, p);
+   p << this->cannonballMg.getAllCannoballs().size();
+   for (auto &itr : this->cannonballMg.getAllCannoballs())
+   {
+      p << this->server.getTime().asMilliseconds() << itr.first << itr.second->getPosition().x << itr.second->getPosition().y << itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y;
+   }
+   return p;
+}
 void ServerLogic::addPlayer(ClientID & clientID, const float & x, const float & y)
 {
    this->playersManager.addPlayer(clientID, x, y);
@@ -119,17 +129,31 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          {
             packet >> time >> dir;
 
-            //TODO ³adnie to gdzieœ wywalic
-            if (dir == MoveDirection::SHOOT_LEFT)
+            ServerPlayer *player = this->playersManager.getPlayer(id);
+            if (player->canShoot())
             {
-				this->cannonballMg.addCannonball(1, 300, 400);
-               DEBUG_COUT("ship " << id << " is shooting left");
+               sf::Vector2f position = player->getPosition();
+               float x = std::cos(player->getBody()->GetAngle());
+               float y = std::sin(player->getBody()->GetAngle());
+               if (dir & MoveDirection::SHOOT_LEFT)
+               {
+                  auto rot = player->getBody()->GetTransform().q;
+                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * position.x, PIXELS_PER_METER * position.y);
+                //  cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetXAxis().x / 4,1 * rot.GetYAxis().x / 4), true);
+                  player->shoot();
+                  DEBUG_COUT("ship " << player->getBody()->GetAngle() << " is shooting left  " << rot.GetXAxis().x << "  " << x << "  " << rot.GetXAxis().y << "      " << rot.GetYAxis().x << "  " << x << "  " << rot.GetYAxis().y);
+               }
+               if (dir & MoveDirection::SHOOT_RIGHT)
+               {
+                  sf::Vector2f position = this->playersManager.getPlayer(id)->getPosition();
+                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * position.x, PIXELS_PER_METER * position.y);
+
+                  //cannonBall->getBody()->ApplyLinearImpulseToCenter(b2Vec2(-x / 2, -y/2), true);
+                  player->shoot();
+                  DEBUG_COUT("ship " << id << " is shooting RIGHT  " << position.x);
+               }
             }
-            if (dir == MoveDirection::SHOOT_RIGHT)
-            {
-               DEBUG_COUT("ship " << id << " is shooting RIGHT");
-            }
-           // DEBUG_COUT((int)dir << "server: " << this->server.getTime().asMilliseconds() << " time: " << time << " diff time"  << this->server.getTime().asMilliseconds() - time);
+            // DEBUG_COUT((int)dir << "server: " << this->server.getTime().asMilliseconds() << " time: " << time << " diff time"  << this->server.getTime().asMilliseconds() - time);
             movePlayer(id, static_cast<MoveDirection>(dir), this->server.getTime().asMilliseconds() - time);
          }
       }
@@ -191,7 +215,7 @@ void ServerLogic::runServer()
          timeSinceLastUpdate += elapsedTime;
          timeSinceLastUpdateSnapshot += elapsedTime;
          color += elapsedTime;
-         
+
          //std::cout << server.getTime().asSeconds() << std::endl;
          if (color >= sf::seconds(1))
          {
@@ -209,11 +233,12 @@ void ServerLogic::runServer()
                this->window->update();
             }
 
-            this->playersManager.update();
+            this->playersManager.update(timePerFrame);
+            this->cannonballMg.update(timePerFrame);
             updatePsyhicsWorld();
             this->world.eraseDeathBodies();
          }
-         
+
          if (this->windowEnable == true)
          {
             this->window->beginDraw();
@@ -227,6 +252,12 @@ void ServerLogic::runServer()
             {
                sf::Lock lock(server.getMutex());
                p = getPlayersSnapshot();
+            }
+            server.broadcast(p);
+            p.clear();
+            {
+               sf::Lock lock(server.getMutex());
+               p = getCannonBallsSnapshot();
             }
             server.broadcast(p);
             p.clear();

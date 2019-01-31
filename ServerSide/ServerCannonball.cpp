@@ -23,6 +23,10 @@ short ServerCannonball::getDamage()
 	return this->damage;
 }
 
+void ServerCannonball::update(const sf::Time & time)
+{
+}
+
 void ServerCannonball::setDamage(short new_damage)
 {
 	this->damage = new_damage;

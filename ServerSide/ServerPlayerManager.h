@@ -17,7 +17,7 @@ public:
    ServerPlayers& getAllPlayers();
 
    void addPlayer(const ClientID& clientID, const float &x, const float &y);
-   void update();
+   void update(const sf::Time &time);
    void removePlayer(const ClientID& clientID);
    void movePlayer(const ClientID& id, MoveDirection dir, const sf::Int32 & time);
    b2Body *createShipBody(float x, float y);

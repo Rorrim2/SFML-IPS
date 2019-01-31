@@ -70,7 +70,7 @@ void HowToPlayState::onCreate()
 	exitText.setPosition(windowSize.x * 0.1, windowSize.y * 0.8);
 
 	//png
-	this->htpTexture.loadFromFile("map.png");
+	this->htpTexture.loadFromFile("howToPlayStateBg.png");
 	this->htpSprite.setTexture(this->htpTexture);
 	this->htpSprite.scale(0.7, 0.7);
 	this->htpSprite.setOrigin(htpTexture.getSize().x / 2.0f, htpTexture.getSize().y / 2.0f);

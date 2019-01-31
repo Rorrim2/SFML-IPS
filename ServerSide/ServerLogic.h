@@ -22,6 +22,7 @@ public:
    void updatePsyhicsWorld();
 
    sf::Packet getPlayersSnapshot();
+   sf::Packet getCannonBallsSnapshot();
    void addPlayer(ClientID& clientID, const float &x, const float &y);
    void movePlayer(ClientID& clientID, MoveDirection dir, const sf::Int32 & time);
    void signToRemovePlayer(const ClientID& clientID);

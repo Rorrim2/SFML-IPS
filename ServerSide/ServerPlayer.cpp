@@ -10,6 +10,7 @@ ServerPlayer::ServerPlayer(b2Body *body)
    this->maxAngularSpeed = 0.5;
    this->verticalSpeed = 0;
    this->angularSpeed = 0;
+   this->shootTimeout = 0;
 }
 
 
@@ -52,11 +53,12 @@ PlayerState ServerPlayer::getPlayerState()
    return PlayerState(getPosition(), getAngle(), 0);
 }
 
-void ServerPlayer::update()
+void ServerPlayer::update(const sf::Time &time)
 {
    this->verticalSpeed *= .78;
    this->angularSpeed *= .50;
    this->body->SetAngularVelocity(this->angularSpeed);
+   this->shootTimeout += time.asSeconds();
 }
 
 void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
@@ -100,6 +102,15 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
 
    std:cout << "add " << 0.4f * _time * _time * 0.5f << " time :" << _time << std::endl;
 
+}
+
+bool ServerPlayer::canShoot()
+{
+   return this->shootTimeout > 2.f;
+}
+void ServerPlayer::shoot()
+{
+   this->shootTimeout = 0;
 }
 
 b2Body * ServerPlayer::getBody()

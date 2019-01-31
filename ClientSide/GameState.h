@@ -3,6 +3,7 @@
 #include "StateManager.h"
 #include "Client.h"
 #include "ClientPlayersManager.h"
+#include "ClientCannonballManager.h"
 #include <queue>
 #include "MapClientSide.h"
 #include "World.h"
@@ -39,6 +40,7 @@ private:
    World world;
    std::queue<std::pair<MoveDirection, sf::Int32>> lastDirections;
    ClientPlayersManager playersManager;
+   ClientCannonballManager cannonBallManager;
    ClientPlayer* player;
    Client client;
 

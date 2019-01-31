@@ -5,6 +5,7 @@ ClientCannonball::ClientCannonball(b2Body* body, const sf::Texture & texture)
 	: sprite(texture)
 {
 	this->body = body;
+   this->sprite.setOrigin(5, 5);
 	this->sprite.setPosition(this->body->GetPosition().x * PIXELS_PER_METER, this->body->GetPosition().y * PIXELS_PER_METER);
 
 	this->lastTime = sf::Time::Zero;
