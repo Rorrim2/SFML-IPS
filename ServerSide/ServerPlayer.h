@@ -35,6 +35,9 @@ public:
    bool canShoot();
 
    b2Body* getBody();
+   float width = 17;
+   float height = 33;
+
 private:
    float shootTimeout;
 	short health;
@@ -42,6 +45,7 @@ private:
    float maxAngularSpeed;
    float verticalSpeed;
    float angularSpeed;
+   
 
    b2Body* body;
 };

@@ -1,5 +1,7 @@
 #include "ServerLogic.h"
-
+#include <fstream>
+#include <math.h>
+#define PI 3.141592
 
 ServerLogic::ServerLogic(bool _windowEnable)
    :windowEnable(_windowEnable), playersManager(world, this->server.getMutex()),
@@ -125,37 +127,72 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          sf::Int32 time;
          //std::cout << id << "   " << count << std::endl;
          sf::Lock lock(server->getMutex());
+		 std::ofstream plik1("plik1.txt", std::ofstream::out | std::ofstream::app);
          for (int i = 0; i < count; ++i)
          {
             packet >> time >> dir;
 
-            ServerPlayer *player = this->playersManager.getPlayer(id);
+            ServerPlayer *player = this->playersManager.getPlayer(id); 
+			
             if (player->canShoot())
             {
-               sf::Vector2f position = player->getPosition();
-               float x = std::cos(player->getBody()->GetAngle());
-               float y = std::sin(player->getBody()->GetAngle());
-               if (dir & MoveDirection::SHOOT_LEFT)
-               {
-                  auto rot = player->getBody()->GetTransform().q;
-                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * position.x, PIXELS_PER_METER * position.y);
-                //  cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetXAxis().x / 4,1 * rot.GetYAxis().x / 4), true);
-                  player->shoot();
-                  DEBUG_COUT("ship " << player->getBody()->GetAngle() << " is shooting left  " << rot.GetXAxis().x << "  " << x << "  " << rot.GetXAxis().y << "      " << rot.GetYAxis().x << "  " << x << "  " << rot.GetYAxis().y);
-               }
+               sf::Vector2f position = player->getPosition(); //pozycja
+			   float angle = player->getBody()->GetAngle();
+			   
+			   float x = std::cos(player->getBody()->GetAngle()); //dlaczego nie x/z?
+               float y = std::sin(player->getBody()->GetAngle());//dlaczego nie y/z?
+			   
+
                if (dir & MoveDirection::SHOOT_RIGHT)
                {
-                  sf::Vector2f position = this->playersManager.getPlayer(id)->getPosition();
-                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * position.x, PIXELS_PER_METER * position.y);
-
-                  //cannonBall->getBody()->ApplyLinearImpulseToCenter(b2Vec2(-x / 2, -y/2), true);
+				  auto rot = player->getBody()->GetTransform().q;
+				  float temp_angle = fabs(angle);
+				  while (temp_angle > 2 * PI)
+				  {
+					  temp_angle -= 2 * PI;
+				  }
+				  float new_x, new_y, temp_x, temp_y;
+				  temp_x = sin(temp_angle) * player->width * METERS_PER_PIXEL;
+				  temp_y = cos(temp_angle) * player->width * METERS_PER_PIXEL;
+				  new_x = position.x + temp_x;
+				  new_y = position.y + temp_y;
+				  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y);
+				  auto velocityVector = player->getBody()->GetLinearVelocity();
+				  //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2 + 1 * velocityVector.x / 4, 1 * rot.GetXAxis().x / 2 + 1 * velocityVector.y / 4), true);
+				  cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2, 1 * rot.GetXAxis().x / 2), true);
                   player->shoot();
-                  DEBUG_COUT("ship " << id << " is shooting RIGHT  " << position.x);
+                  DEBUG_COUT("ship " << player->getBody()->GetAngle() << " is shooting right  " << rot.GetYAxis().x << "  " << rot.GetXAxis().x  << "      " << rot.GetXAxis().y);
+				  //plik1 << "ship " << player->getBody()->GetAngle() << " is shooting right  " << rot.GetXAxis().x << "  " << x << "  " << rot.GetXAxis().y << "      " << rot.GetYAxis().x << "  " << x << "  " << rot.GetYAxis().y << endl;
+			   }
+
+               if (dir & MoveDirection::SHOOT_LEFT)
+               {
+				   auto rot = player->getBody()->GetTransform().q;
+				   float temp_angle = fabs(angle);
+				   while (temp_angle > 2 * PI)
+				   {
+					   temp_angle -= 2 * PI;
+				   }
+				   float new_x, new_y, temp_x, temp_y;
+				   temp_x = sin(temp_angle) * player->width * METERS_PER_PIXEL;
+				   temp_y = cos(temp_angle) * player->width * METERS_PER_PIXEL;
+				   new_x = position.x - temp_x;
+				   new_y = position.y - temp_y;
+				   ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y);
+				   auto velocityVector = player->getBody()->GetLinearVelocity();
+				   //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2 + 1 * velocityVector.x / 4, 1 * rot.GetXAxis().x / 2 + 1 * velocityVector.y / 4), true);
+				   //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2, 1 * rot.GetYAxis().y / 2), true);
+				   cannonBall->getBody()->ApplyForceToCenter(b2Vec2(-1 * rot.GetYAxis().x / 2, -1 * rot.GetXAxis().x / 2), true);
+				   player->shoot();
+				   DEBUG_COUT("ship " << player->getBody()->GetAngle() << " is shooting right  " << rot.GetYAxis().x << "  " << rot.GetYAxis().y << "      " << rot.GetYAxis().x);
+				   //plik1 << "ship " << player->getBody()->GetAngle() << " is shooting right  " << rot.GetXAxis().x << "  " << x << "  " << rot.GetXAxis().y << "      " << rot.GetYAxis().x << "  " << x << "  " << rot.GetYAxis().y << endl;
+
                }
             }
             // DEBUG_COUT((int)dir << "server: " << this->server.getTime().asMilliseconds() << " time: " << time << " diff time"  << this->server.getTime().asMilliseconds() - time);
             movePlayer(id, static_cast<MoveDirection>(dir), this->server.getTime().asMilliseconds() - time);
          }
+		 plik1.close();
       }
       else if (static_cast<PacketType>(packetID) == PacketType::PlayerCreate)
       {
