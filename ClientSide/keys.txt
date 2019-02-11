@@ -12,6 +12,8 @@ KeyEscape 5:36
 
 KeyUp 5:73
 KeyDown 5:74
+KeyLeft 5:71
+KeyRight 5:72
 EnterKey 5:58
 Mouse_Move 11:0
 BackSpace 5:59

@@ -5,6 +5,11 @@
 #include "EventManager.h"
 #include "ShipType.h"
 
+/*
+enum InputType {
+	IP, PORT, PLAYER, SHIP
+};*/
+
 class Window
 {
 public:
@@ -33,17 +38,19 @@ public:
    void SetIsDataStateFlag();
    bool GetIsDataStateFlag();
    std::string getInput();
+   std::string getInput(unsigned int i);
    unsigned int getCounter();
    void incrementCounter();
    void deleteChar();
    void SetShip(ShipType shipType);
+   void SwapTheSign();
 
    sf::RenderWindow* getRenderWindow();
    sf::Vector2u getWindowSize();
 
    void draw(sf::Drawable &drawable);
    void draw(sf::Vertex *verticles, size_t count, sf::PrimitiveType type);
-
+   
 
 
 private:
@@ -64,7 +71,9 @@ private:
    std::map <unsigned int, std::string> Inputs;
    unsigned int counter;
    bool isSetDataState;
-   ShipType whichShip;
    std::map <ShipType, std::string> shipNames;
+   unsigned int itsTimeToSwap;
+
+   ShipType whichOne;
 };
 

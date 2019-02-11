@@ -52,8 +52,8 @@ void HowToPlayState::onCreate()
 {
 	sf::Vector2u windowSize = this->stateManager->getContext()->window->getWindowSize();
 
-	buttonSize = sf::Vector2f(100.0f, 30.0f);
-	buttonPos = sf::Vector2f(windowSize.x * 0.1, windowSize.y * 0.8);
+	buttonSize = sf::Vector2f(200.0f, 30.0f);
+	buttonPos = sf::Vector2f(windowSize.x * 0.5, windowSize.y * 0.82);
 
 	rect.setSize(buttonSize);
 	rect.setOrigin(buttonSize.x / 2.0f, buttonSize.y / 2.0f);
@@ -62,12 +62,12 @@ void HowToPlayState::onCreate()
 
 	font.loadFromFile("Noturnal Hand.ttf");
 	exitText.setFont(font);
-	exitText.setString(sf::String("EXIT"));
+	exitText.setString(sf::String("BACK TO MENU"));
 	exitText.setCharacterSize(20);
 
 	sf::FloatRect textRect = exitText.getLocalBounds();
 	exitText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-	exitText.setPosition(windowSize.x * 0.1, windowSize.y * 0.8);
+	exitText.setPosition(buttonPos);
 
 	//png
 	this->htpTexture.loadFromFile("map.png");
