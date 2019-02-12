@@ -248,18 +248,18 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
       {
          cannonBallManager.decreaseCannonballOccurence();
          size_t count;
-         int time;
-         float x, y, angle;
+         sf::Int32 time;
+         float x, y;
          CannID idC;
          b2Vec2 linearVelocity;
          packet >> count;
 
          for (int i = 0; i < count; ++i)
          {
-            packet >> time >> idC >> x >> y >> angle >> linearVelocity.x >> linearVelocity.y;
+            packet >> time >> idC >> x >> y >> linearVelocity.x >> linearVelocity.y;
             //if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
             {
-               std::cout << idC << std::endl;
+               std::cerr << idC << std::endl;
                cannonBallManager.moveCannonball({ this->client.getTime().asMilliseconds() - time, idC, x, y, linearVelocity });
             }
          }

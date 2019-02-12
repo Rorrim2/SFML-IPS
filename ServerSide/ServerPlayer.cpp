@@ -99,9 +99,6 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
          this->angularSpeed -= 0.4f + 0.4f * (time * time * 0.5f);
       }
    }
-
-   std:cout << "add " << 0.4f * _time * _time * 0.5f << " time :" << _time << std::endl;
-
 }
 
 bool ServerPlayer::canShoot()

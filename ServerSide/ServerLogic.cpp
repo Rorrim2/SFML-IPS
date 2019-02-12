@@ -35,6 +35,8 @@ sf::Packet ServerLogic::getPlayersSnapshot()
 {
    sf::Packet p;
    StampPacket(PacketType::PlayerUpdate, p);
+
+   sf::Lock lock(server.getMutex());
    p << this->playersManager.getAllPlayers().size();
    for (auto &itr : this->playersManager.getAllPlayers())
    {
@@ -48,6 +50,8 @@ sf::Packet ServerLogic::getCannonBallsSnapshot()
 {
    sf::Packet p;
    StampPacket(PacketType::CannoBallUpdate, p);
+
+   sf::Lock lock(server.getMutex());
    p << this->cannonballMg.getAllCannoballs().size();
    for (auto &itr : this->cannonballMg.getAllCannoballs())
    {
@@ -127,7 +131,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          sf::Int32 time;
          //std::cout << id << "   " << count << std::endl;
          sf::Lock lock(server->getMutex());
-         std::ofstream plik1("plik1.txt", std::ofstream::out | std::ofstream::app);
+         //std::ofstream plik1("plik1.txt", std::ofstream::out | std::ofstream::app);
          for (int i = 0; i < count; ++i)
          {
             packet >> time >> dir;
@@ -192,7 +196,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
             // DEBUG_COUT((int)dir << "server: " << this->server.getTime().asMilliseconds() << " time: " << time << " diff time"  << this->server.getTime().asMilliseconds() - time);
             movePlayer(id, static_cast<MoveDirection>(dir), this->server.getTime().asMilliseconds() - time);
          }
-         plik1.close();
+         //plik1.close();
       }
       else if (static_cast<PacketType>(packetID) == PacketType::PlayerCreate)
       {
@@ -286,16 +290,10 @@ void ServerLogic::runServer()
 
          while (timeSinceLastUpdateSnapshot > timePerSnapshot)
          {
-            {
-               sf::Lock lock(server.getMutex());
-               p = getPlayersSnapshot();
-            }
+            p = getPlayersSnapshot();
             server.broadcast(p);
             p.clear();
-            {
-               sf::Lock lock(server.getMutex());
-               p = getCannonBallsSnapshot();
-            }
+            p = getCannonBallsSnapshot();
             server.broadcast(p);
             p.clear();
             timeSinceLastUpdateSnapshot -= timePerSnapshot;

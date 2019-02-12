@@ -28,7 +28,11 @@ public:
 
 	b2Body* getBody();
 
+   bool isDestroy();
+
 private:
+   float lifeTime;
+   bool toRemove;
 	short damage;
 	b2Body* body;
 };

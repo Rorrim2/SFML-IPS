@@ -19,16 +19,17 @@ ClientCannonballManager::~ClientCannonballManager()
    this->Cannonballs.clear();
 }
 
-void ClientCannonballManager::addCannonball(const ClientID & clientID, const float & x, const float & y)
+void ClientCannonballManager::addCannonball(const CannID & cannID, const float & x, const float & y)
 {
    if (!this->world.getWorld()->IsLocked())
    {
       sf::Lock lock(this->mutex);
-      if (this->Cannonballs.count(clientID) <= 0)
+      if (this->Cannonballs.count(cannID) <= 0)
       {
-         this->Cannonballs[clientID] = createCannonball(x, y, "Cannonball");
+         this->Cannonballs[cannID] = createCannonball(x, y, "Cannonball");
       }
    }
+
 }
 
 ClientCannonball * ClientCannonballManager::createCannonball(float x, float y, const std::string & textureName)
@@ -37,17 +38,16 @@ ClientCannonball * ClientCannonballManager::createCannonball(float x, float y, c
    return new ClientCannonball(createCannonballBody(x, y), *this->textureManager.GetResource(textureName));
 }
 
-void ClientCannonballManager::addCannonball(const ClientID & clientID, ClientCannonball *player)
+void ClientCannonballManager::addCannonball(const CannID & cannID, ClientCannonball *player)
 {
-   this->Cannonballs[clientID] = player;
+   this->Cannonballs[cannID] = player;
 }
 
 void ClientCannonballManager::moveCannonball(const CannonballState &state)
 {
    if (this->Cannonballs.count(state.cannID) <= 0)
    {
-      //addCannonball(state.cannID, state.x, state.y);
-      //std::cout << "Test" << std::endl;
+      addCannonball(state.cannID, state.x, state.y);
    }
    else
    {

@@ -41,9 +41,14 @@ ServerCannonball* ServerCannonballManager::addCannonball(const float & x, const 
 
 void ServerCannonballManager::update(const sf::Time &time)
 {
-   for (auto cann : this->cannBalls)
+   for (auto iter = this->cannBalls.cbegin(), next_it = iter; iter != this->cannBalls.cend(); iter = next_it)
    {
-      cann.second->update(time);
+      ++next_it;
+      iter->second->update(time);
+      if (iter->second->isDestroy())
+      {
+         removeCannonball(iter->first);
+      }
    }
 }
 void ServerCannonballManager::removeCannonball(const CannID cannID)
