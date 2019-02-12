@@ -1,4 +1,5 @@
 #include "SetDataState.h"
+#include <stdio.h>
 
 SetDataState::SetDataState(StateManager* stateManager) : BaseState(stateManager)
 {
@@ -168,9 +169,11 @@ void SetDataState::PressEnter(EventDetails* details)
 	Window *wind = this->stateManager->getContext()->window;
 	if (this->stateManager->getContext()->window->getCounter() == this->text.size())
 	{
+		saveToJson();
 		this->stateManager->switchTo(StateTypeE::GAME);
 	}
 	wind->incrementCounter();
+	this->Outputs[wind->getCounter() - 1].setString(sf::String(wind->getInput(wind->getCounter() - 1)));
 }
 
 void SetDataState::PressBackSpace(EventDetails* details)
@@ -182,6 +185,76 @@ void SetDataState::PressBackSpace(EventDetails* details)
 void SetDataState::backToMenu(EventDetails* details)
 {
 	this->stateManager->switchTo(StateTypeE::MENU);
+}
+
+void SetDataState::MouseClick(EventDetails* details)
+{
+	sf::Vector2i mousePos = details->mouse;
+	Window *wind = this->stateManager->getContext()->window;
+
+	if (wind->getCounter() == this->text.size() - 1)
+	{
+		for (auto it : this->boundingBox)
+		{
+			if (mousePos.x >= it.second.x &&
+				mousePos.x <= it.second.x + this->ShipSize.width &&
+				mousePos.y >= it.second.y &&
+				mousePos.y <= it.second.y + this->ShipSize.height)
+			{
+				wind->SetShip(it.first);
+			}
+		}
+	}
+}
+
+void SetDataState::KeyLeft(EventDetails* details)
+{
+	Window *wind = this->stateManager->getContext()->window;
+	
+	for (auto &it : this->shipSprites)
+	{
+		it.second.setColor(sf::Color(255, 255, 255, 127));
+	}
+
+	this->counter--;
+	if (this->counter < 0)
+	{
+		this->counter = 3;
+	}
+
+	for (auto &it : this->shipSprites)
+	{
+		if (this->counter == it.first)
+		{
+			wind->SetShip(it.first);
+			it.second.setColor(sf::Color(255, 255, 255, 255));
+		}
+	}
+}
+
+void SetDataState::KeyRight(EventDetails* details)
+{
+	Window *wind = this->stateManager->getContext()->window;
+
+	for (auto &it : this->shipSprites)
+	{
+		it.second.setColor(sf::Color(255, 255, 255, 127));
+	}
+
+	this->counter++;
+	if (this->counter > 3)
+	{
+		this->counter = 0;
+	}
+
+	for (auto &it : this->shipSprites)
+	{
+		if (this->counter == it.first)
+		{
+			wind->SetShip(it.first);
+			it.second.setColor(sf::Color(255, 255, 255, 255));
+		}
+	}
 }
 
 void SetDataState::HighlightShip(EventDetails* details)

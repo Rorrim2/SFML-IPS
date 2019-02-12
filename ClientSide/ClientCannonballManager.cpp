@@ -1,5 +1,6 @@
 #include "ClientCannonballManager.h"
 #include "Global.h"
+#include "Utilities.h"
 
 
 ClientCannonballManager::ClientCannonballManager(World &_world, sf::Mutex &_mutex)

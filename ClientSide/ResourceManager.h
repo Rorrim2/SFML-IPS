@@ -73,7 +73,7 @@ public:
 
    void LoadPaths(const std::string& l_pathFile) {
       std::ifstream paths;
-      paths.open( std::string(Utils::GetWorkingDirectory() + l_pathFile).c_str() );
+      paths.open( std::string(Utils::GetWorkingDirectory() + "\\" + l_pathFile).c_str() );
       if (paths.fail() == false) 
       {
          std::string line;

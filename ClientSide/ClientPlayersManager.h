@@ -31,7 +31,7 @@ public:
    void drawAllPlayers(Window &window);
    void updateAllPlayers(const sf::Time& time);
    void decreasePlayerOccurence();
-   
+
    b2Body* createShipBody(float x, float y);
 
 private:

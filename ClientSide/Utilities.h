@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <filesystem>
 #include <wchar.h>
 namespace Utils {
 	#ifdef RUNNING_WINDOWS
@@ -10,16 +11,7 @@ namespace Utils {
 	#include <windows.h>
 	#include <Shlwapi.h>
    inline std::string GetWorkingDirectory() {
-         HMODULE hModule = GetModuleHandle(nullptr);
-         if (hModule) {
-            wchar_t path[256];
-            GetModuleFileName(hModule, path, sizeof(path));
-            PathRemoveFileSpec(path);
-            wcscat_s(path, L"\\"); // new
-            std::wstring wp(path);
-            return std::string(wp.begin(), wp.end()); // new
-         }
-      return "";
+      return std::filesystem::current_path().string();
 		}
 	#elif defined RUNNING_LINUX
 	#include <unistd.h>
