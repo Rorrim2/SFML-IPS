@@ -4,6 +4,7 @@
 #include "MenuState.h"
 #include "HowToPlayState.h"
 #include "SetDataState.h"
+#include "ConfirmState.h"
 
 StateManager::StateManager(SharedContext *sharedContext)
    : context( sharedContext)
@@ -13,6 +14,7 @@ StateManager::StateManager(SharedContext *sharedContext)
    registerState<GameState>(StateTypeE::GAME);
    registerState<HowToPlayState>(StateTypeE::HOW_TO_PLAY);
    registerState<SetDataState>(StateTypeE::SERVER_DATA);
+   registerState<ConfirmState>(StateTypeE::CONFIRM);
 }
 
 

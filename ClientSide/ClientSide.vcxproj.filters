@@ -87,6 +87,7 @@
     <ClCompile Include="SetDataState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+ <ClCompile Include="ConfirmState.cpp">
     <ClCompile Include="MapParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -152,6 +153,15 @@
     <ClInclude Include="HowToPlayState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SetDataState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfirmState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -176,13 +186,7 @@
     <ClInclude Include="SetDataState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-<ClInclude Include="ShipType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientCannonball.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientCannonballManager.h">
+    <ClInclude Include="ShipType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

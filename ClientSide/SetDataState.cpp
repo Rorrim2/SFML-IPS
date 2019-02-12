@@ -41,21 +41,31 @@ void SetDataState::onCreate()
 
 	//ships
 	this->shipSprites[ShipType::RED].setPosition(windowSize.x * 0.1 , windowSize.y * 0.5);
-	this->shipSprites[ShipType::GREEN].setPosition(windowSize.x * 0.25, windowSize.y * 0.5);
-	this->shipSprites[ShipType::BLUE].setPosition(windowSize.x * 0.4, windowSize.y * 0.5);
-	this->shipSprites[ShipType::YELLOW].setPosition(windowSize.x * 0.55, windowSize.y * 0.5);
+	this->shipSprites[ShipType::BLUE].setPosition(windowSize.x * 0.25, windowSize.y * 0.5);
+	this->shipSprites[ShipType::YELLOW].setPosition(windowSize.x * 0.4, windowSize.y * 0.5);
+	this->shipSprites[ShipType::GREEN].setPosition(windowSize.x * 0.55, windowSize.y * 0.5);
 
 	this->ShipSize = this->shipSprites[ShipType::RED].getLocalBounds();
-	this->boundingBox[0] = this->shipSprites[ShipType::RED].getOrigin();
-	this->boundingBox[1] = this->shipSprites[ShipType::BLUE].getOrigin();
-	this->boundingBox[2] = this->shipSprites[ShipType::YELLOW].getOrigin();
-	this->boundingBox[3] = this->shipSprites[ShipType::GREEN].getOrigin();
+	this->boundingBox[ShipType::RED] = this->shipSprites[ShipType::RED].getPosition();
+	this->boundingBox[ShipType::BLUE] = this->shipSprites[ShipType::BLUE].getPosition();
+	this->boundingBox[ShipType::YELLOW] = this->shipSprites[ShipType::YELLOW].getPosition();
+	this->boundingBox[ShipType::GREEN] = this->shipSprites[ShipType::GREEN].getPosition();
+
+	for (auto it : this->shipSprites)
+	{
+		it.second.setColor(sf::Color(255, 255, 255, 127));
+	}
 
 	EventManager* evMgr = this->stateManager->getContext()->eventManager;
 	evMgr->AddCallback(StateTypeE::SERVER_DATA, "EnterKey", &SetDataState::PressEnter, this);
 	evMgr->AddCallback(StateTypeE::SERVER_DATA, "KeyEscape", &SetDataState::backToMenu, this);
 	evMgr->AddCallback(StateTypeE::SERVER_DATA, "BackSpace", &SetDataState::PressBackSpace, this);
 	evMgr->AddCallback(StateTypeE::SERVER_DATA, "Mouse_Move", &SetDataState::HighlightShip, this);
+	evMgr->AddCallback(StateTypeE::SERVER_DATA, "Mouse_Left", &SetDataState::MouseClick, this);
+	evMgr->AddCallback(StateTypeE::SERVER_DATA, "KeyLeft", &SetDataState::KeyLeft, this);
+	evMgr->AddCallback(StateTypeE::SERVER_DATA, "KeyRight", &SetDataState::KeyRight, this);
+
+	this->counter = -1;
 }
 
 void SetDataState::onDestroy()
@@ -65,9 +75,59 @@ void SetDataState::onDestroy()
 	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "KeyEscape");
 	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "BackSpace");
 	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "Mouse_Move");
+	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "Mouse_Left");
+	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "KeyLeft");
+	evMgr->RemoveCallback(StateTypeE::SERVER_DATA, "KeyRight");
 
-	//set false
+	//reset
 	this->stateManager->getContext()->window->SetIsDataStateFlag();
+}
+
+void SetDataState::saveToJson()
+{
+	Window *wind = this->stateManager->getContext()->window;
+	
+	rapidjson::StringBuffer strbuff;
+	rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(strbuff);
+
+	writer.StartObject();
+	writer.Key("IP");
+	writer.String(wind->getInput(0).c_str());
+	writer.Key("Port");
+	writer.String(wind->getInput(1).c_str());
+	writer.Key("PlayerName");
+	writer.String(wind->getInput(2).c_str());
+	writer.Key("ShipType");
+	writer.String(wind->getInput(3).c_str());
+	writer.EndObject();
+
+	std::string outputPath = "output.json";
+	std::FILE *fp = fopen(outputPath.c_str(), "w");
+	std::fputs(strbuff.GetString(), fp);
+	
+	fclose(fp);
+}
+
+void SetDataState::loadFromJson()
+{
+	std::string outputPath = "output.json";
+	std::FILE *fp = fopen(outputPath.c_str(), "r");
+
+	std::string buff;
+	char sign;
+	while (true) {
+		sign = fgetc(fp);
+		if (sign == EOF)
+		{
+			break;
+		}
+		buff += sign;
+	}
+
+	rapidjson::Document doc;
+	doc.Parse<0>(buff.c_str());
+
+	fclose(fp);
 }
 
 void SetDataState::draw()
@@ -82,10 +142,12 @@ void SetDataState::draw()
 		wind->draw(it.second);
 	}
 
-	
-	for (auto it : this->shipSprites)
+	if (this->stateManager->getContext()->window->getCounter() >= this->text.size() - 1)
 	{
-		wind->draw(it.second);
+		for (auto it : this->shipSprites)
+		{
+			wind->draw(it.second);
+		}
 	}
 
 	if (this->stateManager->getContext()->window->getCounter() == this->text.size())
@@ -113,10 +175,8 @@ void SetDataState::PressEnter(EventDetails* details)
 
 void SetDataState::PressBackSpace(EventDetails* details)
 {
-	Window *wind = this->stateManager->getContext()->window;
-	if (wind->getInput().size() != 0) {
-		wind->deleteChar();
-	}
+	Window *wind = this->stateManager->getContext()->window;	
+	wind->deleteChar();
 }
 
 void SetDataState::backToMenu(EventDetails* details)
@@ -128,20 +188,18 @@ void SetDataState::HighlightShip(EventDetails* details)
 {
 	sf::Vector2i mousePos = this->stateManager->getContext()->eventManager->GetMousePos(this->stateManager->getContext()->window->getRenderWindow());
 
-	for (unsigned int i = 0; i < 4; ++i)
+	for (auto it : this->boundingBox) 
 	{
-		//std::cout << this->boundingBox[i].left << " " << this->boundingBox[i].top << " " << this->boundingBox[i].width << " " << this->boundingBox[i].height << std::endl;
-		if (mousePos.x >= this->boundingBox[i].x &&
-			mousePos.x <=  this->boundingBox[i].x + this->ShipSize.width &&
-			mousePos.y >= this->boundingBox[i].y &&
-			mousePos.y <= this->boundingBox[i].y + this->ShipSize.height)
+		if (mousePos.x >= it.second.x &&
+			mousePos.x <= it.second.x + this->ShipSize.width &&
+			mousePos.y >= it.second.y &&
+			mousePos.y <= it.second.y + this->ShipSize.height)
 		{
-			//std::cout << this->boundingBox[i].left << " " << this->boundingBox[i].top << std::endl;
-			this->shipSprites[ShipType::YELLOW].setColor(sf::Color(255, 255, 255, 127));
+			this->shipSprites[it.first].setColor(sf::Color(255, 255, 255, 255));
 		}
 		else
 		{
-			this->shipSprites[ShipType::YELLOW].setColor(sf::Color(255, 255, 255, 255));
+			this->shipSprites[it.first].setColor(sf::Color(255, 255, 255, 127));
 		}
 	}
 }

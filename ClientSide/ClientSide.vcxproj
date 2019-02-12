@@ -26,7 +26,7 @@
     <ClCompile Include="ClientPlayer.cpp" />
     <ClCompile Include="ClientPlayersManager.cpp" />
     <ClCompile Include="ClientSide.cpp" />
-    <ClCompile Include="DebugDraw.cpp" />
+    <ClCompile Include="ConfirmState.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
@@ -54,6 +54,7 @@
     <ClInclude Include="ClientPlayer.h" />
     <ClInclude Include="ClientPlayersManager.h" />
     <ClInclude Include="DebugDraw.h" />
+    <ClInclude Include="ConfirmState.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
@@ -192,7 +193,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>shlwapi.lib;Box2D_d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;sfml-network-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Box2D_d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;sfml-network-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libs\Box2D;..\x64\Debug;..\libs\SFML-2.5.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

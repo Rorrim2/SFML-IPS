@@ -49,11 +49,16 @@ void Window::setup(const std::string title, const sf::Vector2u& size) {
 	this->eventManager.AddCallback(StateTypeE(0), "Window_close", &Window::close, this);
 	this->create();
 	this->counter = 0;
+	this->itsTimeToSwap = 0;
+
+	this->Inputs[this->counter].push_back('_');
 	
-	this->shipNames[ShipType::BLUE] = "blue";
-	this->shipNames[ShipType::RED] = "red";
-	this->shipNames[ShipType::GREEN] = "green";
-	this->shipNames[ShipType::YELLOW] = "yellow";
+	this->shipNames[ShipType::BLUE] = "TheBlueOne";
+	this->shipNames[ShipType::RED] = "TheRedOne";
+	this->shipNames[ShipType::GREEN] = "TheGreenOne";
+	this->shipNames[ShipType::YELLOW] = "TheYellowOne";
+
+	this->whichOne = ShipType::RED;
 }
 
 void Window::beginDraw()
@@ -69,6 +74,7 @@ void Window::endDraw()
 //expanded by things from EventManager
 void Window::update()
 {
+	this->itsTimeToSwap = (this->itsTimeToSwap++)%10;
    sf::Event event;
    while (this->window.pollEvent(event))
    {
@@ -84,9 +90,19 @@ void Window::update()
 		  if (this->isSetDataState) {
 			  if(this->counter != 3)
 			  {
-				  if (event.text.unicode < 127 && event.text.unicode >= 32)
+				  if (this->counter == 2)
 				  {
-					  this->Inputs[this->counter].push_back((char)event.text.unicode);
+					  if (event.text.unicode <= '~'  && event.text.unicode >= ' ')
+					  {
+						  this->Inputs[this->counter].insert(this->Inputs[this->counter].length() - 1, 1, (char)event.text.unicode);
+					  }
+				  }
+				  else
+				  {
+					  if ((event.text.unicode <= '9'  && event.text.unicode >= '0') || event.text.unicode == '.')
+					  {
+						  this->Inputs[this->counter].insert(this->Inputs[this->counter].length() - 1, 1, (char)event.text.unicode);
+					  }
 				  }
 			  }
 		  }	  
@@ -94,6 +110,7 @@ void Window::update()
 	 // if(event.key.code == sf::Keyboard::F5 || event.key.code == sf::Keyboard::Escape) std::cout << event.type << std::endl;
 	  this->eventManager.HandleEvent(event);
    }
+   this->SwapTheSign();
    this->eventManager.Update();
 }
 
@@ -129,23 +146,63 @@ unsigned int Window::getCounter()
 	return this->counter;
 }
 
+//current modyfing string
 std::string Window::getInput()
 {
 	return this->Inputs[this->counter];
 }
 
-void Window::incrementCounter()
+std::string Window::getInput(unsigned int i)
 {
-	this->counter++;
+	return this->Inputs[i];
 }
 
+//going to the next string + annihilating text cursor
+void Window::incrementCounter()
+{
+	if (this->counter != 3)
+	{
+		this->Inputs[this->counter].erase(this->Inputs[this->counter].length() - 1, 1);
+	}
+	this->counter++;
+	if (this->counter != 3)
+	{
+		this->Inputs[this->counter].push_back('_');
+	}
+}
+
+//deletes letters from current modyfing string
 void Window::deleteChar()
 {
-	this->Inputs[this->counter].pop_back();
+	if (this->getInput().length() != 1) {
+		this->Inputs[this->counter].erase(this->Inputs[this->counter].length() - 1, 1);
+	}
 }
 
 void Window::SetShip(ShipType shipType) {
-	this->Inputs[this->counter] = this->shipNames[this->whichShip];
+	if (this->counter == 3)
+	{
+		this->Inputs[this->counter] = this->shipNames[shipType];
+		this->whichOne = shipType;
+	}
+}
+
+
+//change the sign of text cursor 
+void Window::SwapTheSign()
+{
+	if (this->itsTimeToSwap % 10 == 0 && this->counter != 3)
+	{
+		if (this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] == '_')
+		{
+			this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = ' ';
+		}
+		else
+		{
+			this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = '_';
+		}
+		
+	}
 }
 //end things with setdatastate
 
