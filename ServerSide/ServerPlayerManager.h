@@ -16,7 +16,7 @@ public:
    ServerPlayer* getPlayer(const ClientID& clientID);
    ServerPlayers& getAllPlayers();
 
-   void addPlayer(const ClientID& clientID, const float &x, const float &y);
+   void addPlayer(const ClientID& clientID, const float &x, const float &y, ShipType shipType);
    void update(const sf::Time &time);
    void removePlayer(const ClientID& clientID);
    void movePlayer(const ClientID& id, MoveDirection dir, const sf::Int32 & time);

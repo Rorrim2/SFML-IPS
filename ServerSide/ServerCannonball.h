@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include "Window.h"
 #include "World.h"
+#include "ServerPlayer.h"
 #include "PacketType.h"
 
 struct CannonballState
@@ -16,20 +17,21 @@ struct CannonballState
 class ServerCannonball
 {
 public:
-	ServerCannonball(b2Body* body);
+	ServerCannonball(b2Body* body, const ServerPlayer * owner);
 	~ServerCannonball();
 
 	sf::Vector2f getPosition();
 	short getDamage();
    void update(const sf::Time &time);
 	void setDamage(short new_damage);
-
+   void setToRemove();
 	CannonballState getCannState();
 
 	b2Body* getBody();
 
    bool isDestroy();
-
+   BodyType type = CannonBall;
+   const ServerPlayer * owner;
 private:
    float lifeTime;
    bool toRemove;

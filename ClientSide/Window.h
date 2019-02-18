@@ -43,6 +43,7 @@ public:
    void incrementCounter();
    void deleteChar();
    void SetShip(ShipType shipType);
+   ShipType GetShipType();
    void SwapTheSign();
 
    sf::RenderWindow* getRenderWindow();

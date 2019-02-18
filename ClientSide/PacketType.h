@@ -16,7 +16,8 @@ enum class PacketType
    Message,
 	Hurt,
    SyncTime,
-	OutOfBounds
+   GameOver,
+   OutOfBounds
 };
 
 

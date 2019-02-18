@@ -17,20 +17,26 @@ ServerPlayersManager::~ServerPlayersManager()
    this->players.clear();
 }
 
-void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
+void ServerPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y, ShipType shipType)
 {
    if (this->players.count(clientID) <= 0)
    {
       sf::Lock lock(this->mutex);
-      this->players[clientID] = new ServerPlayer(createShipBody(x, y));
+      this->players[clientID] = new ServerPlayer(createShipBody(x, y), shipType);
    }
 }
 
 void ServerPlayersManager::update(const sf::Time &time)
 {
-   for (auto player : this->players)
+   //find and erase players sprites that they not updated from snapshots
+   for (auto iter = this->players.cbegin(), next_it = iter; iter != this->players.cend(); iter = next_it)
    {
-      player.second->update(time);
+      ++next_it;
+      iter->second->update(time);
+      if (iter->second->isDead())
+      {
+         removePlayer(iter->first);
+      }
    }
 }
 

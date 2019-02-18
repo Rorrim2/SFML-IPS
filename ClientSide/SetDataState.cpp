@@ -224,7 +224,7 @@ void SetDataState::KeyLeft(EventDetails* details)
 
 	for (auto &it : this->shipSprites)
 	{
-		if (this->counter == it.first)
+		if (this->counter == (short)it.first)
 		{
 			wind->SetShip(it.first);
 			it.second.setColor(sf::Color(255, 255, 255, 255));
@@ -249,7 +249,7 @@ void SetDataState::KeyRight(EventDetails* details)
 
 	for (auto &it : this->shipSprites)
 	{
-		if (this->counter == it.first)
+		if (this->counter == (short)it.first)
 		{
 			wind->SetShip(it.first);
 			it.second.setColor(sf::Color(255, 255, 255, 255));

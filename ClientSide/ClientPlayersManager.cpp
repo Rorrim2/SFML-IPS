@@ -19,21 +19,39 @@ ClientPlayersManager::~ClientPlayersManager()
    this->players.clear();
 }
 
-void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y)
+void ClientPlayersManager::addPlayer(const ClientID & clientID, const float & x, const float & y, ShipType type)
 {
    if (!this->world.getWorld()->IsLocked())
    {
       sf::Lock lock(this->mutex);
       if (this->players.count(clientID) <= 0)
       {
-         this->players[clientID] = createPlayer(x, y, "Ship_white");
+         this->players[clientID] = createPlayer(x, y, type);
       }
    }
 }
-ClientPlayer * ClientPlayersManager::createPlayer(float x, float y, const std::string & textureName)
+ClientPlayer * ClientPlayersManager::createPlayer(float x, float y, ShipType type)
 {
+   std::string textureName;
+   switch (type)
+   {
+   case ShipType::RED:
+      textureName = "Ship_red";
+      break;
+   case ShipType::BLUE:
+      textureName = "Ship_blue";
+      break;
+   case ShipType::YELLOW:
+      textureName = "Ship_yellow";
+      break;
+   case ShipType::GREEN:
+      textureName = "Ship_green";
+      break;
+   default:
+      break;
+   }
    this->textureManager.RequireResource(textureName);
-   return new ClientPlayer(createShipBody(x, y), *this->textureManager.GetResource(textureName));
+   return new ClientPlayer(createShipBody(x, y), *this->textureManager.GetResource(textureName), type);
 }
 void ClientPlayersManager::addPlayer(const ClientID & clientID, ClientPlayer *player)
 {
@@ -43,7 +61,7 @@ void ClientPlayersManager::movePlayer(const PlayerState &state)
 {
    if (this->players.count(state.clientID) <= 0)
    {
-      addPlayer(state.clientID, state.x, state.y);
+      addPlayer(state.clientID, state.x, state.y, state.type);
    }
    else
    {
@@ -106,6 +124,12 @@ void ClientPlayersManager::removePlayer(const ClientID & clientID)
       DELLISNOTNULL(this->players[clientID]);
       this->players.erase(clientID);
    }
+}
+
+void ClientPlayersManager::updateHealth(const ClientID & clientID, short health)
+{
+   if (this->players.count(clientID) > 0)
+      this->players[clientID]->setHealth(health);
 }
 
 ClientPlayer* ClientPlayersManager::getPlayer(const ClientID & clientID)

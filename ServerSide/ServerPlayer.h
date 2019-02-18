@@ -17,7 +17,7 @@ struct PlayerState
 class ServerPlayer
 {
 public:
-	ServerPlayer(b2Body *body);
+	ServerPlayer(b2Body *body, ShipType shipType);
    ~ServerPlayer();
 
    sf::Vector2f getPosition();
@@ -34,13 +34,17 @@ public:
    void shoot();
    bool canShoot();
 
+   ShipType getShipType();
+
    b2Body* getBody();
    float width = 17;
    float height = 33;
 
+   BodyType type = Ship;
 private:
+   ShipType shipType;
    float shootTimeout;
-	short health;
+	short health = 3; // die on three shots
    float maxSpeed;
    float maxAngularSpeed;
    float verticalSpeed;

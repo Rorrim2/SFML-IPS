@@ -28,15 +28,15 @@ ServerCann & ServerCannonballManager::getAllCannoballs()
 	return this->cannBalls;
 }
 
-ServerCannonball* ServerCannonballManager::addCannonball(const float & x, const float & y)
+ServerCannonball* ServerCannonballManager::addCannonball(const float & x, const float & y, const ServerPlayer * owner)
 {
 	//TODO: one cannB if if is active, think about it
-	//if (this->cannBalls.count(cannID) <= 0)
+	if (this->cannBalls.count(this->lastIndex) <= 0)
    {
-      sf::Lock lock(this->mutex);
-      this->cannBalls[this->lastIndex] = new ServerCannonball(createCannonballBody(x, y));
+      this->cannBalls[this->lastIndex] = new ServerCannonball(createCannonballBody(x, y), owner);
+      this->lastIndex++;
 	}
-   return this->cannBalls[this->lastIndex++];
+   return this->cannBalls[this->lastIndex - 1];
 }
 
 void ServerCannonballManager::update(const sf::Time &time)

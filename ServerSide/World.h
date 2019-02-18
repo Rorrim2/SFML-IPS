@@ -6,7 +6,7 @@
 #include "Global.h"
 #include "MapParser.h"
 #include <stdexcept>
-
+#include <ContactListener.h>
 
 //TODO add more types of bodies, add destroy body, add destroy world or stop; add possibility to change gravity
 
@@ -45,5 +45,6 @@ private:
 	DebugDraw *debugDraw;
 	b2World *world;
 	b2Body *worldBox;
+   ContactListener contactLis;
 };
 

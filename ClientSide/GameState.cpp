@@ -32,7 +32,7 @@ void GameState::onCreate()
    evMgr->AddCallback(StateTypeE::GAME, "KeyEscape", &GameState::moveToMainMenu, this);
    evMgr->AddCallback(StateTypeE::GAME, "Shoot_Left", &GameState::shoot, this);
    evMgr->AddCallback(StateTypeE::GAME, "Shoot_Right", &GameState::shoot, this);
-   
+
    //wait for synchronize time with server
    if (this->client.connect() == false)
    {
@@ -66,7 +66,7 @@ void GameState::update(const sf::Time & time)
 {
    //before sync timer
    client.update(time);
-
+   this->sendEventToServerTimer += time.asMilliseconds();
    if (this->client.isSynced() == false) return;
 
    if (this->physicStarted == false)
@@ -75,9 +75,9 @@ void GameState::update(const sf::Time & time)
       this->world.addPolygons();
       this->world.initDebugDrawing(*this->stateManager->getContext()->window);
 
-      this->client.sendCreatePlayerPacket();
-      this->player = this->playersManager.createPlayer(80, 400, "Ship_red");
-         //new ClientPlayer(this->playersManager.createShipBody(400, 400), *this->stateManager->getContext()->textureManager->GetResource("Ship_red"));
+      this->client.sendCreatePlayerPacket(this->stateManager->getContext()->window->GetShipType());
+      this->player = this->playersManager.createPlayer(80, 400, this->stateManager->getContext()->window->GetShipType());
+      //new ClientPlayer(this->playersManager.createShipBody(400, 400), *this->stateManager->getContext()->textureManager->GetResource("Ship_red"));
       this->playersManager.addPlayer(this->client.getClientID(), this->player);
       this->physicStarted = true;
    }
@@ -99,7 +99,7 @@ void GameState::update(const sf::Time & time)
       this->world.eraseDeathBodies();
    }
 
-  // if (this->sendEventToServerTimer >= 10)
+   if (this->sendEventToServerTimer >= 10)
    {
       if (this->lastDirections.size() > 0)
       {
@@ -161,21 +161,24 @@ void GameState::moveToMainMenu(EventDetails *details)
 
 void GameState::shoot(EventDetails * details)
 {
-   MoveDirection dir = MoveDirection::NONE;
-   switch (details->keyCode)
+   if (this->player->canShoot() == true)
    {
-   case sf::Keyboard::Key::F:
-   {
-      dir = MoveDirection::SHOOT_LEFT;
-      break;
+      MoveDirection dir = MoveDirection::NONE;
+      switch (details->keyCode)
+      {
+      case sf::Keyboard::Key::F:
+      {
+         dir = MoveDirection::SHOOT_LEFT;
+         break;
+      }
+      case sf::Keyboard::Key::E:
+      {
+         dir = MoveDirection::SHOOT_RIGHT;
+         break;
+      }
+      }
+      this->lastDirections.push({ dir, this->client.getTime().asMilliseconds() });
    }
-   case sf::Keyboard::Key::E:
-   {
-      dir = MoveDirection::SHOOT_RIGHT;
-      break;
-   }
-   }
-   this->lastDirections.push({dir, this->client.getTime().asMilliseconds() });
 }
 
 void GameState::movePlayer(EventDetails *details)
@@ -217,13 +220,13 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          packet >> message;
          std::cout << message << std::endl;
       }
-      else if (static_cast<PacketType>(id) == PacketType::PlayerCreate)
-      {
-         float x, y;
-         ClientID idC;
-         packet >> idC >> x >> y;
-         playersManager.addPlayer(idC, x, y);
-      }
+      //else if (static_cast<PacketType>(id) == PacketType::PlayerCreate)
+      //{
+      //   float x, y;
+      //   ClientID idC;
+      //   packet >> idC >> x >> y;
+      //   playersManager.addPlayer(idC, x, y);
+      //}
       else if (static_cast<PacketType>(id) == PacketType::PlayerUpdate)
       {
          playersManager.decreasePlayerOccurence();
@@ -233,14 +236,16 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          float x, y, angle, angularVel;
          ClientID idC;
          b2Vec2 linearVelocity;
+         short shipType;
          packet >> count;
 
          for (int i = 0; i < count; ++i)
          {
-            packet >> time >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y >> angularVel;
+            packet >> time >> idC >> x >> y >> angle >> health >> linearVelocity.x >> linearVelocity.y >> angularVel >> shipType;
             //if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
             {
-               playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity });
+               playersManager.movePlayer({ this->client.getTime().asMilliseconds() - time, idC, x, y, angle, angularVel, linearVelocity, (ShipType)shipType });
+               playersManager.updateHealth(idC, health);
             }
          }
       }
@@ -257,12 +262,18 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
          for (int i = 0; i < count; ++i)
          {
             packet >> time >> idC >> x >> y >> linearVelocity.x >> linearVelocity.y;
-            //if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
+            if (std::fabs(this->client.getTime().asMilliseconds() - time) < 150)
             {
                std::cerr << idC << std::endl;
                cannonBallManager.moveCannonball({ this->client.getTime().asMilliseconds() - time, idC, x, y, linearVelocity });
             }
          }
+      }
+      else if (static_cast<PacketType>(id) == PacketType::GameOver)
+      {
+         client->disconnect();
+         DEBUG_COUT("Disconnected!");
+         moveToMainMenu(nullptr);
       }
       else if (static_cast<PacketType>(id) == PacketType::Disconnect)
       {

@@ -42,7 +42,7 @@ sf::Packet ServerLogic::getPlayersSnapshot()
    {
       PlayerState state = itr.second->getPlayerState();
       p << this->server.getTime().asMilliseconds() << itr.first << state.coords.x << state.coords.y << state.angle << state.health <<
-         itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y << itr.second->getBody()->GetAngularVelocity();
+         itr.second->getBody()->GetLinearVelocity().x << itr.second->getBody()->GetLinearVelocity().y << itr.second->getBody()->GetAngularVelocity() << (short)itr.second->getShipType();
    }
    return p;
 }
@@ -59,9 +59,9 @@ sf::Packet ServerLogic::getCannonBallsSnapshot()
    }
    return p;
 }
-void ServerLogic::addPlayer(ClientID & clientID, const float & x, const float & y)
+void ServerLogic::addPlayer(ClientID & clientID, const float & x, const float & y, ShipType shipType)
 {
-   this->playersManager.addPlayer(clientID, x, y);
+   this->playersManager.addPlayer(clientID, x, y, shipType);
 }
 
 void ServerLogic::movePlayer(ClientID & clientID, MoveDirection dir, const sf::Int32 & time)
@@ -130,7 +130,8 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          packet >> count;
          sf::Int32 time;
          //std::cout << id << "   " << count << std::endl;
-         sf::Lock lock(server->getMutex());
+         //sf::Lock lock(server->getMutex());
+         sf::Lock lockCreate(bodyCreate);
          //std::ofstream plik1("plik1.txt", std::ofstream::out | std::ofstream::app);
          for (int i = 0; i < count; ++i)
          {
@@ -146,7 +147,6 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
                float x = std::cos(player->getBody()->GetAngle()); //dlaczego nie x/z?
                float y = std::sin(player->getBody()->GetAngle());//dlaczego nie y/z?
 
-
                if (dir & MoveDirection::SHOOT_RIGHT)
                {
                   auto rot = player->getBody()->GetTransform().q;
@@ -160,7 +160,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
                   temp_y = cos(temp_angle) * player->width * METERS_PER_PIXEL;
                   new_x = position.x + temp_x;
                   new_y = position.y + temp_y;
-                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y);
+                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y, player);
                   auto velocityVector = player->getBody()->GetLinearVelocity();
                   //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2 + 1 * velocityVector.x / 4, 1 * rot.GetXAxis().x / 2 + 1 * velocityVector.y / 4), true);
                   cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2, 1 * rot.GetXAxis().x / 2), true);
@@ -182,7 +182,7 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
                   temp_y = cos(temp_angle) * player->width * METERS_PER_PIXEL;
                   new_x = position.x - temp_x;
                   new_y = position.y - temp_y;
-                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y);
+                  ServerCannonball *cannonBall = this->cannonballMg.addCannonball(PIXELS_PER_METER * new_x, PIXELS_PER_METER * new_y, player);
                   auto velocityVector = player->getBody()->GetLinearVelocity();
                   //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2 + 1 * velocityVector.x / 4, 1 * rot.GetXAxis().x / 2 + 1 * velocityVector.y / 4), true);
                   //cannonBall->getBody()->ApplyForceToCenter(b2Vec2(1 * rot.GetYAxis().x / 2, 1 * rot.GetYAxis().y / 2), true);
@@ -203,14 +203,15 @@ void ServerLogic::handler(sf::IpAddress &ip, const PortNumber &port, const Packe
          //TODO this x and y should get from map
          float x = 80, y = 400;
          ClientID clientID;
-         packet >> clientID;
+         short shipType;
+         packet >> clientID >> shipType;
          sf::Packet newPacket;
          StampPacket(PacketType::PlayerCreate, newPacket);
-         newPacket << clientID << x << y;
+         newPacket << clientID << x << y << shipType;
          DEBUG_COUT("Creating ship");
          {
             sf::Lock lock(this->server.getMutex());
-            addPlayer(clientID, x, y);
+            addPlayer(clientID, x, y, (ShipType)shipType);
          }
          server->broadcast(newPacket, id);
       }
@@ -239,7 +240,7 @@ void ServerLogic::runServer()
          initDebugDraw(this->window);
       }
 
-      const sf::Time timePerSnapshot = sf::seconds(1.f / 20.f);
+      const sf::Time timePerSnapshot = sf::seconds(1.f / 15.f);
       sf::Time timeSinceLastUpdateSnapshot = sf::Time::Zero;
 
       sf::Time elapsedTime;
@@ -264,9 +265,17 @@ void ServerLogic::runServer()
             color = sf::Time::Zero;
          }
 
-         clearBodies();
+         clearBodies();  
+         
          while (timeSinceLastUpdate > timePerFrame)
          {
+            p = getPlayersSnapshot();
+            server.broadcast(p);
+            p.clear();
+            p = getCannonBallsSnapshot();
+            server.broadcast(p);
+            p.clear();
+            timeSinceLastUpdateSnapshot -= timePerSnapshot;
             this->server.update(timePerFrame);
             timeSinceLastUpdate -= timePerFrame;
             if (this->windowEnable == true)
@@ -276,7 +285,22 @@ void ServerLogic::runServer()
 
             this->playersManager.update(timePerFrame);
             this->cannonballMg.update(timePerFrame);
-            updatePsyhicsWorld();
+            {
+               sf::Lock lock(bodyCreate);
+               updatePsyhicsWorld();
+            }
+            for (auto & player : this->playersManager.getAllPlayers())
+            {
+               if (player.second->isDead() == true)
+               {
+                  sf::Packet p;
+                  StampPacket(PacketType::GameOver, p);
+                  p << player.first;
+                  sf::Lock lock(server.getMutex());
+                  server.send(player.first, p);
+               }
+            }
+
             this->world.eraseDeathBodies();
          }
 
@@ -288,16 +312,7 @@ void ServerLogic::runServer()
          }
 
 
-         while (timeSinceLastUpdateSnapshot > timePerSnapshot)
-         {
-            p = getPlayersSnapshot();
-            server.broadcast(p);
-            p.clear();
-            p = getCannonBallsSnapshot();
-            server.broadcast(p);
-            p.clear();
-            timeSinceLastUpdateSnapshot -= timePerSnapshot;
-         }
+
       }
    }
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-ServerPlayer::ServerPlayer(b2Body *body)
+ServerPlayer::ServerPlayer(b2Body *body, ShipType shipType)
 {
    this->body = body;
    this->maxSpeed = 2;
@@ -11,6 +11,8 @@ ServerPlayer::ServerPlayer(b2Body *body)
    this->verticalSpeed = 0;
    this->angularSpeed = 0;
    this->shootTimeout = 0;
+   this->body->SetUserData(this);
+   this->shipType = shipType;
 }
 
 
@@ -36,16 +38,16 @@ short ServerPlayer::getHealt()
 
 void ServerPlayer::setHealth(short new_heath)
 {
-	this->health = new_heath;
+	this->health += new_heath;
 }
 
 bool ServerPlayer::isDead() 
 {
 	if (!this->health)
 	{
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 PlayerState ServerPlayer::getPlayerState()
@@ -57,6 +59,9 @@ void ServerPlayer::update(const sf::Time &time)
 {
    this->verticalSpeed *= .78;
    this->angularSpeed *= .50;
+   float x = std::cos(this->body->GetAngle());
+   float y = std::sin(this->body->GetAngle());
+   this->body->SetLinearVelocity(b2Vec2(x * verticalSpeed, this->verticalSpeed * y));
    this->body->SetAngularVelocity(this->angularSpeed);
    this->shootTimeout += time.asSeconds();
 }
@@ -66,15 +71,13 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
    b2Vec2 speedVec = this->body->GetLinearVelocity();
    float angular = this->body->GetAngularVelocity();
    b2Vec2 angularVec = this->body->GetLinearVelocity();
-   float x = std::cos(this->body->GetAngle());
-   float y = std::sin(this->body->GetAngle());
+
    float time = _time / 1000.f;
    if (direction & MoveDirection::FORWARD)
    {
       if (std::fabs(this->verticalSpeed) <= this->maxSpeed)
       {
          this->verticalSpeed += 0.2f;
-         this->body->SetLinearVelocity(b2Vec2(x * verticalSpeed, this->verticalSpeed * y));
       }
    }
    else if (direction & MoveDirection::BACKWARD)
@@ -104,6 +107,10 @@ void ServerPlayer::move(MoveDirection & direction, const sf::Int32 & _time)
 bool ServerPlayer::canShoot()
 {
    return this->shootTimeout > 2.f;
+}
+ShipType ServerPlayer::getShipType()
+{
+   return this->shipType;
 }
 void ServerPlayer::shoot()
 {

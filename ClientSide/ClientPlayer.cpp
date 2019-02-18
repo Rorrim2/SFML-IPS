@@ -5,8 +5,8 @@
 #include "Global.h"
 
 
-ClientPlayer::ClientPlayer(b2Body *body, const sf::Texture & texture)
-   : sprite(texture)
+ClientPlayer::ClientPlayer(b2Body *body, const sf::Texture & texture, ShipType type)
+   : sprite(texture), shipType(type)
 {
    this->maxSpeed = 2;
    this->maxAngularSpeed = 0.5;
@@ -36,6 +36,7 @@ void ClientPlayer::update(const sf::Time& time)
    this->sprite.setRotation(this->body->GetAngle() / b2_pi * 180.0f);
    this->verticalSpeed *= .78;
    this->angularSpeed *= .50;
+   this->shootTimeout += time.asSeconds();
    //this->body->SetAngularVelocity(this->angularSpeed);
 
 }
@@ -83,6 +84,26 @@ void ClientPlayer::move(MoveDirection direction)
          this->angularSpeed -= 0.4f;
       }
    }
+}
+
+void ClientPlayer::setHealth(short health)
+{
+   this->health += health;
+}
+
+short ClientPlayer::getHealth()
+{
+   return this->health;
+}
+
+bool ClientPlayer::canShoot()
+{
+   if (this->shootTimeout >= 4.95)
+   {
+      this->shootTimeout = 0;
+      return true;
+   }
+   return false;
 }
 
 b2Body * ClientPlayer::getBody()

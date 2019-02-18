@@ -14,6 +14,7 @@ World::~World()
 void World::initWorld()
 {
    this->world = new b2World(b2Vec2(0, 0));
+   this->world->SetContactListener(&this->contactLis);
    //800x900
    //this is temporary world egdes
    //this->worldBox = createBody(450, 790, false);

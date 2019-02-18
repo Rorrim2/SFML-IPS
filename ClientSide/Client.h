@@ -43,7 +43,7 @@ public:
 
 	void setPlayerName(std::string &playerName);
 	
-   bool sendCreatePlayerPacket();
+   bool sendCreatePlayerPacket(ShipType shipType);
 
    ClientID getClientID();
 

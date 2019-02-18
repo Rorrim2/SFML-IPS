@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Time.hpp>
 #include <ServerCannonball.h>
+#include <ServerPlayer.h>
 #include "Window.h"
 #include <unordered_map>
 #include "Network.h"
@@ -18,7 +19,7 @@ public:
 	ServerCannonball * getCannonBall(const CannID& cannID);
 	ServerCann& getAllCannoballs();
 
-   ServerCannonball* addCannonball(const float &x, const float &y);
+   ServerCannonball* addCannonball(const float &x, const float &y, const ServerPlayer * owner);
 	void removeCannonball(const CannID cannID);
 	b2Body* createCannonballBody(float x, float y);
 

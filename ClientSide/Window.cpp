@@ -187,6 +187,11 @@ void Window::SetShip(ShipType shipType) {
 	}
 }
 
+ShipType Window::GetShipType()
+{
+   return this->whichOne;
+}
+
 
 //change the sign of text cursor 
 void Window::SwapTheSign()

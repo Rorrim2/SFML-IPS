@@ -55,8 +55,6 @@ void ClientCannonballManager::moveCannonball(const CannonballState &state)
       {
          sf::Lock lock(this->mutex);
          b2Body *body = this->Cannonballs[state.cannID]->getBody();
-         b2Vec2 pos = body->GetPosition();
-         b2Vec2 vel = body->GetLinearVelocity();
          float time = state.time / 1000.0f;
          float angleOr = body->GetAngle();
          body->SetTransform({ state.x, state.y }, angleOr);
@@ -138,7 +136,7 @@ void ClientCannonballManager::updateAllCannonballs(const sf::Time & time)
 
 }
 
-void ClientCannonballManager::decreaseCannonballOccurence()
+void ClientCannonballManager::decreaseCannonballOccurence() 
 {
    for (auto &iter : this->lastUpdates)
    {

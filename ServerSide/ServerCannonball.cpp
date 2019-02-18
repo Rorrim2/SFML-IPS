@@ -2,11 +2,13 @@
 #define CANNONBALL_LIFE_TIME 5
 
 
-ServerCannonball::ServerCannonball(b2Body* body)
+ServerCannonball::ServerCannonball(b2Body* body, const ServerPlayer * _owner)
+   : owner(_owner)
 {
 	this->body = body;
    this->toRemove = false;
    this->lifeTime = 0;
+   this->body->SetUserData(this);
 }
 
 
@@ -38,6 +40,11 @@ void ServerCannonball::update(const sf::Time & time)
 void ServerCannonball::setDamage(short new_damage)
 {
 	this->damage = new_damage;
+}
+
+void ServerCannonball::setToRemove()
+{
+   this->toRemove = true;
 }
 
 CannonballState ServerCannonball::getCannState()

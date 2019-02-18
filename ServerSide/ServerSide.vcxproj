@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ContactListener.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="MapParser.cpp" />
     <ClCompile Include="PacketType.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ContactListener.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="MapParser.h" />

@@ -280,14 +280,14 @@ void Client::setPlayerName(std::string &playerName)
 	this->playerName = playerName;
 }
 
-bool Client::sendCreatePlayerPacket()
+bool Client::sendCreatePlayerPacket(ShipType shipType)
 {
    bool valid = false;
    if (this->connected == true)
    {
       sf::Packet p;
       StampPacket(PacketType::PlayerCreate, p);
-      p << this->clientID;
+      p << this->clientID << (short)shipType;
       if (this->udpSocket.send(p, this->serverIP, this->portNumber) == sf::Socket::Status::Done)
       {
          valid = true;

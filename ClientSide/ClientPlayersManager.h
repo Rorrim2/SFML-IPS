@@ -12,6 +12,7 @@ struct PlayerState
    float angle;
    float angularVel;
    b2Vec2 linearVelocity;
+   ShipType type;
 };
 
 class ClientPlayersManager
@@ -20,11 +21,12 @@ public:
    ClientPlayersManager(World &world, sf::Mutex &mutex);
    ~ClientPlayersManager();
 
-   ClientPlayer* createPlayer(float x, float y, const std::string &textureName = "");
+   ClientPlayer* createPlayer(float x, float y, ShipType type);
    void addPlayer(const ClientID & clientID, ClientPlayer *player);
-   void addPlayer(const ClientID& clientID, const float &x, const float &y);
+   void addPlayer(const ClientID& clientID, const float &x, const float &y, ShipType type);
    void movePlayer(const PlayerState &state);
    void removePlayer(const ClientID& clientID);
+   void updateHealth(const ClientID& clientID, short health);
 
    ClientPlayer* getPlayer(const ClientID& clientID);
 

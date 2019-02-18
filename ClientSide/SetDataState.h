@@ -48,6 +48,6 @@ private:
 	std::map<ShipType, sf::Sprite> shipSprites;
 	std::map<ShipType, sf::Texture> shipTextures;
 
-	int counter;
+	short counter;
 };
 

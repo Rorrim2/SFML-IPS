@@ -16,9 +16,20 @@ enum class PacketType
    Message,
 	Hurt,
    SyncTime,
+   GameOver,
 	OutOfBounds
 };
 
+enum BodyType
+{
+   Ship,
+   CannonBall,
+};
+
+enum class ShipType : short
+{
+   RED, BLUE, YELLOW, GREEN
+};
 
 enum MoveDirection
 {

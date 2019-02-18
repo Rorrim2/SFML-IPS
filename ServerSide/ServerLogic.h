@@ -23,7 +23,7 @@ public:
 
    sf::Packet getPlayersSnapshot();
    sf::Packet getCannonBallsSnapshot();
-   void addPlayer(ClientID& clientID, const float &x, const float &y);
+   void addPlayer(ClientID& clientID, const float &x, const float &y, ShipType shipType);
    void movePlayer(ClientID& clientID, MoveDirection dir, const sf::Int32 & time);
    void signToRemovePlayer(const ClientID& clientID);
    void clearBodies();
@@ -35,7 +35,7 @@ public:
    void runServer();
 private: 
    sf::Thread commandThread;
-
+   sf::Mutex bodyCreate;
    const bool windowEnable;
    Window *window;
    Server server;
