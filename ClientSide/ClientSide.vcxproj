@@ -27,6 +27,7 @@
     <ClCompile Include="ConfirmState.cpp" />
     <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="HowToPlayState.cpp" />
     <ClCompile Include="IntroState.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="ConfirmState.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="HowToPlayState.h" />
