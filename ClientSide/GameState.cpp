@@ -7,6 +7,10 @@ GameState::GameState(StateManager *stateManager)
    map.setMapName("map.png");
    map.loadFromFile();
    this->world.loadMap("map.xml");
+   this->textureManager.RequireResource("HPBar1");
+   this->textureManager.RequireResource("HPBar2");
+   this->textureManager.RequireResource("HPBar3");
+   this->hpBar = new sf::Sprite(*this->textureManager.GetResource("HPBar1"));
 }
 
 
@@ -58,7 +62,11 @@ void GameState::draw()
    {
       this->playersManager.drawAllPlayers(*this->stateManager->getContext()->window);
       this->cannonBallManager.drawAllCannonbalss(*this->stateManager->getContext()->window);
-      this->world.drawDebugData();
+      if (this->debug)
+      {
+         this->world.drawDebugData();
+      }
+      this->stateManager->getContext()->window->draw(*this->hpBar);
    }
 }
 
@@ -81,7 +89,19 @@ void GameState::update(const sf::Time & time)
       this->playersManager.addPlayer(this->client.getClientID(), this->player);
       this->physicStarted = true;
    }
+   if (this->player->getHealth() != this->hp)
+   {
+      if (this->player->getHealth() == 2)
+      {
+         this->hpBar->setTexture(*this->textureManager.GetResource("HPBar2"));
+      }
+      else
+      {
+         this->hpBar->setTexture(*this->textureManager.GetResource("HPBar3"));
+      }
 
+      this->hp = this->player->getHealth();
+   }
    sf::Time t = this->client.getTime();
    if (t - this->timer >= sf::seconds(1))
    {
@@ -206,6 +226,11 @@ void GameState::movePlayer(EventDetails *details)
          this->lastDirections.push({ MoveDirection::BACKWARD, this->client.getTime().asMilliseconds() });
          //this->player->move(MoveDirection::BACKWARD);
       }
+
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T))
+      {
+         this->debug = !this->debug;
+      }
    }
 }
 
@@ -273,7 +298,7 @@ void GameState::clientHandler(const PacketID &id, sf::Packet &packet, Client *cl
       {
          client->disconnect();
          DEBUG_COUT("Disconnected!");
-         moveToMainMenu(nullptr);
+         this->stateManager->switchTo(StateTypeE::GAME_OVER);
       }
       else if (static_cast<PacketType>(id) == PacketType::Disconnect)
       {

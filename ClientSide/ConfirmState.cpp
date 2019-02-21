@@ -127,7 +127,9 @@ void ConfirmState::loadFromJson()
 	this->jsonText["Port"] = doc["Port"].GetString();
 	this->jsonText["PlayerName"] = doc["PlayerName"].GetString();
 	this->jsonText["ShipType"] = doc["ShipType"].GetString();
-
+   std::string ipTemp = doc["IP"].GetString();
+   this->stateManager->getContext()->window->setInput(ipTemp, 0);
+   this->stateManager->getContext()->window->setInput(doc["Port"].GetString(), 1);
 	fclose(fp);
 }
 

@@ -16,10 +16,8 @@ ClientPlayer::ClientPlayer(b2Body *body, const sf::Texture & texture, ShipType t
    this->sprite.setScale(.7, .7);
    //this->sprite = new sf::RectangleShape(sf::Vector2f(52, 52));
    //this->sprite->setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
-
-   this->sprite.setOrigin(56, 33);
+   this->sprite.setOrigin(33, 56);
    this->sprite.setPosition(this->body->GetPosition().x * PIXELS_PER_METER, this->body->GetPosition().y * PIXELS_PER_METER);
-
    this->lastTime = sf::Time::Zero;
 }
 
@@ -33,7 +31,7 @@ void ClientPlayer::update(const sf::Time& time)
 {
    b2Vec2 pos = this->body->GetPosition();
    this->sprite.setPosition(sf::Vector2f(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER));
-   this->sprite.setRotation(this->body->GetAngle() / b2_pi * 180.0f);
+   this->sprite.setRotation(this->body->GetAngle() / b2_pi * 180.0f + 270);
    this->verticalSpeed *= .78;
    this->angularSpeed *= .50;
    this->shootTimeout += time.asSeconds();
@@ -88,7 +86,7 @@ void ClientPlayer::move(MoveDirection direction)
 
 void ClientPlayer::setHealth(short health)
 {
-   this->health += health;
+   this->health = health;
 }
 
 short ClientPlayer::getHealth()

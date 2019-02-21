@@ -157,6 +157,11 @@ std::string Window::getInput(unsigned int i)
 	return this->Inputs[i];
 }
 
+void Window::setInput(const std::string & data, unsigned int i)
+{
+   this->Inputs[i] = data;
+}
+
 //going to the next string + annihilating text cursor
 void Window::incrementCounter()
 {

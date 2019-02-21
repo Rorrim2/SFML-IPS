@@ -39,6 +39,7 @@ public:
    bool GetIsDataStateFlag();
    std::string getInput();
    std::string getInput(unsigned int i);
+   void setInput(const std::string &data, unsigned int i);
    unsigned int getCounter();
    void incrementCounter();
    void deleteChar();

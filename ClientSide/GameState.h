@@ -43,6 +43,11 @@ private:
    ClientCannonballManager cannonBallManager;
    ClientPlayer* player;
    Client client;
+   TextureManager textureManager;
+   sf::Sprite *hpBar;
+   short hp = 3;
+
+   bool debug = false;
 
    MapClientSide map;
 };

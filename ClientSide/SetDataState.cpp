@@ -105,7 +105,7 @@ void SetDataState::saveToJson()
 	std::string outputPath = "output.json";
 	std::FILE *fp = fopen(outputPath.c_str(), "w");
 	std::fputs(strbuff.GetString(), fp);
-	
+
 	fclose(fp);
 }
 

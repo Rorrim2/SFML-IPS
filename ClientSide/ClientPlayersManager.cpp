@@ -129,7 +129,9 @@ void ClientPlayersManager::removePlayer(const ClientID & clientID)
 void ClientPlayersManager::updateHealth(const ClientID & clientID, short health)
 {
    if (this->players.count(clientID) > 0)
+   {
       this->players[clientID]->setHealth(health);
+   }
 }
 
 ClientPlayer* ClientPlayersManager::getPlayer(const ClientID & clientID)

@@ -52,7 +52,7 @@ bool ServerPlayer::isDead()
 
 PlayerState ServerPlayer::getPlayerState()
 {
-   return PlayerState(getPosition(), getAngle(), 0);
+   return PlayerState(getPosition(), getAngle(), this->health);
 }
 
 void ServerPlayer::update(const sf::Time &time)
