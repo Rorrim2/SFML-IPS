@@ -17,10 +17,19 @@ void GameState::onCreate()
    sf::IpAddress ip("localhost");
    PortNumber port = 5600;
 
-   std::cout << "Enter Server IP: ";
-   std::cin >> ip;
-   std::cout << "Enter Server Port: ";
-   std::cin >> port;
+   //std::cout << "Enter Server IP: ";
+  // std::cin >> ip;
+  // std::cout << "Enter Server Port: ";
+  // std::cin >> port;
+   Window *wind = this->stateManager->getContext()->window;
+
+   //std::cout << "IP: " << wind->getInput(0) << std::endl;
+   //std::cout << "Port: " << wind->getInput(1) << std::endl;
+   //std::cout << "Player: " << wind->getInput(2) << std::endl;
+   //std::cout << "ship: " << wind->getInput(3) << std::endl;
+
+   //std::cout << "SHIP: " << wind->getwhichOne() << std::endl;
+
    setServer(ip, port);
    this->client.setup(clientHandler);
 

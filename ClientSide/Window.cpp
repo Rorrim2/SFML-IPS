@@ -157,6 +157,35 @@ std::string Window::getInput(unsigned int i)
 	return this->Inputs[i];
 }
 
+void Window::setInput(unsigned int i, std::string name)
+{
+	this->Inputs[i] = name;
+}
+
+void Window::setWhichOne(std::string ship)
+{
+	for (auto it : this->shipNames)
+	{
+		if (it.second == ship)
+		{
+			this->whichOne = it.first;
+			break;
+		}
+	}
+}
+
+ShipType Window::getwhichOne()
+{
+	return this->whichOne;
+}
+
+void Window::clearEveryInput()
+{
+	this->Inputs[0] = " ";
+	this->Inputs[1] = "";
+	this->Inputs[2] = "";
+	this->Inputs[3] = "";
+}
 //going to the next string + annihilating text cursor
 void Window::incrementCounter()
 {
@@ -191,17 +220,19 @@ void Window::SetShip(ShipType shipType) {
 //change the sign of text cursor 
 void Window::SwapTheSign()
 {
-	if (this->itsTimeToSwap % 10 == 0 && this->counter != 3)
-	{
-		if (this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] == '_')
+	if (this->isSetDataState) {
+		if (this->itsTimeToSwap % 10 == 0 && this->counter != 3)
 		{
-			this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = ' ';
+			if (this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] == '_')
+			{
+				this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = ' ';
+			}
+			else
+			{
+				this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = '_';
+			}
+
 		}
-		else
-		{
-			this->Inputs[this->counter][this->Inputs[this->counter].length() - 1] = '_';
-		}
-		
 	}
 }
 //end things with setdatastate

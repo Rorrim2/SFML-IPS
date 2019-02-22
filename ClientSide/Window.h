@@ -39,6 +39,10 @@ public:
    bool GetIsDataStateFlag();
    std::string getInput();
    std::string getInput(unsigned int i);
+   ShipType getwhichOne();
+   void setInput(unsigned int i, std::string name);
+   void clearEveryInput();
+   void setWhichOne(std::string ship);
    unsigned int getCounter();
    void incrementCounter();
    void deleteChar();
@@ -50,8 +54,6 @@ public:
 
    void draw(sf::Drawable &drawable);
    void draw(sf::Vertex *verticles, size_t count, sf::PrimitiveType type);
-   
-
 
 private:
    void create();

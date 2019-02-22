@@ -128,6 +128,15 @@ void ConfirmState::loadFromJson()
 	this->jsonText["PlayerName"] = doc["PlayerName"].GetString();
 	this->jsonText["ShipType"] = doc["ShipType"].GetString();
 
+	Window *wind = this->stateManager->getContext()->window;
+
+	wind->setInput(0, this->jsonText["IP"]);
+	wind->setInput(1, this->jsonText["Port"]);
+	wind->setInput(2, this->jsonText["PlayerName"]);
+	wind->setInput(3, this->jsonText["ShipType"]);
+
+	wind->setWhichOne(wind->getInput(3));
+
 	fclose(fp);
 }
 
@@ -169,12 +178,14 @@ void ConfirmState::backToMenu(EventDetails* details)
 
 void ConfirmState::PressEnter(EventDetails* details)
 {
+	Window *wind = this->stateManager->getContext()->window;
 	if (this->currentButton == 0)
-	{
+	{	
 		this->stateManager->switchTo(StateTypeE::GAME);
 	}
 	else if (this->currentButton == 1)
 	{
+		wind->clearEveryInput();
 		this->stateManager->switchTo(StateTypeE::SERVER_DATA);
 	}
 	else if (this->currentButton == 2)
@@ -203,6 +214,8 @@ void ConfirmState::MouseClick(EventDetails* details)
 			}
 			else if (i == 1)
 			{
+				Window *wind = this->stateManager->getContext()->window;
+				wind->clearEveryInput();
 				this->stateManager->switchTo(StateTypeE::SERVER_DATA);
 			}
 			else if (i == 2)
